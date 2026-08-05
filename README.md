@@ -81,3 +81,72 @@ Technologies Used
 * Git
 * Postman
 * python-dotenv
+
+* # Enterprise Django Backend
+
+## Project Overview
+This project is a Django REST Framework backend implementing JWT-based user authentication.
+
+## Features Implemented
+
+### Task 1 - Authentication Flow
+- Studied the authentication flow.
+- Understood Registration, Login, Authentication, Authorization, JWT, and Refresh Tokens.
+
+### Task 2 - Registration API
+- Created user registration API.
+- Added serializer and input validation.
+- Implemented password validation.
+- Tested:
+  - Valid registration
+  - Invalid request
+  - Duplicate email
+  - Missing required fields
+
+### Task 3 - Login API
+- Implemented login using email.
+- Generated JWT Access Token and Refresh Token.
+- Returned authenticated user details along with tokens.
+- Tested login success and failure scenarios.
+
+### Task 4 - JWT Authentication
+- Configured JWT authentication.
+- Protected API endpoints using authentication classes.
+- Verified unauthorized requests return appropriate error responses.
+- Implemented Profile API for authenticated users.
+
+### Task 5 - Change Password API
+- Created Change Password API.
+- Validated current password.
+- Added new password validation.
+- Updated password securely using Django's password hashing.
+- Tested successfully using Postman.
+
+## Technologies Used
+- Python
+- Django
+- Django REST Framework
+- PostgreSQL
+- Simple JWT
+- Postman
+
+## API Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | /api/users/register/ | Register a new user |
+| POST | /api/users/login/ | Login and generate JWT tokens |
+| GET | /api/users/profile/ | Get authenticated user profile |
+| POST | /api/users/change-password/ | Change user password |
+
+## Authentication
+Protected APIs require a valid JWT Access Token.
+
+Authorization Header:
+
+```
+Authorization: Bearer <access_token>
+```
+
+## Testing
+All APIs were tested successfully using Postman.
