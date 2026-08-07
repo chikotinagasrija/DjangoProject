@@ -186,5 +186,60 @@ The project includes Swagger UI for interactive API documentation, allowing all 
 Conclusion
 
 This project demonstrates a secure and well-structured REST API for user management with authentication, profile management, validation, and comprehensive API documentation.
+# Django Backend Project
+
+## Today's Work Update
+
+### Task 1 – RBAC (Role-Based Access Control)
+- Studied RBAC concepts.
+- Learned the difference between Roles, Permissions, and Authorization.
+- Prepared notes on how RBAC secures APIs.
+
+### Task 2&3 – Roles & Permissions
+- Implemented role-based access control.
+- Created Admin and User roles.
+- Assigned permissions based on roles.
+- Protected APIs using custom permission classes.
+- Verified that:
+  - Anonymous users cannot access protected APIs.
+  - Unauthorized users cannot access restricted resources.
+
+### Task 4 – Soft Delete
+- Added `is_deleted` field to the UserProfile model.
+- Implemented soft delete functionality.
+- Added profile restore functionality.
+- Filtered only active (non-deleted) records.
+- Tested all APIs successfully.
+
+### Task 5 – Audit Fields
+- Added audit fields:
+  - `created_at`
+  - `updated_at`
+  - `created_by`
+  - `updated_by`
+- Configured automatic timestamp updates.
+- Stored the authenticated user for create and update operations.
+- Verified the audit fields using Postman.
+
+### Task 6 – Logging & Exception Handling
+- Configured centralized logging using Django logging.
+- Generated application logs in `logs/django.log`.
+- Added custom exception handling.
+- Improved API error responses.
+- Verified log generation for API requests.
+
+### Task 7 – ORM Performance Optimization
+- Learned and implemented `select_related()`.
+- Studied `prefetch_related()`.
+- Optimized database queries.
+- Compared query count before and after optimization.
+
+### Task 8 – Final Testing & Documentation
+- Performed end-to-end API testing.
+- Verified Login, Profile, Update, Soft Delete, and Restore APIs.
+- Reviewed the project structure.
+- Fixed identified issues.
+- Committed completed work to Git.
+- Prepared a demo explaining all implemented features.
 
 
