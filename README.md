@@ -150,3 +150,41 @@ Authorization: Bearer <access_token>
 
 ## Testing
 All APIs were tested successfully using Postman.
+
+Django User Management API
+
+Project Overview
+
+This project is a Django REST Framework application developed to manage user authentication and user profiles securely. It uses JWT authentication and PostgreSQL for data storage. The project also includes API validation, image upload functionality, search, filtering, ordering, pagination, and Swagger documentation for easy API testing.
+
+Features
+
+* User Registration
+* User Login with JWT Authentication
+* User Profile Management (Create, View, Update, Delete)
+* Change Password
+* Logout with Token Blacklisting
+* Profile Image Upload
+* Search, Filtering, Ordering, and Pagination
+* Input Validations (Email, Phone Number, Required Fields, Image Type and Size, Duplicate Records)
+* Swagger API Documentation
+
+Technologies Used
+
+* Python
+* Django
+* Django REST Framework (DRF)
+* PostgreSQL
+* Simple JWT
+* drf-yasg (Swagger)
+* django-filter
+
+API Documentation
+
+The project includes Swagger UI for interactive API documentation, allowing all endpoints to be viewed and tested through the browser.
+
+Conclusion
+
+This project demonstrates a secure and well-structured REST API for user management with authentication, profile management, validation, and comprehensive API documentation.
+
+
