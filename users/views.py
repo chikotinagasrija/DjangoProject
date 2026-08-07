@@ -1,3 +1,6 @@
+import profile
+
+from django.db import connection
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -8,12 +11,17 @@ from rest_framework.generics import ListAPIView
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
 from .models import CustomUser, UserProfile
+from django.contrib.auth.models import Group
+from .permissions import IsAdminUserRole
+import logging
 from .serializers import (
     RegistrationSerializer,
     LoginSerializer,
     UserProfileSerializer,
-    ProfileImageSerializer,
+    ProfileImageSerializer
 )
+logger = logging.getLogger(__name__)
+
 
 
 # Register API
@@ -75,20 +83,60 @@ class ProfileAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
+        try:
+            profile = UserProfile.objects.select_related("user").get(user=request.user)
+            print("Query Count:", len(connection.queries))
 
-        user = request.user
+            user = profile.user
 
-        return Response(
-            {
-                "id": str(user.id),
-                "first_name": user.first_name,
-                "last_name": user.last_name,
-                "email": user.email
-            },
-            status=status.HTTP_200_OK
-        )
+            logger.info(f"Profile viewed by {user.email}")
 
+            return Response(
+                {
+                    "id": str(user.id),
+                    "first_name": user.first_name,
+                    "last_name": user.last_name,
+                    "email": user.email
+                },
+                status=status.HTTP_200_OK
+            )
 
+        except Exception as e:
+            logger.error(str(e))
+            return Response(
+                {"error": "Something went wrong"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+    def put(self, request):
+        try:
+            profile = UserProfile.objects.select_related("user").get(user=request.user)
+
+            serializer = UserProfileSerializer(
+                profile,
+                data=request.data
+            )
+
+            if serializer.is_valid():
+                serializer.save(updated_by=request.user)
+
+                logger.info(f"Profile updated by {request.user.email}")
+
+                return Response(serializer.data, status=status.HTTP_200_OK)
+
+            logger.error(serializer.errors)
+
+            return Response(
+                serializer.errors,
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        except Exception as e:
+            logger.error(str(e))
+            return Response(
+                {"error": "Something went wrong"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 # Create Profile API
 class CreateProfileAPIView(APIView):
 
@@ -164,7 +212,7 @@ class UpdateProfileAPIView(APIView):
 
         if serializer.is_valid():
 
-            serializer.save()
+            serializer.save(updated_by=request.user)
 
             return Response(
                 serializer.data,
@@ -184,11 +232,12 @@ class DeleteProfileAPIView(APIView):
 
     def delete(self, request):
 
-        profile = UserProfile.objects.filter(
+        profile = UserProfile.objects.get(
             user=request.user
         )
 
-        profile.delete()
+        profile.is_deleted = True
+        profile.save()
 
         return Response(
             {
@@ -348,4 +397,35 @@ class ProfileListAPIView(ListAPIView):
         "city",
         "state",
         "country",
-    ]        
+    ]
+
+# Admin Only API
+class AdminAPIView(APIView):
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+
+        return Response(
+            {
+                "message": "Welcome Admin"
+            },
+            status=status.HTTP_200_OK
+        )
+class RestoreProfileAPIView(APIView):
+
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+
+        profile = UserProfile.objects.get(user=request.user)
+
+        profile.is_deleted = False
+        profile.save()
+
+        return Response(
+            {
+                "message": "Profile restored successfully"
+            },
+            status=status.HTTP_200_OK
+        )    

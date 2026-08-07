@@ -110,7 +110,35 @@ class UserProfileSerializer(serializers.ModelSerializer):
             "country",
             "pincode",
             "bio",
+            "created_at",
+            "updated_at",
+            "created_by",
+            "updated_by"
         ]
+        
+    def validate_phone_number(self, value):
+        if not value.isdigit():
+            raise serializers.ValidationError(
+                "Phone number must contain only digits."
+            )
+
+        if len(value) != 10:
+            raise serializers.ValidationError(
+                "Phone number must be exactly 10 digits."
+            )
+
+        return value
+
+    def validate(self, data):
+        required_fields = ["phone_number", "city", "country"]
+
+        for field in required_fields:
+            if not data.get(field):
+                raise serializers.ValidationError(
+                    {field: f"{field} is required."}
+                )
+
+        return data    
 
 
 class ProfileImageSerializer(serializers.ModelSerializer):

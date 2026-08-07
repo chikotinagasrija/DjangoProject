@@ -1,0 +1,14 @@
+Watching for file changes with StatReloader
+"POST /api/login/ HTTP/1.1" 200 611
+"GET /api/profile/ HTTP/1.1" 200 114
+"PUT /api/profile/ HTTP/1.1" 200 418
+C:\Users\DELL\Documents\DjangoBackend\users\views.py changed, reloading.
+Watching for file changes with StatReloader
+Watching for file changes with StatReloader
+Watching for file changes with StatReloader
+C:\Users\DELL\Documents\DjangoBackend\users\views.py changed, reloading.
+Watching for file changes with StatReloader
+Watching for file changes with StatReloader
+"GET /api/profile/ HTTP/1.1" 200 114
+C:\Users\DELL\Documents\DjangoBackend\users\views.py changed, reloading.
+Watching for file changes with StatReloader
