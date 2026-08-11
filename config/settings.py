@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'accounts',
     'common',
     'rides',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -146,6 +147,10 @@ REST_FRAMEWORK = {
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
 
+    "DEFAULT_RENDERER_CLASSES": [
+    "rest_framework.renderers.JSONRenderer",
+],
+
     "DEFAULT_FILTER_BACKENDS": [
         "django_filters.rest_framework.DjangoFilterBackend",
         "rest_framework.filters.SearchFilter",
@@ -155,7 +160,7 @@ REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS":
         "rest_framework.pagination.PageNumberPagination",
 
-    "PAGE_SIZE": 5,
+    "PAGE_SIZE": 10,
 }
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
@@ -171,18 +176,28 @@ LOGGING = {
     "disable_existing_loggers": False,
 
     "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+        },
         "file": {
             "level": "INFO",
             "class": "logging.FileHandler",
-            "filename": os.path.join(BASE_DIR, "logs","django.log"),
+            "filename": os.path.join(BASE_DIR, "logs", "django.log"),
         },
     },
 
     "loggers": {
         "django": {
-            "handlers": ["file"],
+            "handlers": ["console", "file"],
             "level": "INFO",
-            "propagate": True,
+            "propagate": False,
+        },
+
+        "django.server": {
+            "handlers": ["console", "file"],
+            "level": "INFO",
+            "propagate": False,
         },
     },
 }
+    

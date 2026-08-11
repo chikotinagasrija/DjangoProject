@@ -23,6 +23,7 @@ class DriverProfile(models.Model):
 
     license_number = models.CharField(max_length=50, unique=True)
     rating = models.DecimalField(max_digits=3, decimal_places=2, default=0.00)
+    is_active = models.BooleanField(default=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -60,7 +61,7 @@ class RideStatus(models.TextChoices):
     STARTED = 'STARTED', 'Started'
     COMPLETED = 'COMPLETED', 'Completed'
     CANCELLED = 'CANCELLED', 'Cancelled'
-    
+
 class Ride(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
@@ -112,3 +113,4 @@ class Ride(models.Model):
 
     def __str__(self):
         return str(self.id)
+    
