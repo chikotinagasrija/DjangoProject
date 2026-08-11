@@ -343,5 +343,72 @@ Vehicle ───────── 1 : Many ────────── Ride
 **Tasks 1–8: Completed Successfully ✅**
 The complete Ride Booking database architecture, Django implementation, PostgreSQL migration, Django Admin configuration, testing, and documentation have been completed and pushed to GitHub.
 
+Driver & Vehicle Management API (11th august 2026)
+
+Implemented a Driver and Vehicle Management backend using Django REST Framework and PostgreSQL, with authentication, authorization, validation, filtering, nested responses, and API error handling.
+Implemented Features
+1. Driver Management
+* Created DriverProfile model with UUID-based identification and user relationship.
+* Implemented Driver APIs for creating, retrieving, listing, and updating driver profiles.
+* Added serializer-based validation for driver-related data.
+* Added role-based access control for driver management.
+
+2. Vehicle Management
+* Created Vehicle and VehicleType models with relationships to drivers.
+* Implemented Vehicle APIs for:
+    * Create
+    * List
+    * Retrieve
+    * Update
+    * Delete
+* Added validation for vehicle registration numbers, vehicle types, and driver references.
+* Prevented duplicate vehicle registration numbers.
+
+3. API Validation
+Implemented serializer-level validations to ensure:
+* Required fields are provided.
+* Vehicle registration numbers are valid and normalized.
+* Driver IDs are valid.
+* Vehicle type IDs are valid.
+* Duplicate vehicle registrations are rejected.
+* Invalid data returns appropriate validation errors.
+
+4. Role-Based Permissions
+Implemented permission rules for different user roles:
+
+* Admin can manage all drivers and vehicles.
+* Drivers can manage their own vehicles.
+* Normal users cannot modify driver information.
+* Protected APIs against unauthorized and forbidden access.
+
+5. Nested API Responses
+Implemented nested responses to provide driver and vehicle information together.
+6. Search, Filtering & Pagination
+Implemented API query features including:
+* Driver search by license number and user email.
+* Vehicle search and vehicle-type filtering.
+* Active/inactive driver filtering.
+* Page-number pagination.
+* Ordering by rating and timestamps.
+* Combination of search, filters, pagination, and ordering.
+7. API Error Handling
+Implemented proper HTTP error responses for common API scenarios:
+
+* 400 Bad Request for invalid data and duplicate registrations.
+* 401 Unauthorized for unauthenticated requests.
+* 403 Forbidden for unauthorized operations.
+* 404 Not Found for non-existing drivers and vehicles.
+8. API Testing
+
+Performed end-to-end testing using Postman covering:
+* Positive and negative scenarios.
+* Authentication and authorization.
+* Role-based permissions.
+* Serializer validations.
+* Search and filtering.
+* Pagination and ordering.
+* Error handling and edge cases.
+Successfully developed a secure and validated Driver & Vehicle Management API with role-based authorization, relational data handling, nested responses, search/filtering capabilities, pagination, and comprehensive API testing.
+
 
 
