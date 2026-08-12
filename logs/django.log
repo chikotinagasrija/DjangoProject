@@ -487,3 +487,183 @@ Bad Request: /api/drivers/
 "POST /api/login/ HTTP/1.1" 200 611
 Bad Request: /api/drivers/
 "POST /api/drivers/ HTTP/1.1" 400 89
+Watching for file changes with StatReloader
+"POST /api/login/ HTTP/1.1" 200 611
+Watching for file changes with StatReloader
+"GET /admin/ HTTP/1.1" 200 12667
+"GET /static/admin/css/base.css HTTP/1.1" 200 23100
+"GET /static/admin/css/dark_mode.css HTTP/1.1" 200 3538
+"GET /static/admin/css/nav_sidebar.css HTTP/1.1" 200 2810
+"GET /static/admin/js/theme.js HTTP/1.1" 200 1653
+"GET /static/admin/css/dashboard.css HTTP/1.1" 200 441
+"GET /static/admin/css/responsive.css HTTP/1.1" 200 16273
+"GET /static/admin/js/nav_sidebar.js HTTP/1.1" 200 3063
+"GET /static/admin/img/icon-addlink.svg HTTP/1.1" 200 593
+"GET /static/admin/img/icon-changelink.svg HTTP/1.1" 200 978
+Not Found: /favicon.ico
+"GET /favicon.ico HTTP/1.1" 404 3171
+"GET /admin/rides/vehicletype/ HTTP/1.1" 200 14807
+"GET /static/admin/css/changelists.css HTTP/1.1" 200 7498
+"GET /static/admin/js/jquery.init.js HTTP/1.1" 200 347
+"GET /static/admin/js/core.js HTTP/1.1" 200 6208
+"GET /static/admin/js/admin/RelatedObjectLookups.js HTTP/1.1" 200 9777
+"GET /static/admin/js/urlify.js HTTP/1.1" 200 7887
+"GET /static/admin/js/actions.js HTTP/1.1" 200 8077
+"GET /static/admin/js/vendor/jquery/jquery.js HTTP/1.1" 200 285314
+"GET /static/admin/js/prepopulate.js HTTP/1.1" 200 1531
+"GET /static/admin/img/search.svg HTTP/1.1" 200 607
+"GET /admin/jsi18n/ HTTP/1.1" 200 3342
+"GET /static/admin/js/filters.js HTTP/1.1" 200 978
+"GET /static/admin/js/vendor/xregexp/xregexp.js HTTP/1.1" 200 325171
+"GET /static/admin/img/tooltag-add.svg HTTP/1.1" 200 593
+"GET /static/admin/img/sorting-icons.svg HTTP/1.1" 200 1761
+"GET /admin/rides/vehicletype/09e2a818-0420-4e96-845b-ec771f975561/change/ HTTP/1.1" 200 12956
+"GET /static/admin/css/forms.css HTTP/1.1" 200 8831
+"GET /static/admin/js/prepopulate_init.js HTTP/1.1" 200 586
+"GET /static/admin/css/widgets.css HTTP/1.1" 200 11811
+"GET /static/admin/js/change_form.js HTTP/1.1" 200 606
+"GET /admin/jsi18n/ HTTP/1.1" 200 3342
+"POST /admin/rides/vehicletype/09e2a818-0420-4e96-845b-ec771f975561/change/ HTTP/1.1" 302 0
+"GET /admin/rides/vehicletype/ HTTP/1.1" 200 15049
+"GET /admin/jsi18n/ HTTP/1.1" 200 3342
+"GET /static/admin/img/icon-yes.svg HTTP/1.1" 200 558
+Internal Server Error: /api/rides
+Traceback (most recent call last):
+  File "C:\Users\DELL\Documents\DjangoBackend\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\DELL\Documents\DjangoBackend\venv\Lib\site-packages\django\utils\deprecation.py", line 311, in __call__
+    response = self.process_response(request, response)
+  File "C:\Users\DELL\Documents\DjangoBackend\venv\Lib\site-packages\django\middleware\common.py", line 109, in process_response
+    self.get_full_path_with_slash(request)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\DELL\Documents\DjangoBackend\venv\Lib\site-packages\django\middleware\common.py", line 87, in get_full_path_with_slash
+    raise RuntimeError(
+    ...<9 lines>...
+    )
+RuntimeError: You called this URL via POST, but the URL doesn't end in a slash and you have APPEND_SLASH set. Django can't redirect to the slash URL while maintaining POST data. Change your form to point to 127.0.0.1:8000/api/rides/ (note the trailing slash), or set APPEND_SLASH=False in your Django settings.
+"POST /api/rides HTTP/1.1" 500 73890
+Watching for file changes with StatReloader
+Internal Server Error: /api/rides
+Traceback (most recent call last):
+  File "C:\Users\DELL\Documents\DjangoBackend\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\DELL\Documents\DjangoBackend\venv\Lib\site-packages\django\utils\deprecation.py", line 311, in __call__
+    response = self.process_response(request, response)
+  File "C:\Users\DELL\Documents\DjangoBackend\venv\Lib\site-packages\django\middleware\common.py", line 109, in process_response
+    self.get_full_path_with_slash(request)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\DELL\Documents\DjangoBackend\venv\Lib\site-packages\django\middleware\common.py", line 87, in get_full_path_with_slash
+    raise RuntimeError(
+    ...<9 lines>...
+    )
+RuntimeError: You called this URL via POST, but the URL doesn't end in a slash and you have APPEND_SLASH set. Django can't redirect to the slash URL while maintaining POST data. Change your form to point to 127.0.0.1:8000/api/rides/ (note the trailing slash), or set APPEND_SLASH=False in your Django settings.
+"POST /api/rides HTTP/1.1" 500 73890
+"POST /api/rides/ HTTP/1.1" 201 219
+C:\Users\DELL\Documents\DjangoBackend\rides\serializers.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\DELL\Documents\DjangoBackend\rides\models.py changed, reloading.
+Watching for file changes with StatReloader
+Watching for file changes with StatReloader
+Unauthorized: /api/rides/
+"POST /api/rides/ HTTP/1.1" 401 107
+"POST /api/login/ HTTP/1.1" 200 611
+"GET /admin/ HTTP/1.1" 200 13058
+"GET /admin/rides/vehicletype/ HTTP/1.1" 200 14807
+"GET /admin/jsi18n/ HTTP/1.1" 200 3342
+"GET /admin/rides/vehicletype/09e2a818-0420-4e96-845b-ec771f975561/change/ HTTP/1.1" 200 12956
+"GET /admin/jsi18n/ HTTP/1.1" 200 3342
+"POST /admin/rides/vehicletype/09e2a818-0420-4e96-845b-ec771f975561/change/ HTTP/1.1" 302 0
+"GET /admin/rides/vehicletype/ HTTP/1.1" 200 15049
+"GET /admin/jsi18n/ HTTP/1.1" 200 3342
+Bad Request: /api/rides/
+"POST /api/rides/ HTTP/1.1" 400 47
+Bad Request: /api/rides/
+"POST /api/rides/ HTTP/1.1" 400 45
+Bad Request: /api/rides/
+"POST /api/rides/ HTTP/1.1" 400 69
+Bad Request: /api/rides/
+"POST /api/rides/ HTTP/1.1" 400 57
+C:\Users\DELL\Documents\DjangoBackend\rides\serializers.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\DELL\Documents\DjangoBackend\rides\urls.py changed, reloading.
+Watching for file changes with StatReloader
+Watching for file changes with StatReloader
+"POST /api/login/ HTTP/1.1" 200 611
+Method Not Allowed: /api/rides/164dd88b-2556-40e2-a147-3a438b1ca527/
+"GET /api/rides/164dd88b-2556-40e2-a147-3a438b1ca527/ HTTP/1.1" 405 40
+Watching for file changes with StatReloader
+Method Not Allowed: /api/rides/164dd88b-2556-40e2-a147-3a438b1ca527/
+"GET /api/rides/164dd88b-2556-40e2-a147-3a438b1ca527/ HTTP/1.1" 405 40
+C:\Users\DELL\Documents\DjangoBackend\rides\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\DELL\Documents\DjangoBackend\rides\urls.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\DELL\Documents\DjangoBackend\rides\urls.py changed, reloading.
+Watching for file changes with StatReloader
+"GET /api/rides/164dd88b-2556-40e2-a147-3a438b1ca527/ HTTP/1.1" 200 308
+C:\Users\DELL\Documents\DjangoBackend\rides\models.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\DELL\Documents\DjangoBackend\rides\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\DELL\Documents\DjangoBackend\rides\serializers.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\DELL\Documents\DjangoBackend\rides\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\DELL\Documents\DjangoBackend\rides\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\DELL\Documents\DjangoBackend\rides\urls.py changed, reloading.
+Watching for file changes with StatReloader
+"POST /api/login/ HTTP/1.1" 200 611
+Watching for file changes with StatReloader
+"PATCH /api/rides/164dd88b-2556-40e2-a147-3a438b1ca527/status/ HTTP/1.1" 200 116
+"PATCH /api/rides/164dd88b-2556-40e2-a147-3a438b1ca527/status/ HTTP/1.1" 200 115
+"PATCH /api/rides/164dd88b-2556-40e2-a147-3a438b1ca527/status/ HTTP/1.1" 200 117
+Bad Request: /api/rides/164dd88b-2556-40e2-a147-3a438b1ca527/status/
+"PATCH /api/rides/164dd88b-2556-40e2-a147-3a438b1ca527/status/ HTTP/1.1" 400 60
+C:\Users\DELL\Documents\DjangoBackend\rides\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\DELL\Documents\DjangoBackend\rides\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\DELL\Documents\DjangoBackend\rides\urls.py changed, reloading.
+Watching for file changes with StatReloader
+"POST /api/login/ HTTP/1.1" 200 611
+Bad Request: /api/rides/164dd88b-2556-40e2-a147-3a438b1ca527/accept/
+"POST /api/rides/164dd88b-2556-40e2-a147-3a438b1ca527/accept/ HTTP/1.1" 400 40
+Watching for file changes with StatReloader
+"GET /admin/ HTTP/1.1" 200 13449
+"GET /admin/rides/vehicletype/ HTTP/1.1" 200 14807
+"GET /admin/jsi18n/ HTTP/1.1" 200 3342
+"POST /api/rides/ HTTP/1.1" 201 308
+"POST /api/login/ HTTP/1.1" 200 611
+Bad Request: /api/rides/164dd88b-2556-40e2-a147-3a438b1ca527/accept/
+"POST /api/rides/164dd88b-2556-40e2-a147-3a438b1ca527/accept/ HTTP/1.1" 400 40
+"POST /api/rides/f8e7b68e-e9d4-453f-96b0-ae90c7bdaad2/accept/ HTTP/1.1" 200 158
+C:\Users\DELL\Documents\DjangoBackend\rides\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\DELL\Documents\DjangoBackend\rides\urls.py changed, reloading.
+Watching for file changes with StatReloader
+"POST /api/rides/f8e7b68e-e9d4-453f-96b0-ae90c7bdaad2/cancel/ HTTP/1.1" 200 112
+Bad Request: /api/rides/f8e7b68e-e9d4-453f-96b0-ae90c7bdaad2/cancel/
+"POST /api/rides/f8e7b68e-e9d4-453f-96b0-ae90c7bdaad2/cancel/ HTTP/1.1" 400 59
+Watching for file changes with StatReloader
+"POST /api/login/ HTTP/1.1" 200 611
+"POST /api/rides/ HTTP/1.1" 201 308
+Watching for file changes with StatReloader
+"POST /api/login/ HTTP/1.1" 200 611
+Internal Server Error: /api/rides
+Traceback (most recent call last):
+  File "C:\Users\DELL\Documents\DjangoBackend\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\DELL\Documents\DjangoBackend\venv\Lib\site-packages\django\utils\deprecation.py", line 311, in __call__
+    response = self.process_response(request, response)
+  File "C:\Users\DELL\Documents\DjangoBackend\venv\Lib\site-packages\django\middleware\common.py", line 109, in process_response
+    self.get_full_path_with_slash(request)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\DELL\Documents\DjangoBackend\venv\Lib\site-packages\django\middleware\common.py", line 87, in get_full_path_with_slash
+    raise RuntimeError(
+    ...<9 lines>...
+    )
+RuntimeError: You called this URL via POST, but the URL doesn't end in a slash and you have APPEND_SLASH set. Django can't redirect to the slash URL while maintaining POST data. Change your form to point to 127.0.0.1:8000/api/rides/ (note the trailing slash), or set APPEND_SLASH=False in your Django settings.
+"POST /api/rides HTTP/1.1" 500 73889
+Bad Request: /api/rides/
+"POST /api/rides/ HTTP/1.1" 400 57

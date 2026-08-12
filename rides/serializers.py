@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import DriverProfile
 from .models import Vehicle, VehicleType
+from .models import Ride, RideStatus
 
 
 class DriverProfileSerializer(serializers.ModelSerializer):
@@ -79,3 +80,84 @@ class DriverNestedSerializer(serializers.ModelSerializer):
     class Meta:
         model = DriverProfile
         fields = ['id', 'name', 'vehicle']
+
+
+class RideSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Ride
+        fields = [
+            "id",
+            "user",
+            "driver",
+            "vehicle",
+            "pickup_location",
+            "drop_location",
+            "fare",
+            "ride_type",
+            "status",
+            "created_at",
+        ]
+
+        read_only_fields = [
+            "id",
+            "user",
+            "driver",
+            "vehicle",
+            "fare",
+            "status",
+            "created_at",
+        ]        
+    def validate_pickup_location(self, value):
+        value = value.strip()
+
+        if not value:
+            raise serializers.ValidationError(
+                "Pickup location is required."
+            )
+
+        return value
+
+    def validate_drop_location(self, value):
+        value = value.strip()
+
+        if not value:
+            raise serializers.ValidationError(
+                "Drop location is required."
+            )
+
+        return value
+
+    def validate(self, data):
+        pickup = data.get("pickup_location")
+        drop = data.get("drop_location")
+
+        if pickup and drop:
+            if pickup.strip().lower() == drop.strip().lower():
+                raise serializers.ValidationError(
+                    "Pickup and drop locations must be different."
+                )
+
+        user = self.context["request"].user
+
+        active_statuses = [
+            RideStatus.REQUESTED,
+            RideStatus.ACCEPTED,
+            RideStatus.DRIVER_ARRIVING,
+            RideStatus.STARTED,
+        ]
+
+        if Ride.objects.filter(
+            user=user,
+            status__in=active_statuses
+        ).exists():
+            raise serializers.ValidationError(
+                "You already have an active ride."
+            )
+
+        return data 
+    
+class RideStatusSerializer(serializers.Serializer):
+    status = serializers.ChoiceField(
+        choices=RideStatus.choices
+    )

@@ -59,6 +59,7 @@ class RideStatus(models.TextChoices):
     REQUESTED = 'REQUESTED', 'Requested'
     ACCEPTED = 'ACCEPTED', 'Accepted'
     STARTED = 'STARTED', 'Started'
+    DRIVER_ARRIVING = 'DRIVER_ARRIVING', 'Driver Arriving'
     COMPLETED = 'COMPLETED', 'Completed'
     CANCELLED = 'CANCELLED', 'Cancelled'
 
@@ -87,6 +88,14 @@ class Ride(models.Model):
         related_name='rides'
     )
 
+    ride_type = models.ForeignKey(
+    VehicleType,
+    on_delete=models.PROTECT,
+    related_name='rides',
+    null=True,
+    blank=True
+)
+
     pickup_location = models.CharField(max_length=255)
     drop_location = models.CharField(max_length=255)
 
@@ -113,4 +122,25 @@ class Ride(models.Model):
 
     def __str__(self):
         return str(self.id)
+    
+ALLOWED_RIDE_TRANSITIONS = {
+    RideStatus.REQUESTED: [
+        RideStatus.ACCEPTED,
+        RideStatus.CANCELLED,
+    ],
+    RideStatus.ACCEPTED: [
+        RideStatus.DRIVER_ARRIVING,
+        RideStatus.STARTED,
+        RideStatus.CANCELLED,
+    ],
+    RideStatus.DRIVER_ARRIVING: [
+        RideStatus.STARTED,
+        RideStatus.CANCELLED,
+    ],
+    RideStatus.STARTED: [
+        RideStatus.COMPLETED,
+    ],
+    RideStatus.COMPLETED: [],
+    RideStatus.CANCELLED: [],
+}    
     
