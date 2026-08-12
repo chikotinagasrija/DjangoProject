@@ -410,5 +410,22 @@ Performed end-to-end testing using Postman covering:
 * Error handling and edge cases.
 Successfully developed a secure and validated Driver & Vehicle Management API with role-based authorization, relational data handling, nested responses, search/filtering capabilities, pagination, and comprehensive API testing.
 
+Ride Management Module (aug 12th 2026)
+Implemented the complete Ride Management module with end-to-end APIs and tested all major scenarios using Postman.
+Features Implemented
+
+* Ride Lifecycle: REQUESTED → ACCEPTED → DRIVER_ARRIVING → STARTED → COMPLETED
+* Create Ride API: Create a ride with pickup, drop location, ride type, and passenger.
+* Ride Validations: Authentication, location validation, ride type validation, and active ride conflict checks.
+* Ride Details API: View passenger, driver, vehicle, locations, status, fare, and timestamps.
+* Ride Status API: Controlled status transitions with invalid transitions rejected.
+* Driver Accept Ride: Validates driver authentication, active status, conflicting rides, and ride availability.
+* Cancel Ride: Handles valid cancellation rules and prevents invalid cancellations.
+* End-to-End Testing: Tested complete ride lifecycle and invalid scenarios successfully in Postman.
+Testing
+All Ride Management APIs were tested successfully using Postman, including both valid and invalid scenarios.
+Git
+All Ride Management changes have been committed and pushed to GitHub.
+
 
 
