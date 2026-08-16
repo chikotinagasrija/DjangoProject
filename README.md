@@ -427,5 +427,13 @@ All Ride Management APIs were tested successfully using Postman, including both 
 Git
 All Ride Management changes have been committed and pushed to GitHub.
 
+Thursday (13th aug 2026)
+
+Worked on the ride management business logic by implementing the service layer for ride operations, configurable fare calculation, database transactions, and race-condition handling. Added and executed automated tests for fare calculation, ride creation, acceptance, cancellation, invalid state changes, and duplicate ride acceptance. Also refactored the existing code to improve structure and maintainability.
+
+Friday (14th aug 2026) 
+
+Worked on complete API validation and quality review. Tested authentication, authorization, invalid JWT scenarios, user and driver access restrictions, and API performance. Reviewed database queries, pagination, error handling, and standardized API responses. Also performed Postman regression testing and reviewed the complete API flow for the final demonstration.
+
 
 
