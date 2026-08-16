@@ -35,21 +35,7 @@ class VehicleSerializer(serializers.ModelSerializer):
 
         return value
 
-    def validate_driver(self, value):
-        if not DriverProfile.objects.filter(id=value.id).exists():
-            raise serializers.ValidationError(
-                "Invalid driver ID."
-            )
-
-        return value
-
-    def validate_vehicle_type(self, value):
-        if not VehicleType.objects.filter(id=value.id).exists():
-            raise serializers.ValidationError(
-                "Invalid vehicle type ID."
-            )
-
-        return value
+    
 
 
 class NestedVehicleSerializer(serializers.ModelSerializer):

@@ -2,13 +2,22 @@ from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
-from .models import DriverProfile, Vehicle,Ride,RideStatus,ALLOWED_RIDE_TRANSITIONS
+from .models import DriverProfile, Vehicle,Ride
 from rest_framework.permissions import IsAuthenticated
 from .serializers import DriverProfileSerializer, VehicleSerializer,DriverNestedSerializer,RideSerializer,RideStatusSerializer
 from .permissions import IsAdminOrOwnVehicle, IsAdminOrSelfDriver
+from django.shortcuts import get_object_or_404
+from .services.fare_service import calculate_fare
+
+
+from .services.ride_service import (
+    update_ride_status,
+    accept_ride,
+    cancel_ride,
+)
 
 class DriverListCreateAPIView(generics.ListCreateAPIView):
-    queryset = DriverProfile.objects.all()
+    queryset = DriverProfile.objects.select_related('user')
     serializer_class = DriverProfileSerializer
     permission_classes = [IsAdminOrSelfDriver]
     
@@ -28,8 +37,8 @@ class DriverListCreateAPIView(generics.ListCreateAPIView):
     ordering = ['-created_at']
 
 class VehicleListCreateAPIView(generics.ListCreateAPIView):
-    queryset = Vehicle.objects.all()
-    serializer_class = VehicleSerializer
+    queryset = Vehicle.objects.select_related('driver', 'vehicle_type', 'driver__user')
+    
     
 
     filterset_fields = [
@@ -62,7 +71,7 @@ class VehicleDetailAPIView(generics.RetrieveUpdateAPIView):
     permission_classes = [IsAdminOrOwnVehicle]
     
 class DriverNestedAPIView(generics.RetrieveAPIView):
-    queryset = DriverProfile.objects.all()
+    queryset = DriverProfile.objects.prefetch_related('vehicles__vehicle_type')
     serializer_class = DriverNestedSerializer
 
 class RideCreateAPIView(generics.CreateAPIView):
@@ -74,150 +83,142 @@ class RideCreateAPIView(generics.CreateAPIView):
         serializer.save(user=self.request.user)
 
 class RideDetailAPIView(generics.RetrieveAPIView):
-    queryset = Ride.objects.all()
+    queryset = Ride.objects.select_related('user', 'driver', 'vehicle', 'ride_type')
     serializer_class = RideSerializer
-    permission_classes = [IsAuthenticated]  
+    permission_classes = [IsAuthenticated] 
 
-class RideStatusAPIView(generics.UpdateAPIView):
-    queryset = Ride.objects.all()
-    serializer_class = RideStatusSerializer
+class RideStatusAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
-    def update(self, request, *args, **kwargs):
-        ride = self.get_object()
+    def patch(self, request, pk):
+        ride = get_object_or_404(Ride, id=pk)
 
-        serializer = self.get_serializer(data=request.data)
+        serializer = RideStatusSerializer(
+            data=request.data
+        )
         serializer.is_valid(raise_exception=True)
 
         new_status = serializer.validated_data["status"]
-        current_status = ride.status
 
-        allowed_statuses = ALLOWED_RIDE_TRANSITIONS.get(
-            current_status, []
-        )
-
-        if new_status not in allowed_statuses:
-            return Response(
-                {
-                    "error": (
-                        f"Invalid status transition: "
-                        f"{current_status} → {new_status}"
-                    )
-                },
-                status=status.HTTP_400_BAD_REQUEST
+        try:
+            ride = update_ride_status(
+                ride,
+                new_status
             )
-
-        ride.status = new_status
-        ride.save()
+        except ValueError as exc:
+             return Response(
+        {
+            "success": False,
+            "message": str(exc),
+            "error_code": "INVALID_RIDE_STATUS",
+            "data": None
+        },
+        status=status.HTTP_400_BAD_REQUEST
+    )
 
         return Response(
             {
                 "message": "Ride status updated successfully.",
                 "ride_id": str(ride.id),
-                "status": ride.status
+                "status": ride.status,
             },
             status=status.HTTP_200_OK
-        )  
+        )
+          
 class RideAcceptAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, pk):
+        ride = get_object_or_404(Ride, id=pk)
+
+        driver = get_object_or_404(
+            DriverProfile,
+            user=request.user
+        )
 
         try:
-            driver = DriverProfile.objects.get(
-                user=request.user
-            )
-        except DriverProfile.DoesNotExist:
+            ride = accept_ride(ride, driver)
+        except ValueError as exc:
             return Response(
-                {"error": "User is not registered as a driver."},
-                status=status.HTTP_403_FORBIDDEN
-            )
-
-        if not driver.is_active:
-            return Response(
-                {"error": "Driver is not active."},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        try:
-            ride = Ride.objects.get(id=pk)
-        except Ride.DoesNotExist:
-            return Response(
-                {"error": "Ride not found."},
-                status=status.HTTP_404_NOT_FOUND
-            )
-
-        if ride.status != RideStatus.REQUESTED:
-            return Response(
-                {"error": "Ride is no longer available."},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        active_statuses = [
-            RideStatus.ACCEPTED,
-            RideStatus.DRIVER_ARRIVING,
-            RideStatus.STARTED,
-        ]
-
-        if Ride.objects.filter(
-            driver=driver,
-            status__in=active_statuses
-        ).exists():
-            return Response(
-                {"error": "Driver already has an active ride."},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        ride.driver = driver
-        ride.status = RideStatus.ACCEPTED
-        ride.save()
+        {
+            "success": False,
+            "message": str(exc),
+            "error_code": "RIDE_ACCEPT_FAILED",
+            "data": None
+        },
+        status=status.HTTP_400_BAD_REQUEST
+    )
 
         return Response(
             {
                 "message": "Ride accepted successfully.",
                 "ride_id": str(ride.id),
-                "driver": str(driver.id),
-                "status": ride.status
+                "driver": str(ride.driver.id),
+                "status": ride.status,
             },
             status=status.HTTP_200_OK
-        ) 
+        )
+
 class RideCancelAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, pk):
+        ride = get_object_or_404(Ride, id=pk)
 
         try:
-            ride = Ride.objects.get(id=pk)
-        except Ride.DoesNotExist:
+            ride = cancel_ride(ride)
+        except ValueError as exc:
             return Response(
-                {
-                    "error": "Ride not found."
-                },
-                status=status.HTTP_404_NOT_FOUND
-            )
-
-        allowed_statuses = [
-            RideStatus.REQUESTED,
-            RideStatus.ACCEPTED,
-            RideStatus.DRIVER_ARRIVING,
-        ]
-
-        if ride.status not in allowed_statuses:
-            return Response(
-                {
-                    "error": "Ride cannot be cancelled in its current status."
-                },
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        ride.status = RideStatus.CANCELLED
-        ride.save()
-
+        {
+            "success": False,
+            "message": str(exc),
+            "error_code": "INVALID_RIDE_STATUS",
+            "data": None
+        },
+        status=status.HTTP_400_BAD_REQUEST
+    )
         return Response(
             {
                 "message": "Ride cancelled successfully.",
                 "ride_id": str(ride.id),
-                "status": ride.status
+                "status": ride.status,
             },
             status=status.HTTP_200_OK
-        )        
+        )   
+class RideFareAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, pk):
+
+        distance_km = request.data.get("distance_km")
+        duration_minutes = request.data.get("duration_minutes")
+
+        if distance_km is None or duration_minutes is None:
+            return Response(
+                {
+                    "error": "distance_km and duration_minutes are required."
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        try:
+            fare = calculate_fare(
+                distance_km=distance_km,
+                duration_minutes=duration_minutes,
+            )
+        except (ValueError, TypeError):
+            return Response(
+                {"error": "Invalid distance or duration."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        return Response(
+            {
+                "base fare": fare["base_fare"],
+                "distance_fare": fare["distance_fare"],
+                "time_fare": fare["time_fare"],
+                "surge": fare["surge"],
+                "total": fare["total"],
+            },
+            status=status.HTTP_200_OK
+        )

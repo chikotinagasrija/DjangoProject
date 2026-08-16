@@ -10,6 +10,7 @@ from .views import (
     RideStatusAPIView,
     RideAcceptAPIView,
     RideCancelAPIView,
+    RideFareAPIView
 )
 
 urlpatterns = [
@@ -46,4 +47,5 @@ urlpatterns = [
     path("<uuid:pk>/status/", RideStatusAPIView.as_view(), name="ride-status"),
     path("<uuid:pk>/accept/", RideAcceptAPIView.as_view(), name="ride-accept"),
     path("<uuid:pk>/cancel/", RideCancelAPIView.as_view(), name="ride-cancel"),
+    path("<uuid:pk>/fare/", RideFareAPIView.as_view(), name="ride-fare"),
 ]
