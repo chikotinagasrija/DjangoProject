@@ -435,5 +435,23 @@ Friday (14th aug 2026)
 
 Worked on complete API validation and quality review. Tested authentication, authorization, invalid JWT scenarios, user and driver access restrictions, and API performance. Reviewed database queries, pagination, error handling, and standardized API responses. Also performed Postman regression testing and reviewed the complete API flow for the final demonstration.
 
+Django ORM & Query Optimization – Tasks 1–8(17th aug 2026):
+
+Task 1 – Django QuerySet Internals
+Studied Django QuerySets, lazy evaluation, and ORM operations such as filter(), exclude(), get(), exists(), count(), values(), annotate(), and aggregate() with practical examples.
+Task 2 – Advanced Ride Queries
+Implemented ORM-based APIs for active, completed, and cancelled rides, driver ride history, daily ride count, total completed rides, and total fare.
+Task 3 – Aggregations
+Implemented ride statistics using Count(), Sum(), Avg(), Min(), and Max() for total rides, completed/cancelled rides, fare statistics, and driver earnings.
+Task 4 – Relationship Optimization
+Identified slow relationship queries and optimized them using select_related() and prefetch_related() to reduce unnecessary database queries.
+Task 5 – Database Indexing
+Added indexes for frequently queried Ride fields such as status, created_at, and ride_type, and checked query performance before and after indexing.
+Task 6 – Advanced Filtering
+Implemented date, status, driver, and fare-range filtering, including multiple filters together and result ordering using Django ORM.
+Task 7 – Large Dataset Testing
+Tested the Ride APIs with a large number of records and verified pagination and API/database performance.
+Task 8 – Code Review & Optimization
+Reviewed ORM code and reduced duplicate queries, unnecessary database calls, queries inside loops, and repeated calculations. Improved aggregation and relationship queries for better performance.
 
 
