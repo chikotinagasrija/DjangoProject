@@ -116,13 +116,17 @@ class Ride(models.Model):
 
     class Meta:
         indexes = [
+            models.Index(fields=['user']),
+            models.Index(fields=['driver']),
             models.Index(fields=['status']),
             models.Index(fields=['created_at']),
+            models.Index(fields=['ride_type']),
         ]
 
     def __str__(self):
         return str(self.id)
     
+
 ALLOWED_RIDE_TRANSITIONS = {
     RideStatus.REQUESTED: [
         RideStatus.ACCEPTED,

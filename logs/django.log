@@ -770,3 +770,93 @@ Watching for file changes with StatReloader
 "GET /api/rides/drivers/?page=1 HTTP/1.1" 200 294
 Not Found: /api/rides/drivers/
 "GET /api/rides/drivers/?page=2 HTTP/1.1" 404 26
+Watching for file changes with StatReloader
+"POST /api/login/ HTTP/1.1" 200 611
+Method Not Allowed: /api/rides/my/active/
+"POST /api/rides/my/active/ HTTP/1.1" 405 41
+"GET /api/rides/my/active/ HTTP/1.1" 200 22
+"GET /api/rides/my/completed/ HTTP/1.1" 200 673
+"GET /api/rides/my/cancelled/ HTTP/1.1" 200 364
+"GET /api/rides/driver/history/ HTTP/1.1" 200 707
+"GET /api/rides/driver/daily-count/ HTTP/1.1" 200 42
+"GET /api/rides/driver/completed-count/ HTTP/1.1" 200 27
+"GET /api/rides/driver/total-fare/ HTTP/1.1" 200 23
+C:\Users\DELL\Documents\DjangoBackend\rides\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\DELL\Documents\DjangoBackend\rides\views.py changed, reloading.
+Watching for file changes with StatReloader
+Watching for file changes with StatReloader
+C:\Users\DELL\Documents\DjangoBackend\rides\views.py changed, reloading.
+Watching for file changes with StatReloader
+"POST /api/login/ HTTP/1.1" 200 611
+"GET /api/rides/aggregations/ HTTP/1.1" 200 140
+Watching for file changes with StatReloader
+"GET /api/rides/aggregations/ HTTP/1.1" 200 140
+C:\Users\DELL\Documents\DjangoBackend\rides\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\DELL\Documents\DjangoBackend\rides\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\DELL\Documents\DjangoBackend\rides\urls.py changed, reloading.
+Watching for file changes with StatReloader
+Watching for file changes with StatReloader
+Internal Server Error: /api/rides/slow/
+Traceback (most recent call last):
+  File "C:\Users\DELL\Documents\DjangoBackend\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+  File "C:\Users\DELL\Documents\DjangoBackend\venv\Lib\site-packages\django\core\handlers\base.py", line 198, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Users\DELL\Documents\DjangoBackend\venv\Lib\site-packages\django\views\decorators\csrf.py", line 65, in _view_wrapper
+    return view_func(request, *args, **kwargs)
+  File "C:\Users\DELL\Documents\DjangoBackend\venv\Lib\site-packages\django\views\generic\base.py", line 106, in view
+    return self.dispatch(request, *args, **kwargs)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\DELL\Documents\DjangoBackend\venv\Lib\site-packages\rest_framework\views.py", line 515, in dispatch
+    response = self.handle_exception(exc)
+  File "C:\Users\DELL\Documents\DjangoBackend\venv\Lib\site-packages\rest_framework\views.py", line 475, in handle_exception
+    self.raise_uncaught_exception(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "C:\Users\DELL\Documents\DjangoBackend\venv\Lib\site-packages\rest_framework\views.py", line 486, in raise_uncaught_exception
+    raise exc
+  File "C:\Users\DELL\Documents\DjangoBackend\venv\Lib\site-packages\rest_framework\views.py", line 512, in dispatch
+    response = handler(request, *args, **kwargs)
+  File "C:\Users\DELL\Documents\DjangoBackend\rides\views.py", line 381, in get
+    reset_queries()
+    ^^^^^^^^^^^^^
+NameError: name 'reset_queries' is not defined
+"GET /api/rides/slow/ HTTP/1.1" 500 95738
+C:\Users\DELL\Documents\DjangoBackend\rides\views.py changed, reloading.
+Watching for file changes with StatReloader
+Watching for file changes with StatReloader
+Unauthorized: /api/rides/slow/
+"GET /api/rides/slow/ HTTP/1.1" 401 172
+"POST /api/login/ HTTP/1.1" 200 611
+"GET /api/rides/slow/ HTTP/1.1" 200 48
+"GET /api/rides/optimized/ HTTP/1.1" 200 52
+Watching for file changes with StatReloader
+"POST /api/login/ HTTP/1.1" 200 611
+"GET /api/rides/filter/?start_date=2026-08-01&end_date=2026-08-17 HTTP/1.1" 200 1018
+Watching for file changes with StatReloader
+Method Not Allowed: /api/rides/
+"GET /api/rides/ HTTP/1.1" 405 40
+C:\Users\DELL\Documents\DjangoBackend\rides\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\DELL\Documents\DjangoBackend\rides\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\DELL\Documents\DjangoBackend\rides\urls.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\DELL\Documents\DjangoBackend\rides\views.py changed, reloading.
+Watching for file changes with StatReloader
+"GET /api/rides/ HTTP/1.1" 200 3886
+"GET /api/rides/?page=1 HTTP/1.1" 200 3886
+"GET /api/rides/?page=2 HTTP/1.1" 200 3918
+C:\Users\DELL\Documents\DjangoBackend\rides\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\DELL\Documents\DjangoBackend\rides\urls.py changed, reloading.
+Watching for file changes with StatReloader
+"GET /api/rides/performance HTTP/1.1" 301 0
+"GET /api/rides/performance/ HTTP/1.1" 200 88
+C:\Users\DELL\Documents\DjangoBackend\rides\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\DELL\Documents\DjangoBackend\rides\urls.py changed, reloading.
+Watching for file changes with StatReloader
+Watching for file changes with StatReloader

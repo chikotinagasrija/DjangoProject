@@ -8,6 +8,11 @@ from .serializers import DriverProfileSerializer, VehicleSerializer,DriverNested
 from .permissions import IsAdminOrOwnVehicle, IsAdminOrSelfDriver
 from django.shortcuts import get_object_or_404
 from .services.fare_service import calculate_fare
+from django.db.models import Count,Sum,Avg,Min,Max,Q
+from django.utils import timezone
+from django.db import connection, reset_queries
+from django.db import connection
+import time
 
 
 from .services.ride_service import (
@@ -73,14 +78,6 @@ class VehicleDetailAPIView(generics.RetrieveUpdateAPIView):
 class DriverNestedAPIView(generics.RetrieveAPIView):
     queryset = DriverProfile.objects.prefetch_related('vehicles__vehicle_type')
     serializer_class = DriverNestedSerializer
-
-class RideCreateAPIView(generics.CreateAPIView):
-    queryset = Ride.objects.all()
-    serializer_class = RideSerializer
-    permission_classes = [IsAuthenticated]
-
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
 
 class RideDetailAPIView(generics.RetrieveAPIView):
     queryset = Ride.objects.select_related('user', 'driver', 'vehicle', 'ride_type')
@@ -184,11 +181,13 @@ class RideCancelAPIView(APIView):
                 "status": ride.status,
             },
             status=status.HTTP_200_OK
-        )   
+        ) 
 class RideFareAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, pk):
+
+        ride = get_object_or_404(Ride, id=pk)
 
         distance_km = request.data.get("distance_km")
         duration_minutes = request.data.get("duration_minutes")
@@ -208,9 +207,15 @@ class RideFareAPIView(APIView):
             )
         except (ValueError, TypeError):
             return Response(
-                {"error": "Invalid distance or duration."},
+                {
+                    "error": "Invalid distance or duration."
+                },
                 status=status.HTTP_400_BAD_REQUEST
             )
+
+        # Save calculated fare to the Ride
+        ride.fare = fare["total"]
+        ride.save(update_fields=["fare"])
 
         return Response(
             {
@@ -221,4 +226,414 @@ class RideFareAPIView(APIView):
                 "total": fare["total"],
             },
             status=status.HTTP_200_OK
+        )     
+
+class UserActiveRidesAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        rides = Ride.objects.filter(
+            user=request.user,
+            status__in=[
+                "REQUESTED",
+                "ACCEPTED",
+                "DRIVER_ARRIVING",
+                "STARTED",
+            ]
+        ).order_by("-created_at")
+
+        return Response({
+            "count": rides.count(),
+            "rides": RideSerializer(rides, many=True).data
+        })
+class UserCompletedRidesAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        rides = Ride.objects.filter(
+            user=request.user,
+            status="COMPLETED"
+        ).order_by("-created_at")
+
+        return Response({
+            "count": rides.count(),
+            "rides": RideSerializer(rides, many=True).data
+        })
+class UserCancelledRidesAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        rides = Ride.objects.filter(
+            user=request.user,
+            status="CANCELLED"
+        ).order_by("-created_at")
+
+        return Response({
+            "count": rides.count(),
+            "rides": RideSerializer(rides, many=True).data
+        })
+class DriverRideHistoryAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        rides = Ride.objects.filter(
+            driver__user=request.user
+        ).select_related(
+            "user",
+            "driver",
+            "vehicle",
+            "ride_type"
+        ).order_by("-created_at")
+
+        return Response({
+            "count": rides.count(),
+            "rides": RideSerializer(rides, many=True).data
+        })
+class DailyRideCountAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        today = timezone.localdate()
+
+        count = Ride.objects.filter(
+            user=request.user,
+            created_at__date=today
+        ).count()
+
+        return Response({
+            "date": str(today),
+            "daily_ride_count": count
+        })
+class TotalCompletedRidesAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        count = Ride.objects.filter(
+            user=request.user,
+            status="COMPLETED"
+        ).count()
+
+        return Response({
+            "total_completed_rides": count
+        })
+class DriverTotalFareAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        result = Ride.objects.filter(
+            driver__user=request.user,
+            status="COMPLETED"
+        ).aggregate(
+            total_fare=Sum("fare")
         )
+
+        return Response({
+            "total_fare_earned": result["total_fare"] or 0
+        })
+class RideAggregationAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+
+        result = Ride.objects.aggregate(
+            total_rides=Count("id"),
+            completed_rides=Count(
+                "id",
+                filter=Q(status="COMPLETED")
+            ),
+            cancelled_rides=Count(
+                "id",
+                filter=Q(status="CANCELLED")
+            ),
+            average_fare=Avg("fare"),
+            maximum_fare=Max("fare"),
+            minimum_fare=Min("fare"),
+            total_driver_earnings=Sum(
+                "fare",
+                filter=Q(
+                    status="COMPLETED",
+                    driver__isnull=False
+                )
+            )
+        )
+
+        return Response({
+            "total_rides": result["total_rides"],
+            "completed_rides": result["completed_rides"],
+            "cancelled_rides": result["cancelled_rides"],
+            "average_fare": result["average_fare"],
+            "maximum_fare": result["maximum_fare"],
+            "minimum_fare": result["minimum_fare"],
+            "total_driver_earnings": result["total_driver_earnings"] or 0,
+        })
+class SlowRideListAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+
+        # Clear previous query information
+        reset_queries()
+
+        # Deliberately slow QuerySet
+        rides = Ride.objects.all()
+
+        for ride in rides:
+
+            print(
+                ride.user.email,
+                ride.driver,
+                ride.vehicle,
+                ride.ride_type
+            )
+
+        query_count = len(
+            connection.queries
+        )
+
+        print(
+            "Slow API SQL queries:",
+            query_count
+        )
+
+        return Response(
+            {
+                "message": "Slow API executed",
+                "query_count": query_count
+            },
+            status=status.HTTP_200_OK
+        )
+
+class OptimizedRideListAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+
+        # Clear previous query information
+        reset_queries()
+
+        # Optimize ForeignKey relationships
+        rides = Ride.objects.select_related(
+            'user',
+            'driver',
+            'vehicle',
+            'ride_type'
+        )
+
+        for ride in rides:
+
+            print(
+                ride.user.email,
+                ride.driver,
+                ride.vehicle,
+                ride.ride_type
+            )
+
+        query_count = len(
+            connection.queries
+        )
+
+        print(
+            "Optimized API SQL queries:",
+            query_count
+        )
+
+        return Response(
+            {
+                "message": "Optimized API executed",
+                "query_count": query_count
+            },
+            status=status.HTTP_200_OK
+        )
+
+class DriverVehicleListAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+
+        # Clear previous query information
+        reset_queries()
+
+        # Optimize reverse ForeignKey relationship
+        drivers = DriverProfile.objects.prefetch_related(
+            'vehicles'
+        )
+
+        for driver in drivers:
+
+            print(
+                driver.user.email
+            )
+
+            for vehicle in driver.vehicles.all():
+                print(
+                    vehicle.vehicle_number
+                )
+
+        query_count = len(
+            connection.queries
+        )
+
+        print(
+            "Prefetch API SQL queries:",
+            query_count
+        )
+
+        return Response(
+            {
+                "message": "Driver vehicles fetched",
+                "query_count": query_count
+            },
+            status=status.HTTP_200_OK
+        )
+class RideIndexPerformanceAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+
+        query = Ride.objects.filter(
+            user=request.user
+        ).order_by("-created_at")
+
+        execution_plan = query.explain(
+            analyze=False
+        )
+
+        return Response({
+            "query": str(query.query),
+            "execution_plan": execution_plan
+        })
+class AdvancedRideFilterAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+
+        rides = Ride.objects.select_related(
+            "user",
+            "driver",
+            "vehicle",
+            "ride_type"
+        )
+
+        # Date filtering
+        start_date = request.query_params.get("start_date")
+        end_date = request.query_params.get("end_date")
+
+        if start_date:
+            rides = rides.filter(
+                created_at__date__gte=start_date
+            )
+
+        if end_date:
+            rides = rides.filter(
+                created_at__date__lte=end_date
+            )
+
+        # Status filtering
+        status_value = request.query_params.get("status")
+
+        if status_value:
+            rides = rides.filter(
+                status=status_value
+            )
+
+        # Driver filtering
+        driver_id = request.query_params.get("driver_id")
+
+        if driver_id:
+            rides = rides.filter(
+                driver_id=driver_id
+            )
+
+        # Fare range filtering
+        min_fare = request.query_params.get("min_fare")
+        max_fare = request.query_params.get("max_fare")
+
+        if min_fare:
+            rides = rides.filter(
+                fare__gte=min_fare
+            )
+
+        if max_fare:
+            rides = rides.filter(
+                fare__lte=max_fare
+            )
+
+        # Ordering
+        ordering = request.query_params.get(
+            "ordering",
+            "-created_at"
+        )
+
+        allowed_ordering_fields = [
+            "created_at",
+            "-created_at",
+            "fare",
+            "-fare",
+            "status",
+            "-status",
+        ]
+
+        if ordering in allowed_ordering_fields:
+            rides = rides.order_by(ordering)
+        else:
+            rides = rides.order_by("-created_at")
+
+        return Response(
+            {
+                "count": rides.count(),
+                "results": RideSerializer(
+                    rides,
+                    many=True
+                ).data
+            },
+            status=status.HTTP_200_OK
+        )
+class RideListCreateAPIView(generics.ListCreateAPIView):
+    queryset = Ride.objects.select_related(
+        "user",
+        "driver",
+        "vehicle",
+        "ride_type"
+    ).order_by("-created_at")
+
+    serializer_class = RideSerializer
+    permission_classes = [IsAuthenticated]
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+class LargeDatasetPerformanceAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+
+        reset_queries()
+
+        start_time = time.perf_counter()
+
+        rides = Ride.objects.select_related(
+            "user",
+            "driver",
+            "vehicle",
+            "ride_type"
+        ).order_by("-created_at")
+
+        # Force QuerySet evaluation
+        list(rides[:20])
+
+        end_time = time.perf_counter()
+
+        response_time = (
+            end_time - start_time
+        ) * 1000
+
+        query_count = len(connection.queries)
+
+        return Response({
+            "total_rides": Ride.objects.count(),
+            "response_time_ms": round(
+                response_time,
+                2
+            ),
+            "database_queries": query_count,
+            "page_size_tested": 20
+        })
