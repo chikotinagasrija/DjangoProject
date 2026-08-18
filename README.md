@@ -454,4 +454,17 @@ Tested the Ride APIs with a large number of records and verified pagination and 
 Task 8 – Code Review & Optimization
 Reviewed ORM code and reduced duplicate queries, unnecessary database calls, queries inside loops, and repeated calculations. Improved aggregation and relationship queries for better performance.
 
+**Ride Booking Backend – Task Report**(18th aug 2026)
+
+**Tasks 1–8: Driver Location & Nearby Driver Search**
+
+* Task 1: Understood latitude, longitude, coordinates, distance, and radius for location-based driver search.
+* Task 2: Created DriverLocation model to store driver location, last updated time, and availability status.
+* Task 3: Implemented POST /api/drivers/location/ to update the driver’s current location.
+* Task 4: Implemented GET /api/drivers/nearby/ to find drivers within the requested radius.
+* Task 5: Added distance calculation using the Haversine formula and sorted drivers by nearest distance.
+* Task 6: Implemented ONLINE, OFFLINE, and BUSY availability states; only active and online drivers are returned.
+* Task 7: Added validation for missing/invalid coordinates, invalid radius, inactive drivers, and busy drivers.
+* Task 8: Tested nearby-driver search with a large driver dataset and added database indexing on availability status for better performance.
+
 
