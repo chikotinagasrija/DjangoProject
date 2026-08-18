@@ -2,7 +2,7 @@ from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
-from .models import DriverProfile, Vehicle,Ride
+from .models import DriverProfile, Vehicle,Ride,RideStatus, DriverLocation
 from rest_framework.permissions import IsAuthenticated
 from .serializers import DriverProfileSerializer, VehicleSerializer,DriverNestedSerializer,RideSerializer,RideStatusSerializer
 from .permissions import IsAdminOrOwnVehicle, IsAdminOrSelfDriver
@@ -13,6 +13,7 @@ from django.utils import timezone
 from django.db import connection, reset_queries
 from django.db import connection
 import time
+import math
 
 
 from .services.ride_service import (
@@ -637,3 +638,158 @@ class LargeDatasetPerformanceAPIView(APIView):
             "database_queries": query_count,
             "page_size_tested": 20
         })
+class DriverLocationAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        driver = get_object_or_404(
+            DriverProfile,
+            user=request.user
+        )
+
+        latitude = request.data.get("latitude")
+        longitude = request.data.get("longitude")
+
+        if latitude is None or longitude is None:
+            return Response(
+                {
+                    "error": "Latitude and longitude are required."
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        try:
+            latitude = float(latitude)
+            longitude = float(longitude)
+        except (ValueError, TypeError):
+             return Response(
+        {"error": "Latitude and longitude must be valid numbers."},
+        status=status.HTTP_400_BAD_REQUEST
+    )
+
+        if not -90 <= latitude <= 90:
+            return Response(
+        {"error": "Latitude must be between -90 and 90."},
+        status=status.HTTP_400_BAD_REQUEST
+    )
+
+        if not -180 <= longitude <= 180:
+            return Response(
+        {"error": "Longitude must be between -180 and 180."},
+        status=status.HTTP_400_BAD_REQUEST
+    )
+
+        location, created = DriverLocation.objects.update_or_create(
+            driver=driver,
+            defaults={
+                "latitude": latitude,
+                "longitude": longitude,
+                "availability_status": DriverLocation.AvailabilityStatus.ONLINE
+            }
+        )
+
+        return Response(
+            {
+                "message": "Driver location updated successfully.",
+                "latitude": location.latitude,
+                "longitude": location.longitude,
+                "availability_status": location.availability_status,
+                "last_updated": location.last_updated
+            },
+            status=status.HTTP_201_CREATED if created else status.HTTP_200_OK
+        )
+
+class NearbyDriverAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        latitude = request.query_params.get("latitude")
+        longitude = request.query_params.get("longitude")
+        radius = request.query_params.get("radius")
+
+        if latitude is None or longitude is None or radius is None:
+            return Response(
+                {
+                    "error": "latitude, longitude and radius are required."
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        try:
+            latitude = float(latitude)
+            longitude = float(longitude)
+            radius = float(radius)
+        except (ValueError, TypeError):
+            return Response(
+                {
+                    "error": "latitude, longitude and radius must be valid numbers."
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        if radius <= 0:
+            return Response(
+                {
+                    "error": "radius must be greater than 0."
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        drivers = []
+
+        locations = DriverLocation.objects.filter(
+            availability_status=DriverLocation.AvailabilityStatus.ONLINE,
+            driver__is_active=True
+        ).select_related("driver", "driver__user")
+
+
+        for location in locations:
+
+            distance = self.calculate_distance(
+                latitude,
+                longitude,
+                float(location.latitude),
+                float(location.longitude)
+            )
+
+            if distance <= radius:
+                drivers.append({
+                    "driver_id": str(location.driver.id),
+                    "latitude": float(location.latitude),
+                    "longitude": float(location.longitude),
+                    "distance_km": round(distance, 2),
+                    "availability_status": location.availability_status
+                })
+
+        drivers.sort(key=lambda driver: driver["distance_km"])
+
+        return Response(
+            {
+                "count": len(drivers),
+                "drivers": drivers
+            },
+            status=status.HTTP_200_OK
+        )
+
+    @staticmethod
+    def calculate_distance(lat1, lon1, lat2, lon2):
+        earth_radius = 6371
+
+        lat1 = math.radians(lat1)
+        lat2 = math.radians(lat2)
+
+        delta_lat = math.radians(lat2 - lat1)
+        delta_lon = math.radians(lon2 - lon1)
+
+        a = (
+            math.sin(delta_lat / 2) ** 2
+            + math.cos(lat1)
+            * math.cos(lat2)
+            * math.sin(delta_lon / 2) ** 2
+        )
+
+        c = 2 * math.atan2(
+            math.sqrt(a),
+            math.sqrt(1 - a)
+        )
+
+        return earth_radius * c

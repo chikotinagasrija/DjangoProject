@@ -30,6 +30,46 @@ class DriverProfile(models.Model):
 
     def __str__(self):
         return str(self.user)
+
+class DriverLocation(models.Model):
+
+    class AvailabilityStatus(models.TextChoices):
+        ONLINE = "ONLINE", "Online"
+        OFFLINE = "OFFLINE", "Offline"
+        BUSY = "BUSY", "Busy"
+
+    driver = models.OneToOneField(
+        DriverProfile,
+        on_delete=models.CASCADE,
+        related_name="location"
+    )
+
+    latitude = models.DecimalField(
+        max_digits=9,
+        decimal_places=6
+    )
+
+    longitude = models.DecimalField(
+        max_digits=9,
+        decimal_places=6
+    )
+
+    last_updated = models.DateTimeField(auto_now=True)
+
+    availability_status = models.CharField(
+        max_length=10,
+        choices=AvailabilityStatus.choices,
+        default=AvailabilityStatus.OFFLINE
+    )
+    class Meta:
+       indexes = [
+        models.Index(
+            fields=["availability_status"]
+        ),
+    ]
+
+    def __str__(self):
+        return f"{self.driver} - {self.availability_status}"
     
 class Vehicle(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)

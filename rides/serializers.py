@@ -2,6 +2,7 @@ from rest_framework import serializers
 from .models import DriverProfile
 from .models import Vehicle, VehicleType
 from .models import Ride, RideStatus
+from .models import DriverLocation
 
 
 class DriverProfileSerializer(serializers.ModelSerializer):
@@ -147,3 +148,7 @@ class RideStatusSerializer(serializers.Serializer):
     status = serializers.ChoiceField(
         choices=RideStatus.choices
     )
+class DriverLocationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DriverLocation
+        fields = ['latitude', 'longitude']

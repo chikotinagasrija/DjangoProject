@@ -860,3 +860,51 @@ Watching for file changes with StatReloader
 C:\Users\DELL\Documents\DjangoBackend\rides\urls.py changed, reloading.
 Watching for file changes with StatReloader
 Watching for file changes with StatReloader
+Watching for file changes with StatReloader
+Watching for file changes with StatReloader
+"POST /api/login/ HTTP/1.1" 200 611
+"POST /api/drivers/location/ HTTP/1.1" 201 154
+C:\Users\DELL\Documents\DjangoBackend\rides\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\DELL\Documents\DjangoBackend\rides\urls.py changed, reloading.
+Watching for file changes with StatReloader
+"GET /api/drivers/nearby/?latitude=17.3850&longitude=78.4867&radius=5 HTTP/1.1" 200 152
+"GET /api/drivers/nearby/?latitude=17.3850&longitude=78.4867&radius=5 HTTP/1.1" 200 152
+C:\Users\DELL\Documents\DjangoBackend\rides\models.py changed, reloading.
+Watching for file changes with StatReloader
+Watching for file changes with StatReloader
+Unauthorized: /api/drivers/location/
+"POST /api/drivers/location/ HTTP/1.1" 401 172
+Unauthorized: /api/drivers/location/
+"POST /api/drivers/location/ HTTP/1.1" 401 172
+"POST /api/login/ HTTP/1.1" 200 611
+"POST /api/drivers/location/ HTTP/1.1" 200 154
+Method Not Allowed: /api/drivers/nearby/
+"POST /api/drivers/nearby/?latitude=17.3850&longitude=78.4867&radius=5 HTTP/1.1" 405 41
+"GET /api/drivers/nearby/?latitude=17.3850&longitude=78.4867&radius=5 HTTP/1.1" 200 24
+C:\Users\DELL\Documents\DjangoBackend\rides\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\DELL\Documents\DjangoBackend\rides\views.py changed, reloading.
+Watching for file changes with StatReloader
+"GET /api/drivers/nearby/?latitude=17.3850&longitude=78.4867&radius=5 HTTP/1.1" 200 24
+C:\Users\DELL\Documents\DjangoBackend\rides\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\DELL\Documents\DjangoBackend\rides\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\DELL\Documents\DjangoBackend\rides\views.py changed, reloading.
+Watching for file changes with StatReloader
+"POST /api/login/ HTTP/1.1" 200 611
+Bad Request: /api/drivers/location/
+"POST /api/drivers/location/ HTTP/1.1" 400 48
+Bad Request: /api/drivers/location/
+"POST /api/drivers/location/ HTTP/1.1" 400 48
+Bad Request: /api/drivers/location/
+"POST /api/drivers/location/ HTTP/1.1" 400 83
+"GET /api/drivers/nearby/?latitude=17.3850&longitude=78.4867&radius=5 HTTP/1.1" 200 24
+C:\Users\DELL\Documents\DjangoBackend\rides\models.py changed, reloading.
+Watching for file changes with StatReloader
+Watching for file changes with StatReloader
+Unauthorized: /api/drivers/nearby/
+"GET /api/drivers/nearby/?latitude=17.3850&longitude=78.4867&radius=5 HTTP/1.1" 401 172
+"POST /api/login/ HTTP/1.1" 200 611
+"GET /api/drivers/nearby/?latitude=17.3850&longitude=78.4867&radius=5 HTTP/1.1" 200 24

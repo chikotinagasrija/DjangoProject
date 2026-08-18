@@ -25,6 +25,8 @@ from .views import (
     DriverVehicleListAPIView,
     AdvancedRideFilterAPIView,
     RideListCreateAPIView,
+    DriverLocationAPIView,
+    NearbyDriverAPIView,
 )
 
 urlpatterns = [
@@ -139,6 +141,11 @@ urlpatterns = [
     LargeDatasetPerformanceAPIView.as_view(),
     name="large-dataset-performance"
 ),
+    path(
+    'drivers/nearby/',
+    NearbyDriverAPIView.as_view(),
+    name='nearby-drivers'
+),
 
     
     path("<uuid:pk>/", RideDetailAPIView.as_view(), name="ride-detail"),
@@ -147,4 +154,5 @@ urlpatterns = [
     path("<uuid:pk>/cancel/", RideCancelAPIView.as_view(), name="ride-cancel"),
     path("<uuid:pk>/fare/", RideFareAPIView.as_view(), name="ride-fare"),
     path("<uuid:pk>/", RideDetailAPIView.as_view(), name="ride-detail"),
+    path("drivers/location/", DriverLocationAPIView.as_view(), name="driver-location"),
 ]
