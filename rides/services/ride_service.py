@@ -5,6 +5,7 @@ from rides.models import (
     RideStatus,
     ALLOWED_RIDE_TRANSITIONS,
 )
+from rides.services.websocket_service import broadcast_ride_status
 
 
 def update_ride_status(ride, new_status):
@@ -22,9 +23,16 @@ def update_ride_status(ride, new_status):
         )
 
     ride.status = new_status
-    ride.save()
+    ride.save(update_fields=["status"])
+
+    # Broadcast the new status to connected clients
+    broadcast_ride_status(
+        ride.id,
+        new_status
+    )
 
     return ride
+
 
 @transaction.atomic
 def accept_ride(ride, driver):
@@ -36,9 +44,6 @@ def accept_ride(ride, driver):
 
     if ride.status != RideStatus.REQUESTED:
         raise ValueError("Ride is no longer available.")
-
-
-    
 
     active_statuses = [
         RideStatus.ACCEPTED,
@@ -56,7 +61,13 @@ def accept_ride(ride, driver):
 
     ride.driver = driver
     ride.status = RideStatus.ACCEPTED
-    ride.save()
+    ride.save(update_fields=["driver", "status"])
+
+    # Broadcast ACCEPTED status
+    broadcast_ride_status(
+        ride.id,
+        RideStatus.ACCEPTED
+    )
 
     return ride
 
@@ -74,13 +85,30 @@ def cancel_ride(ride):
         )
 
     ride.status = RideStatus.CANCELLED
-    ride.save()
+    ride.save(update_fields=["status"])
+
+    # Broadcast CANCELLED status
+    broadcast_ride_status(
+        ride.id,
+        RideStatus.CANCELLED
+    )
 
     return ride
+
+
 @transaction.atomic
 def complete_ride(ride, fare):
     ride.fare = fare
     ride.status = RideStatus.COMPLETED
-    ride.save()
+
+    ride.save(
+        update_fields=["fare", "status"]
+    )
+
+    # Broadcast COMPLETED status
+    broadcast_ride_status(
+        ride.id,
+        RideStatus.COMPLETED
+    )
 
     return ride

@@ -908,3 +908,254 @@ Unauthorized: /api/drivers/nearby/
 "GET /api/drivers/nearby/?latitude=17.3850&longitude=78.4867&radius=5 HTTP/1.1" 401 172
 "POST /api/login/ HTTP/1.1" 200 611
 "GET /api/drivers/nearby/?latitude=17.3850&longitude=78.4867&radius=5 HTTP/1.1" 200 24
+Watching for file changes with StatReloader
+Watching for file changes with StatReloader
+Not Found: /ws/rides/1/
+"GET /ws/rides/1/ HTTP/1.1" 404 3171
+Not Found: /ws/rides/1/
+"GET /ws/rides/1/ HTTP/1.1" 404 3171
+Watching for file changes with StatReloader
+C:\Users\DELL\Documents\DjangoBackend\config\settings.py changed, reloading.
+Watching for file changes with StatReloader
+Watching for file changes with StatReloader
+WebSocket HANDSHAKING /ws/rides/1/ [127.0.0.1:50477]
+WebSocket CONNECT /ws/rides/1/ [127.0.0.1:50477]
+C:\Users\DELL\Documents\DjangoBackend\config\settings.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\DELL\Documents\DjangoBackend\rides\consumers.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\DELL\Documents\DjangoBackend\rides\services\ride_service.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\DELL\Documents\DjangoBackend\rides\services\ride_service.py changed, reloading.
+Watching for file changes with StatReloader
+[mHTTP POST /api/login/ 200 [2.58, 127.0.0.1:50788][0m
+Not Found: /api/rides/1/accept/
+[33mHTTP POST /api/rides/1/accept/ 404 [0.03, 127.0.0.1:50792][0m
+WebSocket HANDSHAKING /ws/rides/1/ [127.0.0.1:50910]
+WebSocket CONNECT /ws/rides/1/ [127.0.0.1:50910]
+Not Found: /api/rides/1/status/
+[33mHTTP POST /api/rides/1/status/ 404 [0.03, 127.0.0.1:50914][0m
+[mHTTP POST /api/login/ 200 [1.74, 127.0.0.1:50914][0m
+Not Found: /api/rides/1/status/
+[33mHTTP POST /api/rides/1/status/ 404 [0.02, 127.0.0.1:50914][0m
+[32mHTTP GET /api/rides 301 [0.01, 127.0.0.1:50923][0m
+[mHTTP GET /api/rides/ 200 [0.25, 127.0.0.1:50923][0m
+C:\Users\DELL\Documents\DjangoBackend\rides\routing.py changed, reloading.
+Watching for file changes with StatReloader
+WebSocket HANDSHAKING /ws/rides/7f1f693c-76be-449c-a565-5c08eec8b109/ [127.0.0.1:50948]
+WebSocket CONNECT /ws/rides/7f1f693c-76be-449c-a565-5c08eec8b109/ [127.0.0.1:50948]
+Method Not Allowed: /api/rides/7f1f693c-76be-449c-a565-5c08eec8b109/status/
+[31;1mHTTP GET /api/rides/7f1f693c-76be-449c-a565-5c08eec8b109/status/ 405 [0.11, 127.0.0.1:50949][0m
+Method Not Allowed: /api/rides/7f1f693c-76be-449c-a565-5c08eec8b109/status/
+[31;1mHTTP POST /api/rides/7f1f693c-76be-449c-a565-5c08eec8b109/status/ 405 [0.09, 127.0.0.1:50949][0m
+[mHTTP PATCH /api/rides/7f1f693c-76be-449c-a565-5c08eec8b109/status/ 200 [0.20, 127.0.0.1:50949][0m
+WebSocket DISCONNECT /ws/rides/7f1f693c-76be-449c-a565-5c08eec8b109/ [127.0.0.1:50948]
+WebSocket HANDSHAKING /ws/rides/7f1f693c-76be-449c-a565-5c08eec8b109/ [127.0.0.1:50978]
+WebSocket CONNECT /ws/rides/7f1f693c-76be-449c-a565-5c08eec8b109/ [127.0.0.1:50978]
+Method Not Allowed: /api/rides/7f1f693c-76be-449c-a565-5c08eec8b109/status/
+[31;1mHTTP GET /api/rides/7f1f693c-76be-449c-a565-5c08eec8b109/status/ 405 [0.07, 127.0.0.1:50981][0m
+Watching for file changes with StatReloader
+Watching for file changes with StatReloader
+[mHTTP GET /api/rides/ 200 [0.18, 127.0.0.1:51047][0m
+WebSocket HANDSHAKING /ws/rides/758c4ef5-a78d-4ade-b86d-1b1b588ada2e/ [127.0.0.1:51052]
+WebSocket CONNECT /ws/rides/758c4ef5-a78d-4ade-b86d-1b1b588ada2e/ [127.0.0.1:51052]
+[mHTTP POST /api/login/ 200 [1.88, 127.0.0.1:51053][0m
+Method Not Allowed: /api/rides/758c4ef5-a78d-4ade-b86d-1b1b588ada2e/
+[31;1mHTTP POST /api/rides/758c4ef5-a78d-4ade-b86d-1b1b588ada2e/ 405 [0.10, 127.0.0.1:51053][0m
+Bad Request: /api/rides/758c4ef5-a78d-4ade-b86d-1b1b588ada2e/accept/
+[31;1mHTTP POST /api/rides/758c4ef5-a78d-4ade-b86d-1b1b588ada2e/accept/ 400 [0.11, 127.0.0.1:51053][0m
+Bad Request: /api/rides/
+[31;1mHTTP POST /api/rides/ 400 [0.08, 127.0.0.1:51062][0m
+Bad Request: /api/rides/
+[31;1mHTTP POST /api/rides/ 400 [0.09, 127.0.0.1:51079][0m
+[mHTTP GET /admin/ 200 [0.46, 127.0.0.1:51124][0m
+[mHTTP GET /static/admin/css/base.css 200 [0.43, 127.0.0.1:51124][0m
+[mHTTP GET /static/admin/css/dark_mode.css 200 [0.50, 127.0.0.1:51126][0m
+[mHTTP GET /static/admin/js/theme.js 200 [0.57, 127.0.0.1:51130][0m
+[mHTTP GET /static/admin/css/nav_sidebar.css 200 [0.60, 127.0.0.1:51127][0m
+[mHTTP GET /static/admin/js/nav_sidebar.js 200 [0.07, 127.0.0.1:51130][0m
+[mHTTP GET /static/admin/css/responsive.css 200 [0.67, 127.0.0.1:51129][0m
+[mHTTP GET /static/admin/css/dashboard.css 200 [0.73, 127.0.0.1:51128][0m
+[mHTTP GET /static/admin/img/icon-changelink.svg 200 [0.03, 127.0.0.1:51129][0m
+[mHTTP GET /static/admin/img/icon-addlink.svg 200 [0.03, 127.0.0.1:51128][0m
+Not Found: /favicon.ico
+[33mHTTP GET /favicon.ico 404 [0.02, 127.0.0.1:51128][0m
+[mHTTP GET /admin/rides/vehicletype/ 200 [0.39, 127.0.0.1:51128][0m
+[mHTTP GET /static/admin/css/changelists.css 200 [0.05, 127.0.0.1:51128][0m
+[mHTTP GET /static/admin/js/jquery.init.js 200 [0.11, 127.0.0.1:51127][0m
+[mHTTP GET /static/admin/js/core.js 200 [0.11, 127.0.0.1:51126][0m
+[mHTTP GET /static/admin/js/admin/RelatedObjectLookups.js 200 [0.11, 127.0.0.1:51124][0m
+[mHTTP GET /static/admin/js/actions.js 200 [0.10, 127.0.0.1:51128][0m
+[mHTTP GET /static/admin/js/vendor/jquery/jquery.js 200 [0.21, 127.0.0.1:51130][0m
+[mHTTP GET /static/admin/js/urlify.js 200 [0.10, 127.0.0.1:51127][0m
+[mHTTP GET /static/admin/js/prepopulate.js 200 [0.11, 127.0.0.1:51126][0m
+[mHTTP GET /admin/jsi18n/ 200 [0.30, 127.0.0.1:51129][0m
+[mHTTP GET /static/admin/img/search.svg 200 [0.06, 127.0.0.1:51128][0m
+[mHTTP GET /static/admin/js/filters.js 200 [0.04, 127.0.0.1:51128][0m
+[mHTTP GET /static/admin/js/vendor/xregexp/xregexp.js 200 [0.29, 127.0.0.1:51124][0m
+[mHTTP GET /static/admin/img/tooltag-add.svg 200 [0.02, 127.0.0.1:51124][0m
+[mHTTP GET /static/admin/img/sorting-icons.svg 200 [0.03, 127.0.0.1:51128][0m
+[mHTTP GET /admin/rides/vehicletype/09e2a818-0420-4e96-845b-ec771f975561/change/ 200 [0.33, 127.0.0.1:51134][0m
+[mHTTP GET /static/admin/css/forms.css 200 [0.04, 127.0.0.1:51134][0m
+[mHTTP GET /static/admin/js/prepopulate_init.js 200 [0.07, 127.0.0.1:51135][0m
+[mHTTP GET /static/admin/css/widgets.css 200 [0.02, 127.0.0.1:51134][0m
+[mHTTP GET /static/admin/js/change_form.js 200 [0.04, 127.0.0.1:51134][0m
+[mHTTP GET /admin/jsi18n/ 200 [0.13, 127.0.0.1:51137][0m
+[32mHTTP POST /admin/rides/vehicletype/09e2a818-0420-4e96-845b-ec771f975561/change/ 302 [0.09, 127.0.0.1:51137][0m
+[mHTTP GET /admin/rides/vehicletype/ 200 [0.20, 127.0.0.1:51137][0m
+[mHTTP GET /admin/jsi18n/ 200 [0.09, 127.0.0.1:51137][0m
+[mHTTP GET /static/admin/img/icon-yes.svg 200 [0.04, 127.0.0.1:51137][0m
+Bad Request: /api/rides/
+[31;1mHTTP POST /api/rides/ 400 [0.17, 127.0.0.1:51147][0m
+[mHTTP POST /api/rides/ 201 [0.22, 127.0.0.1:51147][0m
+WebSocket DISCONNECT /ws/rides/758c4ef5-a78d-4ade-b86d-1b1b588ada2e/ [127.0.0.1:51052]
+WebSocket HANDSHAKING /ws/rides/b69dae8e-70bc-44f4-8547-253eef612b97/ [127.0.0.1:51166]
+WebSocket CONNECT /ws/rides/b69dae8e-70bc-44f4-8547-253eef612b97/ [127.0.0.1:51166]
+Internal Server Error: /api/rides/b69dae8e-70bc-44f4-8547-253eef612b97/accept
+Traceback (most recent call last):
+  File "C:\Users\DELL\Documents\DjangoBackend\venv\Lib\site-packages\asgiref\sync.py", line 577, in thread_handler
+    raise exc_info[1]
+  File "C:\Users\DELL\Documents\DjangoBackend\venv\Lib\site-packages\django\core\handlers\exception.py", line 42, in inner
+    response = await get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\DELL\Documents\DjangoBackend\venv\Lib\site-packages\django\utils\deprecation.py", line 327, in __acall__
+    response = await sync_to_async(
+               ^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+    )(request, response)
+    ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\DELL\Documents\DjangoBackend\venv\Lib\site-packages\asgiref\sync.py", line 526, in __call__
+    ret = await asyncio.shield(exec_coro)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.13_3.13.3824.0_x64__qbz5n2kfra8p0\Lib\concurrent\futures\thread.py", line 59, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "C:\Users\DELL\Documents\DjangoBackend\venv\Lib\site-packages\asgiref\sync.py", line 581, in thread_handler
+    return func(*args, **kwargs)
+  File "C:\Users\DELL\Documents\DjangoBackend\venv\Lib\site-packages\asgiref\sync.py", line 508, in func
+    return context.run(run_child)
+           ~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\Users\DELL\Documents\DjangoBackend\venv\Lib\site-packages\asgiref\sync.py", line 506, in run_child
+    return child()
+  File "C:\Users\DELL\Documents\DjangoBackend\venv\Lib\site-packages\django\middleware\common.py", line 109, in process_response
+    self.get_full_path_with_slash(request)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\DELL\Documents\DjangoBackend\venv\Lib\site-packages\django\middleware\common.py", line 87, in get_full_path_with_slash
+    raise RuntimeError(
+    ...<9 lines>...
+    )
+RuntimeError: You called this URL via POST, but the URL doesn't end in a slash and you have APPEND_SLASH set. Django can't redirect to the slash URL while maintaining POST data. Change your form to point to 127.0.0.1:8000/api/rides/b69dae8e-70bc-44f4-8547-253eef612b97/accept/ (note the trailing slash), or set APPEND_SLASH=False in your Django settings.
+[35;1mHTTP POST /api/rides/b69dae8e-70bc-44f4-8547-253eef612b97/accept 500 [0.21, 127.0.0.1:51183][0m
+Bad Request: /api/rides/b69dae8e-70bc-44f4-8547-253eef612b97/accept/
+[31;1mHTTP POST /api/rides/b69dae8e-70bc-44f4-8547-253eef612b97/accept/ 400 [0.10, 127.0.0.1:51183][0m
+[mHTTP POST /api/rides/b69dae8e-70bc-44f4-8547-253eef612b97/cancel/ 200 [0.28, 127.0.0.1:51194][0m
+WebSocket DISCONNECT /ws/rides/b69dae8e-70bc-44f4-8547-253eef612b97/ [127.0.0.1:51166]
+[mHTTP GET /api/rides/ 200 [0.32, 127.0.0.1:51200][0m
+[mHTTP POST /api/rides/ 201 [0.23, 127.0.0.1:51223][0m
+WebSocket HANDSHAKING /ws/rides/ddc134d5-c680-4107-814e-c01d8d3b7716/ [127.0.0.1:51229]
+WebSocket CONNECT /ws/rides/ddc134d5-c680-4107-814e-c01d8d3b7716/ [127.0.0.1:51229]
+Unauthorized: /api/rides/ddc134d5-c680-4107-814e-c01d8d3b7716/accept/
+[31;1mHTTP POST /api/rides/ddc134d5-c680-4107-814e-c01d8d3b7716/accept/ 401 [0.01, 127.0.0.1:51233][0m
+[mHTTP POST /api/login/ 200 [1.73, 127.0.0.1:51233][0m
+Bad Request: /api/rides/ddc134d5-c680-4107-814e-c01d8d3b7716/accept/
+[31;1mHTTP POST /api/rides/ddc134d5-c680-4107-814e-c01d8d3b7716/accept/ 400 [0.10, 127.0.0.1:51238][0m
+Method Not Allowed: /api/rides/ddc134d5-c680-4107-814e-c01d8d3b7716/accept/
+[31;1mHTTP PATCH /api/rides/ddc134d5-c680-4107-814e-c01d8d3b7716/accept/ 405 [0.12, 127.0.0.1:51238][0m
+[mHTTP GET /api/rides/driver/history/ 200 [1.18, 127.0.0.1:51269][0m
+WebSocket DISCONNECT /ws/rides/ddc134d5-c680-4107-814e-c01d8d3b7716/ [127.0.0.1:51229]
+WebSocket HANDSHAKING /ws/rides/3798a977-1e5f-4f83-bd0d-3d863cc59caf/ [127.0.0.1:51281]
+WebSocket CONNECT /ws/rides/3798a977-1e5f-4f83-bd0d-3d863cc59caf/ [127.0.0.1:51281]
+[mHTTP POST /api/login/ 200 [1.76, 127.0.0.1:51286][0m
+Bad Request: /api/rides/3798a977-1e5f-4f83-bd0d-3d863cc59caf/accept/
+[31;1mHTTP POST /api/rides/3798a977-1e5f-4f83-bd0d-3d863cc59caf/accept/ 400 [0.10, 127.0.0.1:51286][0m
+Watching for file changes with StatReloader
+[mHTTP POST /api/rides/3798a977-1e5f-4f83-bd0d-3d863cc59caf/accept/ 200 [0.19, 127.0.0.1:51352][0m
+C:\Users\DELL\Documents\DjangoBackend\rides\routing.py changed, reloading.
+Watching for file changes with StatReloader
+WebSocket HANDSHAKING /ws/rides/3798a977-1e5f-4f83-bd0d-3d863cc59caf/ [127.0.0.1:51363]
+WebSocket CONNECT /ws/rides/3798a977-1e5f-4f83-bd0d-3d863cc59caf/ [127.0.0.1:51363]
+Bad Request: /api/rides/3798a977-1e5f-4f83-bd0d-3d863cc59caf/accept/
+[31;1mHTTP POST /api/rides/3798a977-1e5f-4f83-bd0d-3d863cc59caf/accept/ 400 [0.16, 127.0.0.1:51369][0m
+Watching for file changes with StatReloader
+Unauthorized: /api/rides/3798a977-1e5f-4f83-bd0d-3d863cc59caf/status/
+[31;1mHTTP PATCH /api/rides/3798a977-1e5f-4f83-bd0d-3d863cc59caf/status/ 401 [0.75, 127.0.0.1:50112][0m
+[mHTTP POST /api/login/ 200 [2.55, 127.0.0.1:50112][0m
+[mHTTP PATCH /api/rides/3798a977-1e5f-4f83-bd0d-3d863cc59caf/status/ 200 [0.22, 127.0.0.1:50112][0m
+WebSocket HANDSHAKING /ws/rides/3798a977-1e5f-4f83-bd0d-3d863cc59caf/ [127.0.0.1:50127]
+WebSocket CONNECT /ws/rides/3798a977-1e5f-4f83-bd0d-3d863cc59caf/ [127.0.0.1:50127]
+Watching for file changes with StatReloader
+WebSocket HANDSHAKING /ws/rides/3798a977-1e5f-4f83-bd0d-3d863cc59caf/ [127.0.0.1:50182]
+WebSocket CONNECT /ws/rides/3798a977-1e5f-4f83-bd0d-3d863cc59caf/ [127.0.0.1:50182]
+C:\Users\DELL\Documents\DjangoBackend\rides\services\websocket_service.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\DELL\Documents\DjangoBackend\rides\consumers.py changed, reloading.
+Watching for file changes with StatReloader
+WebSocket HANDSHAKING /ws/rides/3798a977-1e5f-4f83-bd0d-3d863cc59caf/ [127.0.0.1:50325]
+WebSocket CONNECT /ws/rides/3798a977-1e5f-4f83-bd0d-3d863cc59caf/ [127.0.0.1:50325]
+Bad Request: /api/rides/3798a977-1e5f-4f83-bd0d-3d863cc59caf/status/
+[31;1mHTTP PATCH /api/rides/3798a977-1e5f-4f83-bd0d-3d863cc59caf/status/ 400 [0.63, 127.0.0.1:50336][0m
+Bad Request: /api/rides/3798a977-1e5f-4f83-bd0d-3d863cc59caf/status/
+[31;1mHTTP PATCH /api/rides/3798a977-1e5f-4f83-bd0d-3d863cc59caf/status/ 400 [0.09, 127.0.0.1:50336][0m
+Bad Request: /api/rides/3798a977-1e5f-4f83-bd0d-3d863cc59caf/status/
+[31;1mHTTP PATCH /api/rides/3798a977-1e5f-4f83-bd0d-3d863cc59caf/status/ 400 [0.30, 127.0.0.1:50350][0m
+[mHTTP PATCH /api/rides/3798a977-1e5f-4f83-bd0d-3d863cc59caf/status/ 200 [0.22, 127.0.0.1:50350][0m
+Watching for file changes with StatReloader
+WebSocket HANDSHAKING /ws/rides/3798a977-1e5f-4f83-bd0d-3d863cc59caf/ [127.0.0.1:50635]
+WebSocket DISCONNECT /ws/rides/3798a977-1e5f-4f83-bd0d-3d863cc59caf/ [127.0.0.1:50635]
+WebSocket HANDSHAKING /ws/rides/3798a977-1e5f-4f83-bd0d-3d863cc59caf/ [127.0.0.1:50639]
+WebSocket DISCONNECT /ws/rides/3798a977-1e5f-4f83-bd0d-3d863cc59caf/ [127.0.0.1:50639]
+C:\Users\DELL\Documents\DjangoBackend\rides\consumers.py changed, reloading.
+Watching for file changes with StatReloader
+WebSocket HANDSHAKING /ws/rides/3798a977-1e5f-4f83-bd0d-3d863cc59caf/ [127.0.0.1:50660]
+WebSocket CONNECT /ws/rides/3798a977-1e5f-4f83-bd0d-3d863cc59caf/ [127.0.0.1:50660]
+[mHTTP POST /api/login/ 200 [2.22, 127.0.0.1:50664][0m
+Method Not Allowed: /api/drivers/location/
+[31;1mHTTP PATCH /api/drivers/location/ 405 [0.10, 127.0.0.1:50664][0m
+C:\Users\DELL\Documents\DjangoBackend\rides\urls.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\DELL\Documents\DjangoBackend\rides\services\websocket_service.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\DELL\Documents\DjangoBackend\rides\consumers.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\DELL\Documents\DjangoBackend\rides\views.py changed, reloading.
+Watching for file changes with StatReloader
+Not Found: /api/drivers/location/
+[33mHTTP PATCH /api/drivers/location/ 404 [0.16, 127.0.0.1:50721][0m
+C:\Users\DELL\Documents\DjangoBackend\rides\urls.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\DELL\Documents\DjangoBackend\rides\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\DELL\Documents\DjangoBackend\rides\views.py changed, reloading.
+Watching for file changes with StatReloader
+Not Found: /api/drivers/location/
+[33mHTTP PATCH /api/drivers/location/ 404 [0.03, 127.0.0.1:50772][0m
+C:\Users\DELL\Documents\DjangoBackend\rides\views.py changed, reloading.
+Watching for file changes with StatReloader
+Not Found: /api/drivers/location/
+[33mHTTP PATCH /api/drivers/location/ 404 [0.06, 127.0.0.1:50785][0m
+Watching for file changes with StatReloader
+Not Found: /api/drivers/location/
+[33mHTTP PATCH /api/drivers/location/ 404 [0.04, 127.0.0.1:50912][0m
+Watching for file changes with StatReloader
+Not Found: /api/drivers/location/
+[33mHTTP PATCH /api/drivers/location/ 404 [0.05, 127.0.0.1:51271][0m
+WebSocket HANDSHAKING /ws/rides/3798a977-1e5f-4f83-bd0d-3d863cc59caf/ [127.0.0.1:51358]
+WebSocket CONNECT /ws/rides/3798a977-1e5f-4f83-bd0d-3d863cc59caf/ [127.0.0.1:51358]
+[mHTTP POST /api/login/ 200 [2.89, 127.0.0.1:51363][0m
+[mHTTP PATCH /api/drivers/location/update/ 200 [0.25, 127.0.0.1:51363][0m
+C:\Users\DELL\Documents\DjangoBackend\config\asgi.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\DELL\Documents\DjangoBackend\rides\consumers.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\DELL\Documents\DjangoBackend\rides\consumers.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\DELL\Documents\DjangoBackend\rides\consumers.py changed, reloading.
+Watching for file changes with StatReloader
+Watching for file changes with StatReloader
+WebSocket HANDSHAKING /ws/rides/3798a977-1e5f-4f83-bd0d-3d863cc59caf/ [127.0.0.1:51577]
+WebSocket REJECT /ws/rides/3798a977-1e5f-4f83-bd0d-3d863cc59caf/ [127.0.0.1:51577]
+WebSocket DISCONNECT /ws/rides/3798a977-1e5f-4f83-bd0d-3d863cc59caf/ [127.0.0.1:51577]
+[mHTTP POST /api/login/ 200 [2.82, 127.0.0.1:51588][0m
+WebSocket HANDSHAKING /ws/rides/3798a977-1e5f-4f83-bd0d-3d863cc59caf/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzg3MTY5NzAxLCJpYXQiOjE3ODcxNjc5MDEsImp0aSI6Ijg3ZWIzZWRmOGNlNzQ2YjZiZDhlMzRhYmE5NTJlNWQ0IiwidXNlcl9pZCI6IjM2MzQ4NmYzLTM2OTgtNDJlYi04ZTI3LWU5ZDEyNmZhY2M4NSJ9.Ntx20FO80rDCD86Tj8w8OWcsn6k6lvXlzoHdwwkY8QA [127.0.0.1:51592]
+WebSocket DISCONNECT /ws/rides/3798a977-1e5f-4f83-bd0d-3d863cc59caf/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzg3MTY5NzAxLCJpYXQiOjE3ODcxNjc5MDEsImp0aSI6Ijg3ZWIzZWRmOGNlNzQ2YjZiZDhlMzRhYmE5NTJlNWQ0IiwidXNlcl9pZCI6IjM2MzQ4NmYzLTM2OTgtNDJlYi04ZTI3LWU5ZDEyNmZhY2M4NSJ9.Ntx20FO80rDCD86Tj8w8OWcsn6k6lvXlzoHdwwkY8QA [127.0.0.1:51592]
+C:\Users\DELL\Documents\DjangoBackend\rides\consumers.py changed, reloading.
+Watching for file changes with StatReloader

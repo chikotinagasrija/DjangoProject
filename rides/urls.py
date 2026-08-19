@@ -27,6 +27,7 @@ from .views import (
     RideListCreateAPIView,
     DriverLocationAPIView,
     NearbyDriverAPIView,
+    DriverLocationUpdateAPIView
 )
 
 urlpatterns = [
@@ -154,5 +155,6 @@ urlpatterns = [
     path("<uuid:pk>/cancel/", RideCancelAPIView.as_view(), name="ride-cancel"),
     path("<uuid:pk>/fare/", RideFareAPIView.as_view(), name="ride-fare"),
     path("<uuid:pk>/", RideDetailAPIView.as_view(), name="ride-detail"),
-    path("drivers/location/", DriverLocationAPIView.as_view(), name="driver-location"),
+    path("drivers/location/update/", DriverLocationUpdateAPIView.as_view(), name="driver-location"),
+    
 ]

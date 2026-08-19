@@ -4,7 +4,7 @@ from rest_framework import status
 from rest_framework.views import APIView
 from .models import DriverProfile, Vehicle,Ride,RideStatus, DriverLocation
 from rest_framework.permissions import IsAuthenticated
-from .serializers import DriverProfileSerializer, VehicleSerializer,DriverNestedSerializer,RideSerializer,RideStatusSerializer
+from .serializers import DriverProfileSerializer, VehicleSerializer,DriverNestedSerializer,RideSerializer,RideStatusSerializer,DriverLocationSerializer
 from .permissions import IsAdminOrOwnVehicle, IsAdminOrSelfDriver
 from django.shortcuts import get_object_or_404
 from .services.fare_service import calculate_fare
@@ -12,6 +12,7 @@ from django.db.models import Count,Sum,Avg,Min,Max,Q
 from django.utils import timezone
 from django.db import connection, reset_queries
 from django.db import connection
+from .services.websocket_service import broadcast_driver_location
 import time
 import math
 
@@ -20,6 +21,10 @@ from .services.ride_service import (
     update_ride_status,
     accept_ride,
     cancel_ride,
+)
+from .services.websocket_service import (
+    broadcast_ride_status,
+    broadcast_driver_location,
 )
 
 class DriverListCreateAPIView(generics.ListCreateAPIView):
@@ -793,3 +798,52 @@ class NearbyDriverAPIView(APIView):
         )
 
         return earth_radius * c
+class DriverLocationUpdateAPIView(APIView):
+
+    permission_classes = [IsAuthenticated]
+
+    def patch(self, request):
+
+        try:
+            driver = request.user.driver_profile
+        except DriverProfile.DoesNotExist:
+            return Response(
+                {"message": "Driver profile not found."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        serializer = DriverLocationSerializer(
+            driver,
+            data=request.data,
+            partial=True
+        )
+
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        active_statuses = [
+            RideStatus.ACCEPTED,
+            RideStatus.DRIVER_ARRIVING,
+            RideStatus.STARTED,
+        ]
+
+        ride = Ride.objects.filter(
+            driver=driver,
+            status__in=active_statuses
+        ).first()
+
+        if ride:
+            broadcast_driver_location(
+                ride.id,
+                driver.latitude,
+                driver.longitude
+            )
+
+        return Response(
+            {
+                "message": "Driver location updated successfully.",
+                "latitude": driver.latitude,
+                "longitude": driver.longitude,
+            },
+            status=status.HTTP_200_OK
+        )
