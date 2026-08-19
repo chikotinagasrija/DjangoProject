@@ -466,5 +466,46 @@ Reviewed ORM code and reduced duplicate queries, unnecessary database calls, que
 * Task 6: Implemented ONLINE, OFFLINE, and BUSY availability states; only active and online drivers are returned.
 * Task 7: Added validation for missing/invalid coordinates, invalid radius, inactive drivers, and busy drivers.
 * Task 8: Tested nearby-driver search with a large driver dataset and added database indexing on availability status for better performance.
+* README Report — WebSocket Ride Booking Module
+
+**Task 1 — REST vs WebSocket (19th aug 2026)
+
+* Understood the difference between REST APIs and WebSockets.
+* Identified real-time use cases of WebSockets in a ride-booking application, such as ride status and driver location updates.
+  
+* Task 2 — Django Channels Setup
+* Installed and configured Django Channels and Daphne.
+* Configured ASGI, WebSocket routing, and WebSocket consumers.
+* Understood why WebSockets require ASGI for asynchronous communication.
+
+Task 3 — WebSocket Connection
+* Created the ride WebSocket endpoint:
+    /ws/rides/{ride_id}/
+* Connected and tested the WebSocket using a client simulator.
+* Verified successful connection establishment.
+
+Task 4 — Ride Status Broadcasting
+* Implemented real-time ride status broadcasting for:
+    REQUESTED → ACCEPTED → DRIVER_ARRIVING → STARTED → COMPLETED
+* Tested that connected clients receive status updates.
+
+Task 5 — Driver Location Updates
+* Implemented real-time driver location updates using WebSockets.
+* Tested driver location changes and verified that the passenger receives updated latitude and longitude.
+
+Task 6 — WebSocket Authentication
+* Implemented JWT authentication for WebSocket connections.
+* Added passenger ride ownership and assigned-driver authorization.
+* Tested and rejected unauthorized users.
+
+Task 7 — Disconnect Handling
+
+* Implemented WebSocket disconnect handling.
+* Handled mobile app closure, network disconnection, driver/passenger disconnection, and invalid JWT scenarios.
+
+Task 8 — Multiple Client Testing
+* Tested WebSocket communication with multiple clients such as passengers and drivers.
+* Verified that users receive events only for their authorized rides.
+* Tested ride status and driver location event delivery successfully.
 
 
