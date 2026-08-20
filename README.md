@@ -508,4 +508,48 @@ Task 8 — Multiple Client Testing
 * Verified that users receive events only for their authorized rides.
 * Tested ride status and driver location event delivery successfully.
 
+* Ride Booking Backend – Tasks 1–8(20th aug 2026)
+
+Task 1 – Synchronous vs Asynchronous Processing
+
+* Understood synchronous and asynchronous request processing.
+* Learned how background workers handle long-running tasks.
+Task 2 – Notification Model
+
+* Created the Notification model.
+* Added user, title, message, notification type, read status, and timestamp fields.
+Task 3 – Notification APIs
+
+* Implemented notification retrieval API.
+* Added mark-as-read and mark-all-as-read APIs.
+* Added pagination.
+Task 4 – Background Task Setup
+
+* Configured Celery with Redis (Memurai).
+* Created background tasks for:
+    * Ride notifications
+    * Driver assignment notifications
+    * Ride completion notifications
+    * Reminder notifications
+Task 5 – Ride Event Notifications
+
+* Triggered passenger notifications when a driver accepts a ride.
+* Triggered passenger notifications when a ride is completed.
+* Integrated background notification tasks with ride status updates.
+Task 6 – Retry Handling
+
+* Implemented Celery retry handling for failed background jobs.
+* Tested retry flow: Attempt 1 → Failed, Attempt 2 → Failed, Attempt 3 → Success.
+Task 7 – Duplicate Notification Prevention
+
+* Added event_key to identify notification events.
+* Used duplicate prevention logic to ensure the same event does not create multiple notifications.
+Task 8 – Testing
+
+* Tested successful and failed background jobs.
+* Tested retry handling and duplicate prevention.
+* Tested notification retrieval and mark-as-read functionality.
+
+Overall: Implemented and tested an asynchronous notification system using Django, Celery, Redis/Memurai, and database-based duplicate prevention.
+
 
