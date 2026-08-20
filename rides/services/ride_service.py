@@ -7,6 +7,11 @@ from rides.models import (
 )
 from rides.services.websocket_service import broadcast_ride_status
 
+from common.tasks import (
+    driver_assignment_notification,
+    ride_completion_notification,
+)
+
 
 def update_ride_status(ride, new_status):
     current_status = ride.status
@@ -61,12 +66,25 @@ def accept_ride(ride, driver):
 
     ride.driver = driver
     ride.status = RideStatus.ACCEPTED
-    ride.save(update_fields=["driver", "status"])
+
+    ride.save(
+        update_fields=["driver", "status"]
+    )
 
     # Broadcast ACCEPTED status
     broadcast_ride_status(
         ride.id,
         RideStatus.ACCEPTED
+    )
+
+    # Send notification only after transaction commits
+    transaction.on_commit(
+        lambda: driver_assignment_notification.delay(
+            ride.user.id,
+            "Driver Assigned",
+            "A driver has been assigned to your ride.",
+            f"{ride.id}:DRIVER_ASSIGNED"
+        )
     )
 
     return ride
@@ -85,7 +103,10 @@ def cancel_ride(ride):
         )
 
     ride.status = RideStatus.CANCELLED
-    ride.save(update_fields=["status"])
+
+    ride.save(
+        update_fields=["status"]
+    )
 
     # Broadcast CANCELLED status
     broadcast_ride_status(
@@ -109,6 +130,16 @@ def complete_ride(ride, fare):
     broadcast_ride_status(
         ride.id,
         RideStatus.COMPLETED
+    )
+
+    # Send notification only after transaction commits
+    transaction.on_commit(
+        lambda: ride_completion_notification.delay(
+            ride.user.id,
+            "Ride Completed",
+            "Your ride has been completed.",
+            f"{ride.id}:RIDE_COMPLETED"
+        )
     )
 
     return ride
