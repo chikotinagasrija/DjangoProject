@@ -552,4 +552,87 @@ Task 8 – Testing
 
 Overall: Implemented and tested an asynchronous notification system using Django, Celery, Redis/Memurai, and database-based duplicate prevention.
 
+Backend Performance, Reliability & Security — Weekly Report
+
+**Combined the week’s learning to improve the backend’s performance, reliability, security, and code quality.( 21st aug 2026)
+**
+**Tasks Completed**
+
+Task 1 — Understand Caching
+
+* Learned the flow:
+    Database → Cache → API
+* Understood how caching reduces repeated database queries and improves API response time.
+
+Task 2 — Configure Redis Cache
+
+* Configured Redis caching for frequently accessed data.
+* Applied caching concepts to suitable APIs such as nearby drivers, vehicle types, ride configuration, and profile information.
+
+Task 3 — Cache Nearby Drivers
+
+* Implemented caching for frequently requested nearby driver/location information.
+* Worked with cache hits, cache misses, and cache expiration.
+
+Task 4 — Cache Invalidation
+
+* Implemented cache invalidation when driver location or availability changes.
+* Ensured stale driver information is not returned.
+
+Task 5 — API Performance Benchmark
+
+Compared APIs without cache vs. with cache and measured:
+
+* Response time
+* Database queries
+* Cache hits
+* Cache misses
+
+Task 6 — Complete Backend Test Suite
+
+Created and executed positive and negative tests covering:
+
+* Authentication
+* Profiles
+* Drivers
+* Vehicles
+* Rides
+* Fare calculation
+* Location
+* Notifications
+* WebSockets
+* Permissions
+
+Task 7 — Security Testing
+
+Performed security testing for:
+
+* Unauthorized API access
+* Invalid JWT tokens
+* Cross-user ride access
+* Cross-driver data access
+* Invalid WebSocket connections
+* Invalid request payloads
+* Excessive API requests
+
+Fixed the security issues identified during testing.
+
+Task 8 — Final Weekly Code Review
+
+Reviewed the complete backend for:
+
+* Architecture
+* Naming conventions
+* Database queries
+* API responses
+* Error handling
+* Security
+* Logging
+* Tests
+* Documentation
+* Git commits
+
+Also reviewed and documented the reasons behind major architectural decisions.
+Successfully completed the weekly backend tasks and improved the project in terms of caching, API performance, testing, security, reliability, and overall code quality.
+
 
