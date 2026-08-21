@@ -9,6 +9,14 @@ def calculate_fare(
     per_minute_rate=Decimal("1.00"),
     surge_charge=Decimal("10.00"),
 ):
+
+    # Validate input
+    if distance_km < 0:
+        raise ValueError("Distance cannot be negative")
+
+    if duration_minutes < 0:
+        raise ValueError("Duration cannot be negative")
+
     distance_fare = Decimal(str(distance_km)) * per_km_rate
     time_fare = Decimal(str(duration_minutes)) * per_minute_rate
 

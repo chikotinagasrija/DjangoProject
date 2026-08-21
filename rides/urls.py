@@ -27,7 +27,9 @@ from .views import (
     RideListCreateAPIView,
     DriverLocationAPIView,
     NearbyDriverAPIView,
-    DriverLocationUpdateAPIView
+    DriverLocationUpdateAPIView,
+    DriverCacheBenchmarkAPIView
+
 )
 
 urlpatterns = [
@@ -156,5 +158,9 @@ urlpatterns = [
     path("<uuid:pk>/fare/", RideFareAPIView.as_view(), name="ride-fare"),
     path("<uuid:pk>/", RideDetailAPIView.as_view(), name="ride-detail"),
     path("drivers/location/update/", DriverLocationUpdateAPIView.as_view(), name="driver-location"),
+    path(
+    "driver-cache-benchmark/",
+    DriverCacheBenchmarkAPIView.as_view()
+),
     
 ]

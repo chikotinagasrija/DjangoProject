@@ -12,6 +12,9 @@ from django.db.models import Count,Sum,Avg,Min,Max,Q
 from django.utils import timezone
 from django.db import connection, reset_queries
 from django.db import connection
+from django.core.cache import cache
+from .services.driver_cache_service import get_nearby_drivers
+from django.db import connection, reset_queries
 from .services.websocket_service import broadcast_driver_location
 import time
 import math
@@ -847,3 +850,25 @@ class DriverLocationUpdateAPIView(APIView):
             },
             status=status.HTTP_200_OK
         )
+
+
+
+class DriverCacheBenchmarkAPIView(APIView):
+
+    def get(self, request):
+        reset_queries()
+
+        start_time = time.perf_counter()
+
+        drivers,cache_hit = get_nearby_drivers()
+
+        response_time = (time.perf_counter() - start_time) * 1000
+        cache_miss= not cache_hit
+
+        return Response({
+            "response_time_ms": round(response_time, 2),
+            "database_queries": len(connection.queries),
+            "cache_hit" :cache_hit,
+            "cache_miss" :cache_miss,           
+            "drivers_count": len(drivers),
+        })
