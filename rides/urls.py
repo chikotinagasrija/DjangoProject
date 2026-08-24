@@ -28,7 +28,9 @@ from .views import (
     DriverLocationAPIView,
     NearbyDriverAPIView,
     DriverLocationUpdateAPIView,
-    DriverCacheBenchmarkAPIView
+    DriverCacheBenchmarkAPIView,
+    AdvancedQuerySetAPIView,
+    RideHistoryAPIView,
 
 )
 
@@ -61,19 +63,24 @@ urlpatterns = [
     DriverNestedAPIView.as_view(),
 ),
     path(
-    "my/active/",
+    "history/",
+    RideHistoryAPIView.as_view(),
+    name="ride-history"
+),
+    path(
+    "active/",
     UserActiveRidesAPIView.as_view(),
     name="user-active-rides"
 ),
 
     path(
-    "my/completed/",
+    "completed/",
     UserCompletedRidesAPIView.as_view(),
     name="user-completed-rides"
 ),
 
     path(
-    "my/cancelled/",
+    "cancelled/",
     UserCancelledRidesAPIView.as_view(),
     name="user-cancelled-rides"
 ),
@@ -148,6 +155,11 @@ urlpatterns = [
     'drivers/nearby/',
     NearbyDriverAPIView.as_view(),
     name='nearby-drivers'
+),
+    path(
+    "advanced-querysets/",
+    AdvancedQuerySetAPIView.as_view(),
+    name="advanced-querysets"
 ),
 
     
