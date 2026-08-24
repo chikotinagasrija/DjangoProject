@@ -635,4 +635,30 @@ Reviewed the complete backend for:
 Also reviewed and documented the reasons behind major architectural decisions.
 Successfully completed the weekly backend tasks and improved the project in terms of caching, API performance, testing, security, reliability, and overall code quality.
 
+**Ride Booking Backend — ORM & Database Optimization**(24th aug 2026)
+
+Task 1 — Advanced QuerySets
+Studied and practiced advanced Django ORM QuerySets including filtering, Q(), F(), annotations, aggregations, values, existence checks, and distinct queries.
+
+Task 2 — Ride History APIs
+Implemented Ride History, Active, Completed, and Cancelled Ride APIs with filtering by date, status, driver, and fare.
+
+Task 3 — Aggregation
+Implemented Ride aggregation APIs using Count, Sum, Avg, Max, and Min for ride and fare statistics.
+
+Task 4 — N+1 Query Optimization
+Identified N+1 database queries and optimized related-object queries using select_related() and prefetch_related().
+
+Task 5 — Database Indexing
+Added/reviewed indexes for frequently queried Ride fields and verified query performance using PostgreSQL EXPLAIN.
+
+Task 6 — Large Dataset
+Tested Ride APIs with 5,000+ ride records, covering pagination, filtering, sorting, aggregation, and performance.
+
+Task 7 — Refactoring
+Refactored ORM code by removing duplicate logic, unnecessary database calls, and repeated filtering code.
+
+Task 8 — Testing & Git
+Tested APIs through Postman, ran Django tests and system checks, and committed the completed work to Gi
+
 
