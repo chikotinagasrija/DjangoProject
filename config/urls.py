@@ -23,7 +23,7 @@ from django.conf.urls.static import static
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
-from django.urls import path, include
+
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -37,13 +37,28 @@ schema_view = get_schema_view(
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include('users.urls')),
-    path('api/', include('rides.urls')),
-    path('api/', include('common.urls')),
-    path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
-    path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
-    path('api/rides/', include('rides.urls')),
-    
+
+    path('api/v1/users/', include('users.urls')),
+    path('api/v1/rides/', include('rides.urls')),
+    path('api/v1/common/', include('common.urls')),
+
+    path(
+        'swagger/',
+        schema_view.with_ui(
+            'swagger',
+            cache_timeout=0
+        ),
+        name='schema-swagger-ui'
+    ),
+
+    path(
+        'redoc/',
+        schema_view.with_ui(
+            'redoc',
+            cache_timeout=0
+        ),
+        name='schema-redoc'
+    ),
 ]
 
 if settings.DEBUG:

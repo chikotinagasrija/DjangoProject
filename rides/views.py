@@ -12,8 +12,12 @@ from django.db.models import Count,Sum,Avg,Min,Max,Q,F
 from django.utils import timezone
 from django.db import connection, reset_queries
 from django.core.cache import cache
-from .services.driver_cache_service import get_nearby_drivers
+from rides.services.nearby_driver_service import find_nearby_drivers
+from rides.services.driver_service import update_driver_location
+from rides.services.ride_service import save_ride_fare
+from rides.services.ride_service import get_ride_history
 from django.db import connection, reset_queries
+from rides.utils.helpers import success_response, error_response
 from .services.websocket_service import broadcast_driver_location
 import time
 import math
@@ -261,8 +265,7 @@ class RideFareAPIView(APIView):
             )
 
         # Save calculated fare to the Ride
-        ride.fare = fare["total"]
-        ride.save(update_fields=["fare"])
+        save_ride_fare(ride, fare)
 
         return Response(
             {
@@ -487,62 +490,9 @@ class RideHistoryAPIView(APIView):
 
     def get(self, request):
 
-        rides = Ride.objects.filter(
-            user=request.user
-        ).select_related(
-            "user",
-            "driver",
-            "vehicle",
-            "ride_type"
-        )
-
-        # Date filtering
-        start_date = request.query_params.get("start_date")
-        end_date = request.query_params.get("end_date")
-
-        if start_date:
-            rides = rides.filter(
-                created_at__date__gte=start_date
-            )
-
-        if end_date:
-            rides = rides.filter(
-                created_at__date__lte=end_date
-            )
-
-        # Status filtering
-        status_value = request.query_params.get("status")
-
-        if status_value:
-            rides = rides.filter(
-                status=status_value
-            )
-
-        # Driver filtering
-        driver_id = request.query_params.get("driver_id")
-
-        if driver_id:
-            rides = rides.filter(
-                driver_id=driver_id
-            )
-
-        # Fare filtering
-        min_fare = request.query_params.get("min_fare")
-        max_fare = request.query_params.get("max_fare")
-
-        if min_fare:
-            rides = rides.filter(
-                fare__gte=min_fare
-            )
-
-        if max_fare:
-            rides = rides.filter(
-                fare__lte=max_fare
-            )
-
-        rides = apply_ride_filters(
-             rides,
-             request.query_params
+        rides = get_ride_history(
+            request.user,
+            request.query_params
         )
 
         return Response({
@@ -1078,46 +1028,25 @@ class NearbyDriverAPIView(APIView):
         except (ValueError, TypeError):
             return Response(
                 {
-                    "error": "latitude, longitude and radius must be valid numbers."
+                    "error": (
+                        "latitude, longitude and radius "
+                        "must be valid numbers."
+                    )
                 },
                 status=status.HTTP_400_BAD_REQUEST
             )
 
         if radius <= 0:
-            return Response(
-                {
-                    "error": "radius must be greater than 0."
-                },
-                status=status.HTTP_400_BAD_REQUEST
-            )
+            return error_response(
+        "radius must be greater than 0.",
+        status_code=status.HTTP_400_BAD_REQUEST
+    )
 
-        drivers = []
-
-        locations = DriverLocation.objects.filter(
-            availability_status=DriverLocation.AvailabilityStatus.ONLINE,
-            driver__is_active=True
-        ).select_related("driver", "driver__user")
-
-
-        for location in locations:
-
-            distance = self.calculate_distance(
-                latitude,
-                longitude,
-                float(location.latitude),
-                float(location.longitude)
-            )
-
-            if distance <= radius:
-                drivers.append({
-                    "driver_id": str(location.driver.id),
-                    "latitude": float(location.latitude),
-                    "longitude": float(location.longitude),
-                    "distance_km": round(distance, 2),
-                    "availability_status": location.availability_status
-                })
-
-        drivers.sort(key=lambda driver: driver["distance_km"])
+        drivers = find_nearby_drivers(
+            latitude,
+            longitude,
+            radius
+        )
 
         return Response(
             {
@@ -1126,30 +1055,6 @@ class NearbyDriverAPIView(APIView):
             },
             status=status.HTTP_200_OK
         )
-
-    @staticmethod
-    def calculate_distance(lat1, lon1, lat2, lon2):
-        earth_radius = 6371
-
-        lat1 = math.radians(lat1)
-        lat2 = math.radians(lat2)
-
-        delta_lat = math.radians(lat2 - lat1)
-        delta_lon = math.radians(lon2 - lon1)
-
-        a = (
-            math.sin(delta_lat / 2) ** 2
-            + math.cos(lat1)
-            * math.cos(lat2)
-            * math.sin(delta_lon / 2) ** 2
-        )
-
-        c = 2 * math.atan2(
-            math.sqrt(a),
-            math.sqrt(1 - a)
-        )
-
-        return earth_radius * c
 class DriverLocationUpdateAPIView(APIView):
 
     permission_classes = [IsAuthenticated]
@@ -1158,6 +1063,7 @@ class DriverLocationUpdateAPIView(APIView):
 
         try:
             driver = request.user.driver_profile
+
         except DriverProfile.DoesNotExist:
             return Response(
                 {"message": "Driver profile not found."},
@@ -1171,35 +1077,22 @@ class DriverLocationUpdateAPIView(APIView):
         )
 
         serializer.is_valid(raise_exception=True)
-        serializer.save()
 
-        active_statuses = [
-            RideStatus.ACCEPTED,
-            RideStatus.DRIVER_ARRIVING,
-            RideStatus.STARTED,
-        ]
-
-        ride = Ride.objects.filter(
-            driver=driver,
-            status__in=active_statuses
-        ).first()
-
-        if ride:
-            broadcast_driver_location(
-                ride.id,
-                driver.latitude,
-                driver.longitude
-            )
-
-        return Response(
-            {
-                "message": "Driver location updated successfully.",
-                "latitude": driver.latitude,
-                "longitude": driver.longitude,
-            },
-            status=status.HTTP_200_OK
+        driver = update_driver_location(
+            driver,
+            serializer.validated_data["latitude"],
+            serializer.validated_data["longitude"]
         )
 
+        return success_response(
+           "Driver location updated successfully.",
+          {
+             "latitude": driver.latitude,
+             "longitude": driver.longitude,
+          },
+    status.HTTP_200_OK
+)    
+            
 
 
 class DriverCacheBenchmarkAPIView(APIView):
@@ -1209,7 +1102,7 @@ class DriverCacheBenchmarkAPIView(APIView):
 
         start_time = time.perf_counter()
 
-        drivers,cache_hit = get_nearby_drivers()
+        drivers,cache_hit = find_nearby_drivers()
 
         response_time = (time.perf_counter() - start_time) * 1000
         cache_miss= not cache_hit

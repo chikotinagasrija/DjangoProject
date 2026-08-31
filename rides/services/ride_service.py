@@ -143,3 +143,63 @@ def complete_ride(ride, fare):
     )
 
     return ride
+def save_ride_fare(ride, fare):
+    ride.fare = fare["total"]
+    ride.save(update_fields=["fare"])
+    return ride
+def get_ride_history(user, query_params):
+    rides = Ride.objects.filter(
+        user=user
+    ).select_related(
+        "user",
+        "driver",
+        "vehicle",
+        "ride_type"
+    )
+
+    start_date = query_params.get("start_date")
+    end_date = query_params.get("end_date")
+
+    if start_date:
+        rides = rides.filter(
+            created_at__date__gte=start_date
+        )
+
+    if end_date:
+        rides = rides.filter(
+            created_at__date__lte=end_date
+        )
+
+    status_value = query_params.get("status")
+
+    if status_value:
+        rides = rides.filter(
+            status=status_value
+        )
+
+    driver_id = query_params.get("driver_id")
+
+    if driver_id:
+        rides = rides.filter(
+            driver_id=driver_id
+        )
+
+    min_fare = query_params.get("min_fare")
+    max_fare = query_params.get("max_fare")
+
+    if min_fare:
+        rides = rides.filter(
+            fare__gte=min_fare
+        )
+
+    if max_fare:
+        rides = rides.filter(
+            fare__lte=max_fare
+        )
+
+    rides = apply_ride_filters(
+        rides,
+        query_params
+    )
+
+    return rides
