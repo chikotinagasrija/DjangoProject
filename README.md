@@ -659,6 +659,121 @@ Task 7 — Refactoring
 Refactored ORM code by removing duplicate logic, unnecessary database calls, and repeated filtering code.
 
 Task 8 — Testing & Git
-Tested APIs through Postman, ran Django tests and system checks, and committed the completed work to Gi
+Tested APIs through Postman, ran Django tests and system checks, and committed the completed work to Git
+# Backend Architecture & Service Layer Refactoring
+
+31-Aug-2026
+
+## Objective
+
+Refactored the existing Django backend to improve architecture, maintainability, code reusability, API consistency, and production readiness without introducing basic Django functionality again.
+
+## Tasks Completed
+
+### Task 1 — Review Existing Project
+
+Reviewed the existing backend components including:
+
+* Models
+* Serializers
+* Views
+* URLs
+* Permissions
+* WebSocket Consumers
+* Services
+
+Identified areas where responsibilities and business logic were mixed within views.
+
+### Task 2 — Identify Responsibilities
+
+Reviewed the request flow and separated responsibilities between:
+
+* Serializers — validation and data handling
+* Views — request/response handling
+* Services — business logic
+* ORM/Database — data persistence
+
+### Task 3 — Refactor Large Views
+
+Moved business logic from large API views into service modules.
+
+Refactored areas included:
+
+* Nearby driver processing
+* Driver location updates
+* Ride-related operations
+* Ride history
+* Fare calculation
+
+### Task 4 — Create Service Modules
+
+Organized business logic into focused service modules such as:
+
+* `user_service.py`
+* `driver_service.py`
+* `ride_service.py`
+* `fare_service.py`
+* `notification_service.py`
+* `websocket_service.py`
+* `driver_cache_service.py`
+* `nearby_driver_service.py`
+
+### Task 5 — Create Reusable Utilities
+
+Created the reusable `utils` structure:
+
+```text
+utils/
+├── validators.py
+├── exceptions.py
+├── helpers.py
+└── constants.py
+```
+
+Common validation, exceptions, helper functions, and reusable constants were organized separately.
+
+### Task 6 — Standardize API Responses
+
+Introduced a consistent API response structure for successful and failed requests.
+
+Example:
+
+```json
+{
+    "success": true,
+    "message": "Operation successful",
+    "data": {}
+}
+```
+
+Error responses were also standardized using reusable response helpers.
+
+### Task 7 — Refactor URLs & Applications
+
+Organized the main API routes and introduced API versioning.
+
+Updated the URL structure to:
+
+```text
+/api/v1/users/
+/api/v1/rides/
+/api/v1/common/
+```
+
+Removed duplicate ride URL inclusion from the main project URL configuration.
+
+### Task 8 — Code Review & Git
+
+Performed final code review activities including:
+
+* Django system checks
+* Code formatting
+* Import cleanup
+* Duplicate-code review
+* API testing
+* Git change review
+
+
+
 
 
