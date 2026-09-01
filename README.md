@@ -785,10 +785,12 @@ Tested permissions for Admin, Driver, Passenger, and Unauthenticated users. Veri
 
 **Task 5 & 6 — Rate Limiting and Django Security
 **
+
 Implemented Django REST Framework throttling for sensitive APIs, including ride creation, to prevent excessive requests. Reviewed Django security settings including DEBUG, SECRET_KEY, ALLOWED_HOSTS, CSRF, CORS, security middleware, secure cookies, and environment-based database credentials.
 
 **Task 7 & 8 — JWT Security and Security Report
 **
+
 Reviewed JWT security including access-token expiration, refresh-token behavior, refresh-token rotation, and blacklisting. Prepared the Security Audit Report documenting the security issues, severity, affected APIs, risks, fixes, and testing results.
 
 
