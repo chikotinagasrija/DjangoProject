@@ -1546,3 +1546,116 @@ C:\Users\DELL\Documents\DjangoBackend\config\urls.py changed, reloading.
 Watching for file changes with StatReloader
 C:\Users\DELL\Documents\DjangoBackend\config\urls.py changed, reloading.
 Watching for file changes with StatReloader
+Watching for file changes with StatReloader
+[32mHTTP GET /admin/ 302 [0.12, 127.0.0.1:50168][0m
+[mHTTP GET /admin/login/?next=/admin/ 200 [0.41, 127.0.0.1:50168][0m
+[32mHTTP GET /admin/ 302 [0.05, 127.0.0.1:50168][0m
+[mHTTP GET /admin/login/?next=/admin/ 200 [0.08, 127.0.0.1:50168][0m
+Not Found: /favicon.ico
+[33mHTTP GET /favicon.ico 404 [0.06, 127.0.0.1:50168][0m
+[32mHTTP POST /admin/login/?next=/admin/ 302 [1.50, 127.0.0.1:50168][0m
+[mHTTP GET /admin/ 200 [0.16, 127.0.0.1:50168][0m
+[mHTTP GET /static/admin/img/icon-changelink.svg 200 [0.38, 127.0.0.1:50174][0m
+[mHTTP GET /static/admin/img/icon-addlink.svg 200 [0.39, 127.0.0.1:50170][0m
+[mHTTP GET /static/admin/css/dashboard.css 200 [0.45, 127.0.0.1:50168][0m
+[mHTTP GET /admin/rides/vehicletype/ 200 [0.23, 127.0.0.1:50168][0m
+[mHTTP GET /static/admin/css/changelists.css 200 [0.05, 127.0.0.1:50168][0m
+[mHTTP GET /static/admin/js/jquery.init.js 200 [0.09, 127.0.0.1:50181][0m
+[mHTTP GET /static/admin/js/core.js 200 [0.10, 127.0.0.1:50183][0m
+[mHTTP GET /static/admin/js/admin/RelatedObjectLookups.js 200 [0.13, 127.0.0.1:50182][0m
+[mHTTP GET /static/admin/js/actions.js 200 [0.10, 127.0.0.1:50168][0m
+[mHTTP GET /static/admin/js/vendor/jquery/jquery.js 200 [0.23, 127.0.0.1:50174][0m
+[mHTTP GET /static/admin/js/urlify.js 200 [0.17, 127.0.0.1:50181][0m
+[mHTTP GET /static/admin/js/prepopulate.js 200 [0.10, 127.0.0.1:50183][0m
+[mHTTP GET /static/admin/img/search.svg 200 [0.06, 127.0.0.1:50168][0m
+[mHTTP GET /admin/jsi18n/ 200 [0.34, 127.0.0.1:50170][0m
+[mHTTP GET /static/admin/js/filters.js 200 [0.06, 127.0.0.1:50170][0m
+[mHTTP GET /static/admin/js/vendor/xregexp/xregexp.js 200 [0.26, 127.0.0.1:50182][0m
+[mHTTP GET /static/admin/img/sorting-icons.svg 200 [0.03, 127.0.0.1:50170][0m
+[mHTTP GET /static/admin/img/tooltag-add.svg 200 [0.03, 127.0.0.1:50182][0m
+Not Found: /api/login/
+[33mHTTP POST /api/login/ 404 [0.02, 127.0.0.1:50193][0m
+Watching for file changes with StatReloader
+Not Found: /api/login/
+[33mHTTP POST /api/login/ 404 [0.15, 127.0.0.1:50213][0m
+Not Found: /api/v1/users/
+[33mHTTP POST /api/v1/users/ 404 [0.01, 127.0.0.1:50221][0m
+[mHTTP POST /api/v1/users/login/ 200 [2.21, 127.0.0.1:50234][0m
+Bad Request: /api/v1/rides/
+[31;1mHTTP POST /api/v1/rides/ 400 [0.11, 127.0.0.1:50239][0m
+Watching for file changes with StatReloader
+[mHTTP GET /admin/ 200 [0.22, 127.0.0.1:50313][0m
+[mHTTP GET /admin/ 200 [0.20, 127.0.0.1:50313][0m
+[mHTTP POST /admin/logout/ 200 [0.11, 127.0.0.1:50313][0m
+[32mHTTP GET /admin/ 302 [0.01, 127.0.0.1:50313][0m
+[mHTTP GET /admin/login/?next=/admin/ 200 [0.03, 127.0.0.1:50313][0m
+[32mHTTP POST /admin/login/?next=/admin/ 302 [1.54, 127.0.0.1:50313][0m
+[mHTTP GET /admin/ 200 [0.09, 127.0.0.1:50313][0m
+[mHTTP GET /admin/rides/vehicletype/ 200 [0.10, 127.0.0.1:50313][0m
+[mHTTP GET /admin/jsi18n/ 200 [0.10, 127.0.0.1:50313][0m
+[mHTTP GET /admin/rides/ride/ 200 [0.51, 127.0.0.1:50313][0m
+[mHTTP GET /admin/jsi18n/ 200 [0.09, 127.0.0.1:50313][0m
+[mHTTP GET /static/admin/img/icon-viewlink.svg 200 [0.16, 127.0.0.1:50313][0m
+[mHTTP GET /admin/rides/ride/?status__exact=STARTED 200 [0.16, 127.0.0.1:50333][0m
+[mHTTP GET /admin/jsi18n/ 200 [0.08, 127.0.0.1:50333][0m
+[mHTTP GET /admin/rides/ride/3798a977-1e5f-4f83-bd0d-3d863cc59caf/change/?_changelist_filters=status__exact%3DSTARTED 200 [0.39, 127.0.0.1:50333][0m
+[mHTTP GET /static/admin/css/forms.css 200 [0.04, 127.0.0.1:50333][0m
+[mHTTP GET /static/admin/css/widgets.css 200 [0.02, 127.0.0.1:50333][0m
+[mHTTP GET /static/admin/js/prepopulate_init.js 200 [0.07, 127.0.0.1:50334][0m
+[mHTTP GET /static/admin/img/icon-deletelink.svg 200 [0.02, 127.0.0.1:50334][0m
+[mHTTP GET /admin/jsi18n/ 200 [0.14, 127.0.0.1:50339][0m
+[mHTTP GET /static/admin/js/change_form.js 200 [0.04, 127.0.0.1:50334][0m
+[32mHTTP POST /admin/rides/ride/3798a977-1e5f-4f83-bd0d-3d863cc59caf/change/?_changelist_filters=status__exact%3DSTARTED 302 [0.27, 127.0.0.1:50334][0m
+[mHTTP GET /admin/rides/ride/?status__exact=STARTED 200 [0.11, 127.0.0.1:50334][0m
+[mHTTP GET /admin/jsi18n/ 200 [0.09, 127.0.0.1:50334][0m
+[mHTTP GET /static/admin/img/icon-yes.svg 200 [0.05, 127.0.0.1:50334][0m
+Unauthorized: /api/v1/users/login/
+[31;1mHTTP POST /api/v1/users/login/ 401 [1.76, 127.0.0.1:50349][0m
+[mHTTP POST /api/v1/users/login/ 200 [1.72, 127.0.0.1:50349][0m
+Bad Request: /api/v1/rides/
+[31;1mHTTP POST /api/v1/rides/ 400 [0.31, 127.0.0.1:50356][0m
+Bad Request: /api/v1/rides/
+[31;1mHTTP POST /api/v1/rides/ 400 [0.09, 127.0.0.1:50356][0m
+Watching for file changes with StatReloader
+[mHTTP POST /api/v1/rides/ 201 [0.15, 127.0.0.1:50392][0m
+C:\Users\DELL\Documents\DjangoBackend\rides\views.py changed, reloading.
+Watching for file changes with StatReloader
+Bad Request: /api/v1/rides/
+[31;1mHTTP POST /api/v1/rides/ 400 [0.26, 127.0.0.1:50560][0m
+Watching for file changes with StatReloader
+[mHTTP POST /api/v1/users/login/ 200 [3.05, 127.0.0.1:56455][0m
+Not Found: /api/v1/rides/<941cace0-577b-4631-96c7-a752ac4f718f>/
+[33mHTTP GET /api/v1/rides/%3C941cace0-577b-4631-96c7-a752ac4f718f%3E/ 404 [0.10, 127.0.0.1:56492][0m
+[mHTTP GET /api/v1/rides/941cace0-577b-4631-96c7-a752ac4f718f/ 200 [0.20, 127.0.0.1:56518][0m
+Not Found: /api/v1/rides/341cace0-577b-4631-96c7-a752ac4f718f/
+[33mHTTP GET /api/v1/rides/341cace0-577b-4631-96c7-a752ac4f718f/ 404 [0.14, 127.0.0.1:56551][0m
+C:\Users\DELL\Documents\DjangoBackend\rides\views.py changed, reloading.
+Watching for file changes with StatReloader
+Unauthorized: /api/v1/rides/
+[31;1mHTTP POST /api/v1/rides/ 401 [0.09, 127.0.0.1:56829][0m
+[mHTTP POST /api/v1/users/login/ 200 [2.31, 127.0.0.1:56829][0m
+Bad Request: /api/v1/rides/
+[31;1mHTTP POST /api/v1/rides/ 400 [0.28, 127.0.0.1:56829][0m
+Unauthorized: /api/v1/rides/341cace0-577b-4631-96c7-a752ac4f718f/cancel/
+[31;1mHTTP POST /api/v1/rides/341cace0-577b-4631-96c7-a752ac4f718f/cancel/ 401 [0.01, 127.0.0.1:56881][0m
+[mHTTP POST /api/v1/users/login/ 200 [2.19, 127.0.0.1:56881][0m
+Not Found: /api/v1/rides/341cace0-577b-4631-96c7-a752ac4f718f/cancel/
+[33mHTTP POST /api/v1/rides/341cace0-577b-4631-96c7-a752ac4f718f/cancel/ 404 [0.28, 127.0.0.1:56881][0m
+[mHTTP POST /api/v1/rides/941cace0-577b-4631-96c7-a752ac4f718f/cancel/ 200 [0.11, 127.0.0.1:56881][0m
+[mHTTP POST /api/v1/rides/ 201 [0.15, 127.0.0.1:56881][0m
+Not Found: /api/v1/rides/941cace0-577b-4631-96c7-a752ac/
+[33mHTTP POST /api/v1/rides/941cace0-577b-4631-96c7-a752ac/ 404 [0.03, 127.0.0.1:56897][0m
+Not Found: /api/v1/rides/abc/
+[33mHTTP POST /api/v1/rides/abc/ 404 [0.02, 127.0.0.1:56897][0m
+C:\Users\DELL\Documents\DjangoBackend\config\settings.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\DELL\Documents\DjangoBackend\rides\views.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\DELL\Documents\DjangoBackend\config\settings.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\DELL\Documents\DjangoBackend\config\settings.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\DELL\Documents\DjangoBackend\config\settings.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\DELL\Documents\DjangoBackend\config\settings.py changed, reloading.
+Watching for file changes with StatReloader

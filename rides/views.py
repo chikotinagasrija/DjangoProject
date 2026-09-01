@@ -18,6 +18,7 @@ from rides.services.ride_service import save_ride_fare
 from rides.services.ride_service import get_ride_history
 from django.db import connection, reset_queries
 from rides.utils.helpers import success_response, error_response
+from rides.utils.throttles import RideCreationThrottle
 from .services.websocket_service import broadcast_driver_location
 import time
 import math
@@ -131,9 +132,22 @@ class DriverNestedAPIView(generics.RetrieveAPIView):
     serializer_class = DriverNestedSerializer
 
 class RideDetailAPIView(generics.RetrieveAPIView):
-    queryset = Ride.objects.select_related('user', 'driver', 'vehicle', 'ride_type')
+    queryset = Ride.objects.select_related(
+        'user',
+        'driver',
+        'vehicle',
+        'ride_type'
+    )
     serializer_class = RideSerializer
-    permission_classes = [IsAuthenticated] 
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+
+        return self.queryset.filter(
+            Q(user=user) |
+            Q(driver__user=user)
+        ).distinct()
 
 class RideStatusAPIView(APIView):
     permission_classes = [IsAuthenticated]
@@ -906,9 +920,20 @@ class RideListCreateAPIView(generics.ListCreateAPIView):
 
     serializer_class = RideSerializer
     permission_classes = [IsAuthenticated]
+    throttle_classes = [RideCreationThrottle]
 
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        serializer.save(user=request.user)
+
+        return success_response(
+            "Ride created successfully",
+            serializer.data,
+            status.HTTP_201_CREATED
+        )
+
 class LargeDatasetPerformanceAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
