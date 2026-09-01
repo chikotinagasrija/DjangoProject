@@ -773,6 +773,26 @@ Performed final code review activities including:
 * API testing
 * Git change review
 
+**API Security Tasks – (sep 1st 2026)**
+
+**Task 1 & 2 — API Security and IDOR Testing
+**
+Studied API security concepts including authentication, authorization, broken access control, IDOR, injection, rate limiting, sensitive data exposure, security headers, and secure password handling. Tested IDOR by using User A’s JWT with User B’s ride ID and verified that unauthorized access was blocked with a 403 Forbidden response.
+
+**Task 3 & 4 — Permission and Input Validation Testing**
+
+Tested permissions for Admin, Driver, Passenger, and Unauthenticated users. Verified ownership-based access for driver profiles and vehicles. Tested invalid inputs such as empty values, invalid IDs, invalid numbers, large strings, invalid dates, unexpected fields, and invalid coordinates.
+
+**Task 5 & 6 — Rate Limiting and Django Security
+**
+Implemented Django REST Framework throttling for sensitive APIs, including ride creation, to prevent excessive requests. Reviewed Django security settings including DEBUG, SECRET_KEY, ALLOWED_HOSTS, CSRF, CORS, security middleware, secure cookies, and environment-based database credentials.
+
+**Task 7 & 8 — JWT Security and Security Report
+**
+Reviewed JWT security including access-token expiration, refresh-token behavior, refresh-token rotation, and blacklisting. Prepared the Security Audit Report documenting the security issues, severity, affected APIs, risks, fixes, and testing results.
+
+
+
 
 
 
