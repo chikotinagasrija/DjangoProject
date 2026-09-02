@@ -1659,3 +1659,54 @@ C:\Users\DELL\Documents\DjangoBackend\config\settings.py changed, reloading.
 Watching for file changes with StatReloader
 C:\Users\DELL\Documents\DjangoBackend\config\settings.py changed, reloading.
 Watching for file changes with StatReloader
+Not Found: /api/profile/
+Not Found: /api/login/
+Not Found: /api/login/
+Not Found: /api/logout/
+Not Found: /api/change-password/
+Not Found: /api/change-password/
+Not Found: /api/register/
+Not Found: /api/profile/
+Not Found: /api/login/
+Not Found: /api/login/
+Not Found: /api/logout/
+Not Found: /api/change-password/
+Not Found: /api/change-password/
+Not Found: /api/register/
+Not Found: /api/token/refresh/
+Internal Server Error: /api/v1/users/profile/
+Unauthorized: /api/v1/users/login/
+Bad Request: /api/v1/users/change-password/
+Unauthorized: /api/v1/users/login/
+Bad Request: /api/v1/users/change-password/
+Unauthorized: /api/v1/users/profile/
+Unauthorized: /api/v1/users/login/
+Bad Request: /api/v1/users/change-password/
+Unauthorized: /api/v1/users/profile/
+Unauthorized: /api/v1/users/login/
+Bad Request: /api/v1/users/change-password/
+Unauthorized: /api/v1/users/profile/
+Unauthorized: /api/v1/users/login/
+Bad Request: /api/v1/users/change-password/
+Unauthorized: /api/v1/users/admin-api/
+Forbidden: /api/v1/users/admin-api/
+Bad Request: /api/v1/rides/cdc0dc5e-d0f2-4402-8399-d3700cd0b352/status/
+Unauthorized: /api/v1/users/profile/
+Unauthorized: /api/v1/users/login/
+Bad Request: /api/v1/users/change-password/
+Unauthorized: /api/v1/users/admin-api/
+Forbidden: /api/v1/users/admin-api/
+Bad Request: /api/v1/rides/37948c74-d2c9-4e4e-bedc-3911757ceb7d/status/
+Unauthorized: /api/v1/users/profile/
+Unauthorized: /api/v1/users/login/
+Bad Request: /api/v1/users/change-password/
+Unauthorized: /api/v1/users/admin-api/
+Forbidden: /api/v1/users/admin-api/
+Bad Request: /api/v1/rides/0911adb6-c95a-4cfd-afd2-42301873071a/status/
+Bad Request: /api/v1/rides/3b7bfe31-cb6b-4bb4-b4aa-d66213f1a7a7/status/
+Bad Request: /api/v1/rides/949a886d-26f4-4875-a4a7-642fae2d95cf/status/
+Unauthorized: /api/v1/users/profile/
+Unauthorized: /api/v1/users/login/
+Bad Request: /api/v1/users/change-password/
+Unauthorized: /api/v1/users/admin-api/
+Forbidden: /api/v1/users/admin-api/

@@ -402,7 +402,7 @@ class ProfileListAPIView(ListAPIView):
 # Admin Only API
 class AdminAPIView(APIView):
 
-    permission_classes = [IsAuthenticated]
+    permission_classes =  [IsAdminUserRole]
 
     def get(self, request):
 
