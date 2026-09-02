@@ -793,6 +793,110 @@ Implemented Django REST Framework throttling for sensitive APIs, including ride 
 
 Reviewed JWT security including access-token expiration, refresh-token behavior, refresh-token rotation, and blacklisting. Prepared the Security Audit Report documenting the security issues, severity, affected APIs, risks, fixes, and testing results.
 
+# Ride Booking Backend — Tasks 1–8
+
+## Overview
+
+Implemented and tested a Django-based ride booking backend with REST APIs, PostgreSQL database integration, authentication, ride management, real-time WebSocket communication, Redis caching, driver location tracking, and backend testing.
+
+---
+
+## Task 1 — Understand Location Data
+
+* Studied latitude and longitude concepts.
+* Understood GPS coordinates, distance, radius, and location accuracy.
+* Understood how mobile applications send GPS location data to the backend.
+* Studied how location information is used for driver tracking and nearby-driver identification.
+
+---
+
+## Task 2 — Driver Location Model
+
+* Created/updated the driver location data model.
+* Stored driver latitude and longitude information.
+* Connected driver location data with the driver profile.
+* Added database support for retrieving the latest driver location.
+* Verified the model through Django database tests.
+
+---
+
+## Task 3 — Driver Location API
+
+* Implemented API functionality for updating driver location.
+* Accepted latitude and longitude from the mobile client.
+* Validated and stored location information in the database.
+* Added authentication and driver-related validation.
+* Tested the location API using Postman and automated tests.
+
+---
+
+## Task 4 — Nearby Driver & Distance Calculation
+
+* Implemented nearby-driver search functionality.
+* Used latitude and longitude to identify drivers within a specified radius.
+* Implemented distance calculation between coordinates.
+* Added driver availability filtering.
+* Optimized database queries for location-based searches.
+* Tested nearby-driver functionality with different locations and distances.
+
+---
+
+## Task 5 — Driver Availability & Caching
+
+* Implemented driver availability handling.
+* Added Redis-based caching for nearby-driver results.
+* Used cache keys and expiration time to reduce repeated database queries.
+* Verified Redis connectivity and cache functionality.
+* Added service-layer logic for retrieving nearby available drivers.
+* Tested the service layer successfully.
+
+**Test result:**
+
+```text
+Found 19 test(s)
+Ran 19 tests
+OK
+```
+
+---
+
+## Task 6 — Database Testing & Integrity
+
+* Added database-level tests for ride and driver relationships.
+* Tested foreign-key relationships and database constraints.
+* Verified valid and invalid relationship scenarios.
+* Tested ride creation and related database operations.
+* Identified and handled database integrity behavior.
+
+---
+
+## Task 7 — WebSocket Real-Time Communication
+
+* Configured Django Channels and ASGI.
+* Implemented `RideConsumer` for real-time ride communication.
+* Added JWT authentication for WebSocket connections.
+* Added passenger and assigned-driver authorization.
+* Created ride-specific WebSocket groups.
+* Implemented real-time ride status updates.
+* Implemented real-time driver location updates.
+* Added WebSocket routing and JWT middleware.
+* Tested authenticated, unauthorized, and invalid-token connection scenarios.
+* Verified real-time event broadcasting between ride participants.
+
+---
+
+## Task 8 — Final Testing & Verification
+
+* Ran Django system checks.
+* Verified database migrations.
+* Verified Redis connectivity.
+* Tested ride APIs through Postman.
+* Tested WebSocket functionality.
+* Ran the complete test suite.
+* Fixed test-related issues and verified the final implementation.
+* Confirmed the backend components work together correction
+
+
 
 
 
