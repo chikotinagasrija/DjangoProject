@@ -896,6 +896,25 @@ OK
 * Fixed test-related issues and verified the final implementation.
 * Confirmed the backend components work together correction
 
+* ### Today's Work — Performance Optimization (sep 3rd 2026)
+
+**Task 1:** Identified critical APIs such as Login, Driver Location, Nearby Drivers, Create Ride, Ride Details, Ride History, and Notifications to focus performance testing on the most important mobile application APIs.
+
+**Task 2:** Established performance baselines by measuring response time, database queries, CPU usage, and memory usage to understand the current backend performance.
+
+**Task 3:** Optimized database queries using `select_related()` and reviewed indexes to reduce unnecessary database queries and improve API performance.
+
+**Task 4:** Implemented Redis caching for Vehicle Types and verified cache hit/miss behavior to reduce repeated database access and improve response time.
+
+**Task 5:** Implemented cache invalidation when Vehicle Type data changes to prevent stale data and ensure the API returns the latest information.
+
+**Task 6:** Implemented pagination for Ride History with a maximum page size to avoid processing and returning large datasets at once.
+
+**Task 7:** Performed load testing using Locust on the Nearby Drivers API to evaluate response time, requests per second, and failure rate under multiple users.
+
+**Task 8:** Prepared a performance comparison report documenting the optimizations made, their purpose, and the performance results before and after optimization.
+
+
 
 
 
