@@ -31,6 +31,7 @@ from .views import (
     DriverCacheBenchmarkAPIView,
     AdvancedQuerySetAPIView,
     RideHistoryAPIView,
+    VehicleTypeListAPIView,
 
 )
 
@@ -160,6 +161,11 @@ urlpatterns = [
     "advanced-querysets/",
     AdvancedQuerySetAPIView.as_view(),
     name="advanced-querysets"
+),
+    path(
+    "vehicle-types/",
+    VehicleTypeListAPIView.as_view(),
+    name="vehicle-types"
 ),
 
     

@@ -75,7 +75,8 @@ class LoginAPIView(APIView):
             serializer.errors,
             status=status.HTTP_401_UNAUTHORIZED
         )
-
+    
+        
 
 # Basic User Profile API
 class ProfileAPIView(APIView):

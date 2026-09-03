@@ -2,7 +2,7 @@ from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
-from .models import DriverProfile, Vehicle,Ride,RideStatus, DriverLocation
+from .models import DriverProfile, Vehicle,Ride,RideStatus, DriverLocation,VehicleType
 from rest_framework.permissions import IsAuthenticated
 from .serializers import DriverProfileSerializer, VehicleSerializer,DriverNestedSerializer,RideSerializer,RideStatusSerializer,DriverLocationSerializer
 from .permissions import IsAdminOrOwnVehicle, IsAdminOrSelfDriver
@@ -20,6 +20,7 @@ from django.db import connection, reset_queries
 from rides.utils.helpers import success_response, error_response
 from rides.utils.throttles import RideCreationThrottle
 from .services.websocket_service import broadcast_driver_location
+from rest_framework.pagination import PageNumberPagination
 import time
 import math
 
@@ -509,13 +510,23 @@ class RideHistoryAPIView(APIView):
             request.query_params
         )
 
-        return Response({
-            "count": rides.count(),
-            "rides": RideSerializer(
-                rides,
-                many=True
-            ).data
-        })
+        paginator = RideHistoryPagination()
+
+        page = paginator.paginate_queryset(
+            rides,
+            request
+        )
+
+        serializer = RideSerializer(
+            page,
+            many=True
+        )
+
+        return paginator.get_paginated_response(serializer.data)
+class RideHistoryPagination(PageNumberPagination):
+    page_size = 10
+    page_size_query_param = "page_size"
+    max_page_size = 50    
 class DailyRideCountAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -1139,3 +1150,64 @@ class DriverCacheBenchmarkAPIView(APIView):
             "cache_miss" :cache_miss,           
             "drivers_count": len(drivers),
         })
+class VehicleTypeListAPIView(APIView):
+
+    def get(self, request):
+
+        cache_key = "vehicle_types"
+
+        # Check Redis cache
+        cached_vehicle_types = cache.get(cache_key)
+
+        if cached_vehicle_types is not None:
+            print("Vehicle Types: CACHE HIT")
+
+            return Response({
+                "vehicle_types": cached_vehicle_types
+            })
+
+        # Cache miss → get data from database
+        print("Vehicle Types: CACHE MISS")
+
+        vehicle_types = list(
+            VehicleType.objects.values(
+                "id",
+                "name"
+            )
+        )
+
+        # Store data in Redis for 1 hour
+        cache.set(
+            cache_key,
+            vehicle_types,
+            timeout=3600
+        )
+
+        return Response({
+            "vehicle_types": vehicle_types
+        })
+    def post(self, request):
+
+        name = request.data.get("name")
+
+        if not name:
+            return Response(
+                {"error": "name is required."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        vehicle_type = VehicleType.objects.create(
+            name=name
+        )
+
+        # Invalidate Redis cache
+        cache.delete("vehicle_types")
+
+        return Response(
+            {
+                "message": "Vehicle type created successfully.",
+                "id": str(vehicle_type.id),
+                "name": vehicle_type.name
+            },
+            status=status.HTTP_201_CREATED
+        )

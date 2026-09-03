@@ -197,9 +197,6 @@ def get_ride_history(user, query_params):
             fare__lte=max_fare
         )
 
-    rides = apply_ride_filters(
-        rides,
-        query_params
-    )
+    
 
     return rides
