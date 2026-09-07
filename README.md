@@ -951,6 +951,45 @@ Performed the final technical assessment by preparing to independently demonstra
 ## Overall Summary
 
 > **Completed the final production-readiness assessment of the Django ride-booking backend by reviewing the complete architecture, implementing environment-specific configuration, validating logging and monitoring, reviewing API documentation, performing end-to-end regression testing, conducting a final security audit, creating the production-readiness checklist, and preparing the application for the final technical demonstration.**
+>
+> # API Architecture, Versioning & Advanced DRF — Tasks 1–8 (sep 7th 2026)
+
+## Task 1 — Review Existing APIs
+
+Reviewed the existing Django REST Framework APIs and organized them based on their respective modules. Analyzed the existing endpoints, views, serializers, and API relationships to identify tightly coupled functionality, duplicate serializers or views, and APIs that may require future refactoring. Reviewed the current architecture to understand how the APIs can be organized into a maintainable and scalable versioned structure.
+
+## Task 2 — Implement API Versioning
+
+Implemented the API versioning structure using the `/api/v1/` prefix to ensure that future API changes can be introduced without breaking existing mobile applications. Created the versioned API structure for authentication, users, drivers, rides, and notifications. The versioning approach provides backward compatibility and allows future versions such as `/api/v2/` to be introduced independently.
+
+## Task 3 — Create Version 1 API Structure
+
+Organized the existing APIs under the `/api/v1/` structure and connected the versioned URL configuration with the existing application URLs and views. Verified the URL routing and ensured that existing functionality such as authentication, user APIs, and ride APIs continues to work through the versioned endpoints. Also reviewed the API structure through Swagger to ensure the URLs are properly organized.
+
+## Task 4 — Advanced Serializer Design
+
+Reviewed the existing DRF serializers for nested serializers, read-only and write-only fields, serializer validation, custom serializer methods, dynamic fields, and separate request and response structures. The existing serializer implementation was reviewed against the current API requirements, and no unnecessary changes were introduced where the existing implementation was already suitable.
+
+## Task 5 — Generic Views & ViewSets
+
+Reviewed the existing API views and evaluated their suitability for `APIView`, `GenericAPIView`, `ListCreateAPIView`, `RetrieveUpdateDestroyAPIView`, `ViewSet`, and `ModelViewSet`. Identified APIs where generic views can simplify standard CRUD operations while retaining custom API views for functionality containing specific business logic and ride-state validation. This review helps improve code reusability and maintainability without unnecessarily changing working APIs.
+
+## Task 6 — Custom Actions
+
+Reviewed and validated the custom ride operations for accepting, cancelling, starting, and completing rides. Ensured that ride-state validation is performed before changing the ride status so that invalid state transitions are prevented. The existing ride service and transition logic were reviewed to ensure that operations follow the expected ride lifecycle.
+
+## Task 7 — API Documentation
+
+Reviewed and updated the Swagger/OpenAPI documentation for the versioned APIs. Verified that the major endpoints provide information about their URL, HTTP method, authentication requirements, request and response structures, errors, and status codes. Also verified the documentation for the ride-related custom actions and the `/api/v1/` API structure.
+
+## Task 8 — Testing & Git
+
+Performed testing of the versioned and refactored APIs using the existing API collection and Swagger/Postman. Verified important API flows including authentication, user management, driver and vehicle functionality, location services, ride operations, and custom ride actions. Identified and addressed broken functionality where required, and committed and pushed the completed API architecture, versioning, and refactoring changes to the Git repository.
+
+## Overall Summary
+
+> **Completed the API Architecture, Versioning & Advanced DRF tasks by reviewing the existing APIs, implementing the `/api/v1/` structure, validating serializer and view design, implementing and reviewing custom ride actions, updating Swagger/OpenAPI documentation, testing the APIs, and pushing the completed changes to Git.**
+
 
 
 
