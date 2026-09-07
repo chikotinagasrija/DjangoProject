@@ -38,8 +38,8 @@ schema_view = get_schema_view(
 urlpatterns = [
     path('admin/', admin.site.urls),
 
-    path('api/v1/users/', include('users.urls')),
-    path('api/v1/rides/', include('rides.urls')),
+    path("api/v1/users/", include("api.v1.users.urls")),
+    path("api/v1/rides/", include("api.v1.rides.urls")),
     path('api/v1/common/', include('common.urls')),
 
     path(
