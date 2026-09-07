@@ -992,6 +992,70 @@ Performed testing of the versioned and refactored APIs using the existing API co
 
 
 
+# Security Controls & Authorization Testing (sep 8th 2026)
+
+## Objective
+
+Strengthened the security controls of the Django mobile backend by reviewing JWT authentication, implementing role-based and object-level authorization, securing sensitive APIs, configuring API throttling, reviewing sensitive data handling, performing negative security testing, and documenting the final security audit.
+
+## Task 1 — Authentication Flow Review
+
+Reviewed and documented the complete JWT authentication flow covering user registration, login, access-token generation, authenticated API requests, refresh-token usage, and generation of new access tokens. Verified the behavior of access and refresh tokens when they expire and documented how users must re-authenticate when the refresh token is no longer valid.
+
+## Task 2 — Role & Permission Matrix
+
+Created and reviewed the role and permission matrix for Admin, Driver, and Passenger users. Verified access boundaries for operations such as profile management, driver management, ride creation, ride acceptance, and ride completion. Reviewed and applied the required role-based permissions so that users can access only the APIs permitted for their respective roles.
+
+## Task 3 — Object-Level Permissions
+
+Reviewed and implemented object-level authorization to ensure authenticated users can access or modify only resources they own or are authorized to manage. Tested scenarios such as User A accessing User A's ride versus User B's ride and Driver A accessing their own vehicle versus Driver B's vehicle. This prevents IDOR (Insecure Direct Object Reference) vulnerabilities and unauthorized cross-user access.
+
+## Task 4 — Secure Sensitive APIs
+
+Reviewed and strengthened security controls for sensitive APIs, including login, registration, password change, ride creation, driver location, and admin operations. Verified authentication, role-based authorization, object ownership, request validation, safe error handling, and protection of sensitive information for these endpoints.
+
+## Task 5 — API Throttling
+
+Configured and reviewed API throttling for anonymous users, authenticated users, login requests, and sensitive operations. Tested excessive API requests and verified that requests exceeding the configured limits are restricted with the appropriate `429 Too Many Requests` response. This helps protect the backend from brute-force attempts, excessive traffic, and API abuse.
+
+## Task 6 — Secure Data Handling
+
+Reviewed the handling of sensitive information across the Django backend. Verified that passwords are securely hashed, sensitive fields are not exposed in API responses, and JWT secrets, database credentials, and API keys are managed through environment variables instead of being hardcoded in source code. Also reviewed application logs and error responses to ensure passwords, tokens, credentials, and other sensitive information are not unnecessarily exposed.
+
+## Task 7 — Security Testing
+
+Performed negative security testing for invalid JWTs, expired JWTs, missing authentication tokens, IDOR attempts, unauthorized user roles, malformed request payloads, and excessive API requests. Verified that protected APIs correctly reject unauthorized or invalid requests using appropriate HTTP responses such as `400 Bad Request`, `401 Unauthorized`, `403 Forbidden`, and `429 Too Many Requests`.
+
+## Task 8 — Security Audit Report
+
+Created the `SECURITY_AUDIT.md` security report to document the results of the backend security review. The report records identified security issues, severity, affected APIs, root causes, implemented fixes, and final test results. This provides a structured record of the security controls and authorization boundaries reviewed during the assessment.
+
+## Security Areas Covered
+
+- JWT Authentication
+- Access and Refresh Token Handling
+- Role-Based Authorization
+- Object-Level Permissions
+- IDOR Protection
+- Sensitive API Protection
+- API Throttling
+- Password Hashing
+- Environment-Based Secret Management
+- Secure Logging
+- Safe Error Handling
+- Negative Security Testing
+- Security Audit Documentation
+
+## Overall Summary
+
+Completed the security controls and authorization assessment of the Django mobile backend by reviewing the complete JWT authentication lifecycle, validating role-based and object-level permissions, securing sensitive APIs, configuring API throttling, reviewing sensitive data handling, performing negative security testing, and documenting the findings and test results in `SECURITY_AUDIT.md`.
+```
+
+
+
+
+
+
 
 
 
