@@ -3130,3 +3130,18 @@ Bad Request: /api/v1/rides/drivers/
 [31;1mHTTP POST /api/v1/rides/drivers/ 400 [0.15, 127.0.0.1:53210][0m
 Watching for file changes with StatReloader
 [mHTTP POST /api/v1/users/login/ 200 [3.78, 127.0.0.1:50612][0m
+Watching for file changes with StatReloader
+C:\Users\DELL\Documents\DjangoBackend\config\celery.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\DELL\Documents\DjangoBackend\common\tasks.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\DELL\Documents\DjangoBackend\config\settings\base.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\DELL\Documents\DjangoBackend\config\settings\base.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\DELL\Documents\DjangoBackend\common\tasks.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\DELL\Documents\DjangoBackend\common\tasks.py changed, reloading.
+Watching for file changes with StatReloader
+C:\Users\DELL\Documents\DjangoBackend\common\tasks.py changed, reloading.
+Watching for file changes with StatReloader

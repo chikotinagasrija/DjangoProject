@@ -2,6 +2,7 @@ from pathlib import Path
 import os
 from dotenv import load_dotenv
 from datetime import timedelta
+from kombu import Queue
 
 load_dotenv()
 
@@ -231,6 +232,13 @@ CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
 
 CELERY_RESULT_SERIALIZER = "json"
+
+
+CELERY_TASK_QUEUES = (
+    Queue("notifications"),
+    Queue("reports"),
+    Queue("maintenance"),
+)
 
 
 # --------------------------------------------------
