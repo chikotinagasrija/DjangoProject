@@ -1049,6 +1049,420 @@ Created the `SECURITY_AUDIT.md` security report to document the results of the b
 ## Overall Summary
 
 Completed the security controls and authorization assessment of the Django mobile backend by reviewing the complete JWT authentication lifecycle, validating role-based and object-level permissions, securing sensitive APIs, configuring API throttling, reviewing sensitive data handling, performing negative security testing, and documenting the findings and test results in `SECURITY_AUDIT.md`.
+
+Asynchronous Architecture & Reliable Background Processing (sep 9th 2026)
+
+## Overview
+
+Implemented and reviewed **asynchronous background processing** in the Django ride-booking backend using **Celery and Redis**. The work focused on identifying background operations, creating Celery tasks, separating tasks into logical queues, handling task failures and retries, ensuring idempotency, reviewing scheduled-task requirements, monitoring worker execution, and validating the complete asynchronous workflow.
+
+---
+
+## Objective
+
+The objective of this work was to build reliable background processing so that time-consuming operations do not unnecessarily block mobile API requests.
+
+### Technology Used
+
+* **Django / Django REST Framework** — Backend API
+* **Celery** — Background task processing
+* **Redis** — Celery message broker
+* **PostgreSQL** — Main application database
+* **Celery Worker** — Executes background tasks
+
+---
+
+# Task 1 — Identify Background Operations
+
+### Objective
+
+Identify operations that are suitable for asynchronous/background processing.
+
+### Operations Identified
+
+* Ride notifications
+* Email processing
+* Report generation
+* Cleanup operations
+* Background data processing
+* Scheduled jobs
+
+### Implementation/Review
+
+The project already contains Celery-based ride notification processing. Email, cleanup, data processing, and scheduled jobs were identified as suitable asynchronous operations but are not currently implemented because corresponding business workflows are not defined in the existing project.
+
+### Result
+
+Background operations were reviewed and categorized based on whether they can be processed independently of the main API request.
+
+---
+
+# Task 2 — Create Celery Tasks
+
+### Objective
+
+Create background Celery tasks for operations that should not block API requests.
+
+### Implemented Tasks
+
+The following tasks are available in `common/tasks.py`:
+
+```text
+ride_notification
+driver_assignment_notification
+ride_completion_notification
+reminder_notification
+generate_ride_report
+clean_expired_data
+process_background_records
+```
+
+### Ride Notifications
+
+Existing notification tasks process:
+
+* Ride notifications
+* Driver assignment notifications
+* Ride completion notifications
+* Reminder notifications
+
+These tasks create notification records in the database.
+
+### Ride Report
+
+Implemented `generate_ride_report` to calculate:
+
+* Total rides
+* Completed rides
+* Cancelled rides
+* Requested rides
+* Total fare from completed rides
+
+### Cleanup and Background Processing
+
+Task structures were prepared for cleanup and background-record processing. Actual processing logic was not introduced because the current models do not define the required expiration or processing business rules.
+
+### Result
+
+Celery tasks were successfully discovered and executed through the Celery worker using Redis.
+
+---
+
+# Task 3 — Task Queues
+
+### Objective
+
+Separate background tasks into logical queues and run dedicated workers for each queue.
+
+### Queues Implemented
+
+```text
+notifications
+reports
+maintenance
+```
+
+### Queue Mapping
+
+| Queue           | Tasks                                                       |
+| --------------- | ----------------------------------------------------------- |
+| `notifications` | Ride, driver assignment, completion, reminder notifications |
+| `reports`       | `generate_ride_report`                                      |
+| `maintenance`   | Cleanup and background-record processing                    |
+
+### Workers
+
+Dedicated Celery workers were configured and verified:
+
+```text
+Notification Worker → notifications
+Report Worker       → reports
+Maintenance Worker  → maintenance
+```
+
+### Result
+
+Verified that each worker listens to its respective queue using:
+
+```bash
+celery -A config worker --pool=solo -l info -Q notifications
+```
+
+```bash
+celery -A config worker --pool=solo -l info -Q reports
+```
+
+```bash
+celery -A config worker --pool=solo -l info -Q maintenance
+```
+
+---
+
+# Task 4 — Retry & Failure Handling
+
+### Objective
+
+Ensure background tasks can handle temporary failures through retry mechanisms.
+
+### Implementation
+
+A test Celery task was used to simulate task failure.
+
+Retry configuration included:
+
+* Automatic retry
+* Retry backoff
+* Maximum retry limit
+
+Example configuration:
+
+```python
+@shared_task(
+    bind=True,
+    autoretry_for=(Exception,),
+    retry_backoff=True,
+    retry_kwargs={"max_retries": 3},
+)
+```
+
+### Testing
+
+A controlled exception was generated to verify that Celery:
+
+1. Receives the task
+2. Detects the failure
+3. Retries the task
+4. Applies the retry limit
+5. Marks the task as failed after retries are exhausted
+
+### Result
+
+Retry and failure-handling behavior was verified through Celery worker logs.
+
+---
+
+# Task 5 — Idempotency
+
+### Objective
+
+Prevent duplicate business records or notifications when the same background task executes more than once.
+
+### Existing Implementation
+
+The notification tasks use:
+
+```python
+get_or_create(
+    event_key=event_key,
+    ...
+)
+```
+
+The `Notification` model also defines `event_key` as unique.
+
+### Flow
+
+```text
+Same task executed twice
+          ↓
+Same event_key
+          ↓
+get_or_create()
+      ↓          ↓
+   Exists      Doesn't exist
+      ↓             ↓
+    Skip          Create
+```
+
+### Testing
+
+The same notification task can be triggered multiple times using the same `event_key`.
+
+Expected behavior:
+
+```text
+First execution  → Notification created
+Second execution → Duplicate notification skipped
+```
+
+### Result
+
+Existing notification idempotency was reviewed and validated to prevent duplicate notification records.
+
+---
+
+# Task 6 — Scheduled Tasks
+
+### Objective
+
+Review scheduled background operations that can run automatically at predefined times.
+
+### Scheduled Operations Identified
+
+* Removing expired records
+* Generating daily ride summaries
+* Cleaning old temporary data
+
+### Review
+
+The project already contains the `generate_ride_report` task, which can serve as the basis for a daily ride summary.
+
+However, actual cleanup scheduling was not introduced because the current models do not define:
+
+* Expiration rules
+* Data-retention periods
+* Temporary-data cleanup requirements
+
+Therefore, no unsupported deletion logic was added.
+
+### Result
+
+Scheduled-task requirements were reviewed and suitable future scheduling use cases were identified.
+
+---
+
+# Task 7 — Monitor Task Execution
+
+### Objective
+
+Monitor Celery task execution and worker behavior.
+
+### Monitoring Areas
+
+The Celery worker logs were reviewed for:
+
+* Successful tasks
+* Failed tasks
+* Retry attempts
+* Task execution time
+* Worker status
+
+### Worker Logs
+
+Celery provides execution information such as:
+
+```text
+Task received
+Task succeeded
+Task failed
+Task retry
+Execution time
+```
+
+The worker startup logs were also checked to verify:
+
+```text
+Redis connection
+Queue configuration
+Task discovery
+Worker readiness
+```
+
+### Result
+
+Celery worker logs were used to monitor task execution and verify successful, failed, and retry scenarios.
+
+---
+
+# Task 8 — Integration Testing
+
+### Objective
+
+Verify the complete asynchronous workflow from API request to database/notification processing.
+
+### Workflow Tested
+
+```text
+Mobile/API Request
+       ↓
+Django API
+       ↓
+Celery Task
+       ↓
+Redis Broker
+       ↓
+Celery Worker
+       ↓
+Database / Notification
+```
+
+### Existing Ride Notification Flow
+
+The ride service uses Celery after successful database transactions:
+
+```text
+Ride operation
+      ↓
+Database transaction
+      ↓
+Transaction committed
+      ↓
+Celery notification task
+      ↓
+Redis
+      ↓
+Notification Worker
+      ↓
+Notification created
+```
+
+### Result
+
+The asynchronous architecture and Celery worker flow were reviewed and validated using the existing ride notification workflow.
+
+---
+
+# Overall Architecture
+
+```text
+                    Django Backend
+                         │
+                         │
+                    API Request
+                         │
+                         ↓
+                 Business Operation
+                         │
+                         ↓
+                  Celery .delay()
+                         │
+                         ↓
+                    Redis Broker
+                         │
+          ┌──────────────┼──────────────┐
+          ↓              ↓              ↓
+   notifications      reports      maintenance
+          ↓              ↓              ↓
+ Notification       Report          Maintenance
+   Worker            Worker           Worker
+          │              │              │
+          └──────────────┼──────────────┘
+                         ↓
+                  PostgreSQL
+```
+
+---
+
+# Final Summary
+
+Completed the **Asynchronous Architecture & Reliable Background Processing** tasks by reviewing suitable background operations, implementing and validating Celery tasks, configuring Redis as the Celery broker, separating tasks into notification, report, and maintenance queues, and configuring dedicated workers. Retry and failure handling were tested using simulated failures. Existing notification idempotency was reviewed using unique `event_key` and `get_or_create()` to prevent duplicate notifications. Scheduled-task requirements and monitoring were reviewed, and the complete API → Celery → Redis → Worker → Database/Notification workflow was validated using the existing ride notification flow.
+
+### Technology Summary
+
+```text
+Django/DRF
+    ↓
+Celery
+    ↓
+Redis
+    ↓
+Celery Workers
+    ↓
+PostgreSQL / Notifications
+```
+
+
+
 ```
 
 
