@@ -6,6 +6,15 @@ from rest_framework.pagination import PageNumberPagination
 
 from .models import Notification
 from .serializers import NotificationSerializer
+import time
+
+from django.db import connection
+from django.db.utils import OperationalError
+from django.core.cache import cache
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
 
 
 class NotificationListAPIView(APIView):
@@ -86,3 +95,75 @@ class NotificationMarkAllReadAPIView(APIView):
             },
             status=status.HTTP_200_OK
         )
+class HealthCheckAPIView(APIView):
+    def get(self, request):
+        return Response({
+            "success": True,
+            "status": "healthy",
+            "service": "Django Backend",
+        })
+
+
+class DatabaseHealthCheckAPIView(APIView):
+    def get(self, request):
+        start_time = time.perf_counter()
+
+        try:
+            with connection.cursor() as cursor:
+                cursor.execute("SELECT 1")
+                cursor.fetchone()
+
+            execution_time = time.perf_counter() - start_time
+
+            return Response({
+                "success": True,
+                "status": "healthy",
+                "database": "connected",
+                "execution_time": f"{execution_time:.4f}s",
+            })
+
+        except OperationalError:
+            return Response(
+                {
+                    "success": False,
+                    "status": "unhealthy",
+                    "database": "unavailable",
+                },
+                status=status.HTTP_503_SERVICE_UNAVAILABLE,
+            )
+
+
+class RedisHealthCheckAPIView(APIView):
+    def get(self, request):
+        try:
+            test_key = "health_check"
+
+            cache.set(test_key, "ok", timeout=10)
+
+            if cache.get(test_key) == "ok":
+                cache.delete(test_key)
+
+                return Response({
+                    "success": True,
+                    "status": "healthy",
+                    "redis": "connected",
+                })
+
+            return Response(
+                {
+                    "success": False,
+                    "status": "unhealthy",
+                    "redis": "unavailable",
+                },
+                status=status.HTTP_503_SERVICE_UNAVAILABLE,
+            )
+
+        except Exception:
+            return Response(
+                {
+                    "success": False,
+                    "status": "unhealthy",
+                    "redis": "unavailable",
+                },
+                status=status.HTTP_503_SERVICE_UNAVAILABLE,
+            )

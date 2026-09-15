@@ -3145,3 +3145,18 @@ C:\Users\DELL\Documents\DjangoBackend\common\tasks.py changed, reloading.
 Watching for file changes with StatReloader
 C:\Users\DELL\Documents\DjangoBackend\common\tasks.py changed, reloading.
 Watching for file changes with StatReloader
+2026-09-11 12:45:15,756 | INFO | django.utils.autoreload | Watching for file changes with StatReloader
+2026-09-11 12:46:47,247 | INFO | api | API request | request_id=89f89c32-15ec-4c1d-8b23-daead5842c4e | user_id=None | method=POST | endpoint=/api/v1/users/login/ | status=200 | execution_time=16.0494s
+2026-09-11 12:46:47,275 | INFO | django.channels.server | [mHTTP POST /api/v1/users/login/ 200 [16.28, 127.0.0.1:51339][0m
+2026-09-11 12:47:25,843 | INFO | api | API request | request_id=1498a3aa-9751-43ff-9851-416d4a32c242 | user_id=363486f3-3698-42eb-8e27-e9d126facc85 | method=GET | endpoint=/api/v1/users/profile/ | status=200 | execution_time=0.1418s
+2026-09-11 12:47:25,846 | INFO | django.channels.server | [mHTTP GET /api/v1/users/profile/ 200 [0.15, 127.0.0.1:51339][0m
+2026-09-11 12:54:12,290 | INFO | django.utils.autoreload | C:\Users\DELL\Documents\DjangoBackend\config\settings\base.py changed, reloading.
+2026-09-11 12:54:15,312 | INFO | django.utils.autoreload | Watching for file changes with StatReloader
+2026-09-11 12:56:24,056 | INFO | django.utils.autoreload | Watching for file changes with StatReloader
+2026-09-11 13:00:25,892 | INFO | api | API request | request_id=c9b23cf4-950b-4e60-b951-966f277d6bec | user_id=None | method=GET | endpoint=/api/v1/users/profile/ | status=401 | execution_time=0.0234s
+2026-09-11 13:00:25,901 | WARNING | django.request | Unauthorized: /api/v1/users/profile/
+2026-09-11 13:00:25,903 | WARNING | django.channels.server | [31;1mHTTP GET /api/v1/users/profile/ 401 [0.04, 127.0.0.1:51760][0m
+2026-09-11 13:09:51,074 | INFO | django.utils.autoreload | C:\Users\DELL\Documents\DjangoBackend\common\middleware.py changed, reloading.
+2026-09-11 13:09:56,004 | INFO | django.utils.autoreload | Watching for file changes with StatReloader
+2026-09-11 13:10:21,827 | INFO | django.utils.autoreload | C:\Users\DELL\Documents\DjangoBackend\common\middleware.py changed, reloading.
+2026-09-11 13:10:23,960 | INFO | django.utils.autoreload | Watching for file changes with StatReloader

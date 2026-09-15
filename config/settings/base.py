@@ -52,6 +52,8 @@ INSTALLED_APPS = [
 # --------------------------------------------------
 
 MIDDLEWARE = [
+    "common.middleware.RequestIDMiddleware",
+
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -193,6 +195,8 @@ REST_FRAMEWORK = {
         "user": "60/minute",
         "ride_creation": "5/minute",
     },
+
+    "EXCEPTION_HANDLER": "common.exceptions.custom_exception_handler",
 }
 
 
@@ -279,23 +283,86 @@ LOGGING = {
 
     "disable_existing_loggers": False,
 
+    "formatters": {
+        "standard": {
+            "format": (
+                "{asctime} | {levelname} | "
+                "{name} | {message}"
+            ),
+            "style": "{",
+        },
+    },
+
     "handlers": {
         "console": {
             "class": "logging.StreamHandler",
+            "formatter": "standard",
         },
 
         "file": {
-            "level": "INFO",
             "class": "logging.FileHandler",
             "filename": os.path.join(
                 BASE_DIR,
                 "logs",
-                "django.log"
+                "django.log",
             ),
+            "formatter": "standard",
+            "level": "INFO",
         },
     },
 
     "loggers": {
+
+        # Application
+        "application": {
+            "handlers": ["console", "file"],
+            "level": "INFO",
+            "propagate": False,
+        },
+
+        # Authentication
+        "authentication": {
+            "handlers": ["console", "file"],
+            "level": "INFO",
+            "propagate": False,
+        },
+
+        # API
+        "api": {
+            "handlers": ["console", "file"],
+            "level": "INFO",
+            "propagate": False,
+        },
+
+        # Database
+        "database": {
+            "handlers": ["console", "file"],
+            "level": "INFO",
+            "propagate": False,
+        },
+
+        # Celery
+        "celery": {
+            "handlers": ["console", "file"],
+            "level": "INFO",
+            "propagate": False,
+        },
+
+        # WebSocket
+        "websocket": {
+            "handlers": ["console", "file"],
+            "level": "INFO",
+            "propagate": False,
+        },
+
+        # Security
+        "security": {
+            "handlers": ["console", "file"],
+            "level": "INFO",
+            "propagate": False,
+        },
+
+        # Existing Django logging
         "django": {
             "handlers": ["console", "file"],
             "level": "INFO",
