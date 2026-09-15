@@ -1058,7 +1058,7 @@ Implemented and reviewed **asynchronous background processing** in the Django ri
 
 ---
 
-## Objective
+## Objective (sep 9th 2026)
 
 The objective of this work was to build reliable background processing so that time-consuming operations do not unnecessarily block mobile API requests.
 
@@ -1447,33 +1447,631 @@ The asynchronous architecture and Celery worker flow were reviewed and validated
 
 Completed the **Asynchronous Architecture & Reliable Background Processing** tasks by reviewing suitable background operations, implementing and validating Celery tasks, configuring Redis as the Celery broker, separating tasks into notification, report, and maintenance queues, and configuring dedicated workers. Retry and failure handling were tested using simulated failures. Existing notification idempotency was reviewed using unique `event_key` and `get_or_create()` to prevent duplicate notifications. Scheduled-task requirements and monitoring were reviewed, and the complete API → Celery → Redis → Worker → Database/Notification workflow was validated using the existing ride notification flow.
 
-### Technology Summary
+# 📋 Ride Booking Tasks (sep 11th 2026)
+
+## Task 1 — Receive Business Requirement
+
+### Objective
+
+Analyze the business requirement and convert it into a technical backend workflow.
+
+### Requirement
+
+A passenger should be able to request a ride from a mobile application. The backend should find eligible nearby drivers, allow a driver to accept the ride, provide real-time updates, process notifications asynchronously, and maintain ride history.
+
+### Technical Flow
 
 ```text
-Django/DRF
+Passenger
+   ↓
+Ride Request
+   ↓
+Authentication
+   ↓
+Validation
+   ↓
+Ride Service
+   ↓
+Driver Matching
+   ↓
+Ride Acceptance
+   ↓
+Real-Time Updates
+   ↓
+Background Notifications
+   ↓
+Ride History
+```
+
+### Status
+
+✅ Completed and validated.
+
+---
+
+# Task 2 — Design the Architecture
+
+### Objective
+
+Design a scalable backend architecture using separate responsibilities.
+
+### Architecture Layers
+
+* Mobile Application
+* REST API
+* JWT Authentication
+* Permission Layer
+* Service Layer
+* PostgreSQL Database
+
+### Supporting Technologies
+
+| Component             | Purpose                   |
+| --------------------- | ------------------------- |
+| Django                | Backend framework         |
+| Django REST Framework | REST APIs                 |
+| PostgreSQL            | Persistent database       |
+| Redis                 | Caching and Celery broker |
+| Celery                | Background processing     |
+| Django Channels       | WebSocket communication   |
+| JWT                   | Authentication            |
+| Swagger/OpenAPI       | API documentation         |
+
+### Status
+
+✅ Architecture implemented and tested.
+
+---
+
+# Task 3 — Implement Ride Request
+
+### Endpoint
+
+```text
+POST /api/v1/rides/
+```
+
+### Validations
+
+The API validates:
+
+* User authentication
+* Pickup location
+* Destination
+* Ride type
+* Existing active ride
+
+### Flow
+
+```text
+Passenger Request
+       ↓
+JWT Authentication
+       ↓
+Permission Check
+       ↓
+Input Validation
+       ↓
+Active Ride Validation
+       ↓
+Create Ride
+       ↓
+PostgreSQL
+```
+
+### Status
+
+✅ Implemented and tested through API testing.
+
+---
+
+# Task 4 — Implement Driver Matching
+
+### Objective
+
+Find an eligible nearby driver for a requested ride.
+
+### Matching Flow
+
+```text
+Ride Request
+     ↓
+Find Online/Available Drivers
+     ↓
+Get Driver Location
+     ↓
+Calculate Distance
+     ↓
+Sort by Distance
+     ↓
+Select Eligible Driver
+```
+
+### Concurrent Acceptance
+
+Multiple drivers attempting to accept the same ride are handled using database transaction and row-level locking.
+
+```text
+Driver A ──┐
+           ├──→ Ride Lock → One Driver Accepted
+Driver B ──┘
+```
+
+This prevents multiple drivers from successfully accepting the same ride.
+
+### Status
+
+✅ Driver matching and concurrent acceptance handling implemented and tested.
+
+---
+
+# Task 5 — Implement Real-Time Updates
+
+### Technology
+
+**Django Channels + WebSockets**
+
+### Real-Time Events
+
+```text
+Passenger
+   ↑
+   │
+Ride Accepted
+Driver Location
+Ride Started
+Ride Completed
+```
+
+### WebSocket Flow
+
+```text
+Driver / Backend Event
+          ↓
+    WebSocket Consumer
+          ↓
+      Channel Layer
+          ↓
+       Passenger
+```
+
+### Status
+
+✅ WebSocket real-time updates implemented and tested.
+
+---
+
+# Task 6 — Implement Background Processing
+
+### Technology
+
+**Celery + Redis**
+
+### Background Tasks
+
+* Ride notification
+* Driver assignment notification
+* Ride completion notification
+* Ride summary/report
+* Retry handling
+
+### Processing Flow
+
+```text
+Django API
     ↓
+Celery Task
+    ↓
+Redis Broker
+    ↓
+Celery Worker
+    ↓
+Task Execution
+```
+
+### Retry Handling
+
+Failed tasks are configured to retry according to the configured retry policy.
+
+### Status
+
+✅ Celery background processing and retry handling implemented and tested.
+
+---
+
+# Task 7 — Implement Caching
+
+### Technology
+
+**Redis**
+
+Redis is used to cache suitable frequently accessed data such as nearby-driver information.
+
+### Cache Flow
+
+```text
+Request
+   ↓
+Check Redis
+   ↓
+ ┌───────────────┐
+ │ Cache Hit?    │
+ └───────────────┘
+    ↓         ↓
+   Yes        No
+    ↓         ↓
+Return     PostgreSQL
+Cache         ↓
+          Cache Write
+              ↓
+          Return Data
+```
+
+### Cache Operations
+
+* Cache Read
+* Cache Miss Handling
+* Cache Write
+* Cache Invalidation
+* Performance comparison
+
+### Status
+
+✅ Redis caching and performance validation completed.
+
+---
+
+# Task 8 — Final Testing & Presentation
+
+### End-to-End Testing Checklist
+
+The following functionality was validated:
+
+1. Registration
+2. Login
+3. JWT authentication
+4. Driver availability
+5. Driver location update
+6. Ride creation
+7. Driver matching
+8. Driver acceptance
+9. WebSocket notification
+10. Ride status update
+11. Celery notification
+12. Redis usage
+13. Database records
+14. Automated tests
+15. Security controls
+16. Application logs
+17. Health checks
+18. Swagger/API documentation
+
+### Status
+
+✅ End-to-end functionality tested and validated.
+
+---
+
+# 📊 Logging, Monitoring & Reliability (sep 10th 2026)
+
+The following additional tasks were implemented to improve production readiness, observability, troubleshooting, and reliability.
+
+---
+
+# 📋 Logging & Monitoring Tasks
+
+## Task 1 — Logging Architecture
+
+### Objective
+
+Create separate logging categories for different backend activities.
+
+### Logging Categories
+
+* Application
+* Authentication
+* API
+* Database
+* Celery
+* WebSocket
+* Security
+
+### Purpose
+
+Separate logging categories make it easier to identify and troubleshoot issues in specific areas of the application.
+
+### Status
+
+✅ Logging architecture configured.
+
+---
+
+# Task 2 — Structured Logging
+
+### Objective
+
+Create meaningful and consistent log messages.
+
+### Logged Information
+
+* Timestamp
+* Request ID
+* User ID where appropriate
+* Endpoint
+* HTTP method
+* Status code
+* Execution time
+* Error information
+
+### Security
+
+The logging implementation avoids exposing:
+
+* Passwords
+* JWT tokens
+* Sensitive personal information
+
+### Example
+
+```text
+API request |
+request_id=abc123 |
+user_id=45 |
+method=POST |
+endpoint=/api/v1/rides/ |
+status=201 |
+execution_time=0.0245s
+```
+
+### Status
+
+✅ Structured API logging implemented.
+
+---
+
+# Task 3 — Global Exception Handling
+
+### Objective
+
+Provide centralized and consistent API error responses.
+
+### Standard Response
+
+```json
+{
+    "success": false,
+    "message": "Ride not found",
+    "error_code": "RIDE_NOT_FOUND"
+}
+```
+
+### Error Categories
+
+Examples include:
+
+```text
+VALIDATION_ERROR
+AUTHENTICATION_ERROR
+PERMISSION_DENIED
+RESOURCE_NOT_FOUND
+THROTTLED
+API_ERROR
+```
+
+### Status
+
+✅ Global exception handling implemented and tested.
+
+---
+
+# Task 4 — Request Tracking
+
+### Objective
+
+Generate a unique request/correlation ID for incoming API requests.
+
+### Request Flow
+
+```text
+Mobile Request
+      ↓
+Django API
+      ↓
+Service Layer
+      ↓
+Database
+      ↓
 Celery
+```
+
+The request ID helps trace a request across different backend operations.
+
+### Response Header
+
+```text
+X-Request-ID
+```
+
+### Status
+
+✅ Request tracking implemented and validated.
+
+---
+
+# Task 5 — API Performance Logging
+
+### Objective
+
+Measure API execution time and identify slow APIs.
+
+### Performance Logging
+
+The system records:
+
+* Request ID
+* Endpoint
+* HTTP method
+* Status code
+* Execution time
+
+Slow API requests can be identified using a configurable execution-time threshold.
+
+### Performance Areas Reviewed
+
+* API execution
+* Database queries
+* Business/service operations
+
+### Status
+
+✅ API performance logging and slow API detection implemented.
+
+---
+
+# Task 6 — Celery Monitoring
+
+### Objective
+
+Monitor asynchronous task execution.
+
+### Monitoring Areas
+
+* Successful jobs
+* Failed jobs
+* Retry patterns
+* Task execution duration
+* Worker availability
+* Redis broker connectivity
+
+### Worker Flow
+
+```text
+Celery Task
     ↓
 Redis
     ↓
-Celery Workers
+Celery Worker
     ↓
-PostgreSQL / Notifications
+Success / Failure
+    ↓
+Logs
 ```
 
+### Status
 
+✅ Celery monitoring and worker availability reviewed.
 
+---
+
+# Task 7 — Health Check APIs
+
+### Health Endpoints
+
+```text
+GET /api/health/
+GET /api/health/database/
+GET /api/health/redis/
 ```
 
+### Checks
 
+#### Application
 
+```text
+/api/health/
+```
 
+Checks application availability.
 
+#### Database
 
+```text
+/api/health/database/
+```
 
+Checks PostgreSQL connectivity.
 
+#### Redis
 
+```text
+/api/health/redis/
+```
 
+Checks Redis connectivity.
 
+### Failure Response
 
+Unhealthy dependencies return an appropriate `503 Service Unavailable` response without exposing sensitive infrastructure details.
+
+### Status
+
+✅ Application, database, and Redis health checks implemented and tested.
+
+---
+
+# Task 8 — Incident Simulation
+
+### Objective
+
+Simulate common production failures and use logs to identify and troubleshoot them.
+
+### Scenarios Tested
+
+#### 1. Database Failure
+
+```text
+PostgreSQL unavailable
+       ↓
+Health Check
+       ↓
+503 Response
+       ↓
+Logs identify failure
+```
+
+#### 2. Redis Failure
+
+```text
+Redis unavailable
+       ↓
+Health Check
+       ↓
+503 Response
+       ↓
+Logs identify failure
+```
+
+#### 3. Invalid API Request
+
+```text
+Invalid Input
+      ↓
+Validation Error
+      ↓
+400 Response
+      ↓
+Structured Error Log
+```
+
+#### 4. Celery Failure
+
+```text
+Celery Task
+     ↓
+Failure
+     ↓
+Retry
+     ↓
+Retry Limit
+     ↓
+Final Failure
+     ↓
+Worker Logs
+```
+
+### Status
+
+✅ Incident scenarios simulated, logs reviewed, recovery validated, and troubleshooting documented.
+
+---
 
