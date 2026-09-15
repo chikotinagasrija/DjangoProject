@@ -3160,3 +3160,8 @@ Watching for file changes with StatReloader
 2026-09-11 13:09:56,004 | INFO | django.utils.autoreload | Watching for file changes with StatReloader
 2026-09-11 13:10:21,827 | INFO | django.utils.autoreload | C:\Users\DELL\Documents\DjangoBackend\common\middleware.py changed, reloading.
 2026-09-11 13:10:23,960 | INFO | django.utils.autoreload | Watching for file changes with StatReloader
+2026-09-15 09:44:06,950 | INFO | api | API request | request_id=a870192c-6060-4d84-ba6f-f2a9214bd98d | user_id=None | method=GET | endpoint=/ | status=404 | execution_time=0.6584s
+2026-09-15 09:44:06,954 | WARNING | django.request | Not Found: /
+2026-09-15 09:44:07,100 | INFO | api | API request | request_id=34170d5d-4356-40f8-a89c-dbdfb23b1caf | user_id=None | method=GET | endpoint=/favicon.ico | status=404 | execution_time=0.0110s
+2026-09-15 09:44:07,106 | WARNING | django.request | Not Found: /favicon.ico
+2026-09-15 09:47:26,024 | INFO | api | API request | request_id=aeb49110-0b88-4930-9acd-ad7f5655a8c8 | user_id=None | method=GET | endpoint=/api/health/ | status=200 | execution_time=0.2480s
