@@ -2073,5 +2073,133 @@ Worker Logs
 
 ✅ Incident scenarios simulated, logs reviewed, recovery validated, and troubleshooting documented.
 
+
+# Dockerize Django Mobile Backend (sep 15th 2026)
+
+## Task 1 – Understand Container Architecture
+
+Studied the Docker architecture and understood the responsibilities of:
+
+- Nginx
+- Django/Gunicorn
+- PostgreSQL
+- Redis
+- Celery Worker
+
+Understood how these services communicate with each other.
+
 ---
+
+## Task 2 – Create Production Dockerfile
+
+Created a production Dockerfile for the Django backend.
+
+Implemented:
+
+- Python base image
+- Working directory
+- Dependency installation
+- Application code copying
+- Environment configuration
+- Gunicorn startup command
+
+Successfully built the Django Docker image.
+
+---
+
+## Task 3 – Create `.dockerignore`
+
+Created a `.dockerignore` file to exclude unnecessary and sensitive files from the Docker build.
+
+Excluded:
+
+- `__pycache__`
+- `.env`
+- `.git`
+- `venv`
+- `*.pyc`
+- `logs`
+
+---
+
+## Task 4 – Docker Compose
+
+Created `docker-compose.yml` to run the complete backend environment.
+
+Configured the following services:
+
+- Django / Web
+- PostgreSQL
+- Redis
+- Celery
+- Nginx
+
+Configured service networking and dependencies.
+
+---
+
+## Task 5 – PostgreSQL
+
+Containerized PostgreSQL and configured:
+
+- Database
+- User
+- Password
+- Database connection
+- Persistent Docker volume
+- PostgreSQL health check
+
+Verified database connectivity and data persistence.
+
+---
+
+## Task 6 – Redis
+
+Configured Redis as a Docker service.
+
+Connected:
+
+- Django → Redis
+- Celery → Redis
+
+Verified Redis connectivity and configured Redis for caching and background task processing.
+
+---
+
+## Task 7 – Complete Application
+
+Started and validated the complete Docker environment.
+
+Verified:
+
+- Django
+- PostgreSQL
+- Redis
+- Celery
+- Nginx
+- API communication
+
+Tested the application through the Nginx endpoint.
+
+---
+
+## Task 8 – Documentation & Git
+
+Created Docker setup documentation covering:
+
+- Installation
+- Environment variables
+- Build
+- Start
+- Stop
+- Logs
+- Troubleshooting
+
+Committed the Docker-related files to Git.
+```
+
+
+
+
+
 
