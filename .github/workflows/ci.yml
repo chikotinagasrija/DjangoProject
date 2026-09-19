@@ -102,7 +102,7 @@ jobs:
 
       - name: Run lint
         run: |
-          flake8 .
+          flake8 . --exclude=.git,venv,__pycache__,staticfiles,media,logs
 
       - name: Build production Docker image
         run: |
