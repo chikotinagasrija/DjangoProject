@@ -1,0 +1,57 @@
+name: Deploy Django Application
+
+on:
+  workflow_run:
+    workflows: ["Django CI"]
+    types:
+      - completed
+    branches:
+      - main
+
+jobs:
+  deploy:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Pull Docker image
+        run: |
+          docker pull ghcr.io/${{ github.repository_owner }}/django-backend:latest
+
+      - name: Start PostgreSQL
+        run: |
+          docker compose up -d postgres
+
+      - name: Start Redis
+        run: |
+          docker compose up -d redis
+
+      - name: Start Django application
+        run: |
+          docker run -d \
+            --name django_web \
+            --network host \
+            ghcr.io/${{ github.repository_owner }}/django-backend:latest
+
+      - name: Wait for application
+        run: |
+          sleep 10
+
+      - name: Health check
+        run: |
+          curl --fail http://localhost:8000/ || exit 1
+
+      - name: Deployment successful
+        run: |
+          echo "Deployment completed successfully"
