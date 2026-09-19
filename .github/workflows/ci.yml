@@ -100,6 +100,9 @@ jobs:
         run: |
           flake8 .
 
-      - name: Build Docker image
+      - name: Build production Docker image
         run: |
-          docker build -t django-backend:${{ github.sha }} .
+          docker build \
+            -t django-backend:${{ github.sha }} \
+            -t django-backend:latest \
+            .
