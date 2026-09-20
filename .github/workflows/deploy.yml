@@ -13,8 +13,11 @@ jobs:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
 
-    steps:
+    permissions:
+      contents: read
+      packages: read
 
+    steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
@@ -29,6 +32,19 @@ jobs:
         run: |
           docker pull ghcr.io/${{ github.repository_owner }}/django-backend:latest
 
+      - name: Create deployment environment file
+        run: |
+          cat > .env <<EOF
+          SECRET_KEY=${{ secrets.SECRET_KEY }}
+          DB_NAME=${{ secrets.DB_NAME }}
+          DB_USER=${{ secrets.DB_USER }}
+          DB_PASSWORD=${{ secrets.DB_PASSWORD }}
+          DB_HOST=postgres
+          DB_PORT=5432
+          REDIS_URL=${{ secrets.REDIS_URL }}
+          ALLOWED_HOSTS=${{ secrets.ALLOWED_HOSTS }}
+          EOF
+
       - name: Start PostgreSQL
         run: |
           docker compose up -d postgres
@@ -42,6 +58,14 @@ jobs:
           docker run -d \
             --name django_web \
             --network host \
+            -e SECRET_KEY="${{ secrets.SECRET_KEY }}" \
+            -e DB_NAME="${{ secrets.DB_NAME }}" \
+            -e DB_USER="${{ secrets.DB_USER }}" \
+            -e DB_PASSWORD="${{ secrets.DB_PASSWORD }}" \
+            -e DB_HOST=localhost \
+            -e DB_PORT=5432 \
+            -e REDIS_URL="redis://localhost:6379" \
+            -e ALLOWED_HOSTS="${{ secrets.ALLOWED_HOSTS }}" \
             ghcr.io/${{ github.repository_owner }}/django-backend:latest
 
       - name: Wait for application
