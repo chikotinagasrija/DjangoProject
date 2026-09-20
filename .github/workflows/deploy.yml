@@ -74,7 +74,7 @@ jobs:
 
       - name: Health check
         run: |
-          curl --fail http://localhost:8000/ || exit 1
+          curl --fail http://localhost:8080/api/health/ || exit 1
 
       - name: Deployment successful
         run: |
