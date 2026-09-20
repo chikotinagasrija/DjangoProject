@@ -2071,135 +2071,1640 @@ Worker Logs
 
 ### Status
 
-✅ Incident scenarios simulated, logs reviewed, recovery validated, and troubleshooting documented.
+✅ Incident scenarios simulated, logs reviewed, recovery validated, and troubleshooting documente
 
 
-# Dockerize Django Mobile Backend (sep 15th 2026)
 
-## Task 1 – Understand Container Architecture
+### Services (sep 15th 2026)
 
-Studied the Docker architecture and understood the responsibilities of:
-
-- Nginx
-- Django/Gunicorn
-- PostgreSQL
-- Redis
-- Celery Worker
-
-Understood how these services communicate with each other.
+| Service    | Responsibility                             |
+| ---------- | ------------------------------------------ |
+| Web        | Django application running with Gunicorn   |
+| PostgreSQL | Application database                       |
+| Redis      | Cache and Celery message broker            |
+| Celery     | Background task processing                 |
+| Nginx      | Reverse proxy and static/media file server |
 
 ---
 
-## Task 2 – Create Production Dockerfile
+# Task 1 — Understand Container Architecture (sep 15 2026)
 
-Created a production Dockerfile for the Django backend.
+The application is divided into multiple containers.
+
+## Nginx
+
+Nginx acts as the reverse proxy.
+
+```text
+Mobile App
+    ↓
+Nginx
+    ↓
+Django / Gunicorn
+```
+
+Nginx receives client requests and forwards them to the Django application.
+
+It is also configured to serve static and media files.
+
+## Django / Gunicorn
+
+Django contains the backend application and REST APIs.
+
+Gunicorn acts as the production WSGI application server that runs Django.
+
+```text
+Nginx
+   ↓
+Gunicorn
+   ↓
+Django
+```
+
+## PostgreSQL
+
+PostgreSQL is the relational database used by Django.
+
+```text
+Django
+   ↓
+Django ORM
+   ↓
+PostgreSQL
+```
+
+## Redis
+
+Redis is used for caching and as the Celery message broker.
+
+```text
+Django → Redis
+```
+
+## Celery
+
+Celery processes background and asynchronous tasks.
+
+```text
+Django
+   ↓
+Redis
+   ↓
+Celery Worker
+   ↓
+Background Task
+```
+
+---
+
+# Task 2 — Create Production Dockerfile
+
+A production Dockerfile was created for the Django application.
+
+The Dockerfile performs the following:
+
+1. Uses a Python base image.
+2. Sets the application working directory.
+3. Copies the dependency file.
+4. Installs Python dependencies.
+5. Copies the application source code.
+6. Exposes the application port.
+7. Starts Django using Gunicorn.
+
+## Dockerfile Structure
+
+```dockerfile
+FROM python:3.12-slim
+
+WORKDIR /app
+
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+COPY requirements.txt .
+
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+
+EXPOSE 8000
+
+CMD ["gunicorn", "config.wsgi:application", "--bind", "0.0.0.0:8000"]
+```
+
+## Build Docker Image
+
+```bash
+docker build -t django-backend .
+```
+
+Check the image:
+
+```bash
+docker images
+```
+
+---
+
+# Task 3 — Create `.dockerignore`
+
+The `.dockerignore` file prevents unnecessary and sensitive files from being copied into the Docker image.
+
+The following files/directories are excluded:
+
+```text
+__pycache__
+.env
+.git
+venv
+*.pyc
+logs
+```
+
+Additional project-specific exclusions can include:
+
+```text
+.venv
+staticfiles
+media
+.vscode
+```
+
+## Purpose
+
+The `.dockerignore` file helps to:
+
+* Reduce Docker image size
+* Avoid copying development files
+* Protect environment files
+* Improve Docker build performance
+* Keep the image clean
+
+---
+
+# Task 4 — Create Docker Compose
+
+Docker Compose is used to run the complete backend environment.
+
+The application contains the following services:
+
+```text
+web
+postgres
+redis
+celery
+nginx
+```
+
+## Compose Architecture
+
+```text
+                 Nginx
+                   |
+                   v
+             Django Web
+             /        \
+            v          v
+       PostgreSQL     Redis
+                        |
+                        v
+                      Celery
+```
+
+## Start the complete environment
+
+```bash
+docker compose up -d
+```
+
+## Check containers
+
+```bash
+docker compose ps
+```
+
+Expected services:
+
+```text
+django_web
+django_postgres
+django_redis
+django_celery
+django_nginx
+```
+
+## Stop containers
+
+```bash
+docker compose down
+```
+
+## Start again
+
+```bash
+docker compose up -d
+```
+
+---
+
+# Task 5 — Configure PostgreSQL
+
+PostgreSQL was moved from the local installation into a Docker container.
+
+The PostgreSQL service contains:
+
+* Database
+* User
+* Password
+* Persistent volume
+
+## PostgreSQL Container
+
+```text
+PostgreSQL
+    |
+    v
+postgres_data volume
+```
+
+The persistent volume ensures that database data is retained when the PostgreSQL container is restarted.
+
+## Check PostgreSQL
+
+```bash
+docker compose ps postgres
+```
+
+## Check PostgreSQL health
+
+```bash
+docker compose exec postgres pg_isready -U postgres -d djangodb
+```
+
+Expected:
+
+```text
+accepting connections
+```
+
+## Run Django migrations
+
+```bash
+docker compose exec web python manage.py migrate
+```
+
+## Check migration status
+
+```bash
+docker compose exec web python manage.py showmigrations
+```
+
+## Verify database tables
+
+```bash
+docker compose exec postgres psql -U postgres -d djangodb -c "\dt"
+```
+
+---
+
+# Task 6 — Configure Redis
+
+Redis runs as a separate Docker container.
+
+Redis is used for:
+
+* Django caching
+* Celery message broker
+
+## Redis Architecture
+
+```text
+Django
+   |
+   v
+Redis
+   ^
+   |
+Celery
+```
+
+## Test Redis
+
+```bash
+docker compose exec redis redis-cli ping
+```
+
+Expected:
+
+```text
+PONG
+```
+
+## Verify Django → Redis
+
+Enter the Django shell:
+
+```bash
+docker compose exec web python manage.py shell
+```
+
+Run:
+
+```python
+from django.core.cache import cache
+
+cache.set("docker_test", "success", 60)
+
+cache.get("docker_test")
+```
+
+Expected:
+
+```text
+'success'
+```
+
+Exit:
+
+```python
+exit()
+```
+
+## Verify Celery
+
+Check the Celery worker:
+
+```bash
+docker compose exec celery celery -A config inspect ping
+```
+
+Expected:
+
+```text
+pong
+```
+
+Check Celery logs:
+
+```bash
+docker compose logs celery --tail=100
+```
+
+---
+
+# Task 7 — Run Complete Application
+
+Start the complete environment:
+
+```bash
+docker compose up -d
+```
+
+Check all services:
+
+```bash
+docker compose ps
+```
+
+Expected:
+
+```text
+Django ✓
+PostgreSQL ✓
+Redis ✓
+Celery ✓
+Nginx ✓
+```
+
+## Test Nginx
+
+Nginx configuration:
+
+```bash
+docker compose exec nginx nginx -t
+```
+
+Expected:
+
+```text
+syntax is ok
+test is successful
+```
+
+## Test API through Nginx
+
+The Nginx service forwards requests to Django/Gunicorn.
+
+Example:
+
+```text
+GET /api/health/
+```
+
+Using curl:
+
+```bash
+curl http://localhost/api/health/
+```
+
+The same endpoint can be tested using Postman.
+
+## Request Flow
+
+```text
+Client / Postman
+       ↓
+Nginx :80
+       ↓
+Gunicorn :8000
+       ↓
+Django
+       ↓
+PostgreSQL / Redis
+```
+
+---
+
+# Task 8 — Documentation & Git
+
+This document provides the Docker setup and operational instructions.
+
+## Environment Variables
+
+The application uses environment variables for configuration.
+
+Example variables:
+
+```text
+SECRET_KEY
+DB_NAME
+DB_USER
+DB_PASSWORD
+DB_HOST
+DB_PORT
+REDIS_URL
+ALLOWED_HOSTS
+```
+
+Sensitive values should not be committed to Git.
+
+The `.env` file should remain excluded through `.gitignore` and `.dockerignore`.
+
+---
+
+# Common Docker Commands
+
+## Build
+
+```bash
+docker compose build
+```
+
+## Start
+
+```bash
+docker compose up -d
+```
+
+## Stop
+
+```bash
+docker compose down
+```
+
+## Restart
+
+```bash
+docker compose restart
+```
+
+## Rebuild and start
+
+```bash
+docker compose up -d --build
+```
+
+## Check containers
+
+```bash
+docker compose ps
+```
+
+## View all logs
+
+```bash
+docker compose logs
+```
+
+## Follow logs
+
+```bash
+docker compose logs -f
+```
+
+## View Django logs
+
+```bash
+docker compose logs web --tail=100
+```
+
+## View Nginx logs
+
+```bash
+docker compose logs nginx --tail=100
+```
+
+## View PostgreSQL logs
+
+```bash
+docker compose logs postgres --tail=100
+```
+
+## View Redis logs
+
+```bash
+docker compose logs redis --tail=100
+```
+
+## View Celery logs
+
+```bash
+docker compose logs celery --tail=100
+```
+
+---
+
+# Troubleshooting
+
+## Django container is not starting
+
+Check:
+
+```bash
+docker compose logs web --tail=100
+```
+
+Possible causes:
+
+* Incorrect environment variables
+* Database connection failure
+* Gunicorn configuration error
+* Missing dependency
+
+---
+
+## PostgreSQL connection error
+
+Check:
+
+```bash
+docker compose logs postgres --tail=100
+```
+
+Then:
+
+```bash
+docker compose exec postgres pg_isready -U postgres -d djangodb
+```
+
+Check:
+
+```text
+DB_HOST
+DB_PORT
+DB_NAME
+DB_USER
+DB_PASSWORD
+```
+
+---
+
+## Redis connection error
+
+Check:
+
+```bash
+docker compose logs redis --tail=100
+```
+
+Then:
+
+```bash
+docker compose exec redis redis-cli ping
+```
+
+Expected:
+
+```text
+PONG
+```
+
+Check:
+
+```text
+REDIS_URL
+```
+
+---
+
+## Celery task not executing
+
+Check:
+
+```bash
+docker compose logs celery --tail=100
+```
+
+Verify worker:
+
+```bash
+docker compose exec celery celery -A config inspect ping
+```
+
+Possible causes:
+
+* Celery worker stopped
+* Redis unavailable
+* Incorrect Redis URL
+* Task configuration issue
+
+---
+
+## Nginx returns 502
+
+Check:
+
+```bash
+docker compose logs nginx --tail=100
+```
+
+Then:
+
+```bash
+docker compose logs web --tail=100
+```
+
+Possible causes:
+
+* Django container stopped
+* Gunicorn not running
+* Incorrect upstream configuration
+* Docker networking issue
+
+---
+
+## API returns 404
+
+Check:
+
+```bash
+docker compose logs web --tail=100
+```
+
+Verify the requested URL exists in Django URL configuration.
+
+For example:
+
+```text
+/api/health/
+/api/v1/users/
+/api/v1/rides/
+```
+
+---
+
+## Static files are not loading
+
+Run:
+
+```bash
+docker compose exec web python manage.py collectstatic --noinput
+```
+
+Then check:
+
+```text
+STATIC_ROOT
+Nginx configuration
+staticfiles directory
+```
+
+---
+
+# Docker Architecture Summary
+
+The complete Docker environment is:
+
+```text
+                         Client
+                           |
+                           v
+                         Nginx
+                           |
+                           v
+                    Django / Gunicorn
+                     /           \
+                    /             \
+                   v               v
+             PostgreSQL          Redis
+                                   |
+                                   v
+                              Celery Worker
+
+# Production Configuration, Nginx & Database Deployment (sep 16 2026)
+
+## Objective
+
+Prepared the Django backend for production execution and implemented a production request flow using environment-based configuration, Gunicorn, Nginx, PostgreSQL, static/media files, and backup/restore procedures.
+
+---
+
+## Task 1 — Environment Configurations
+
+Configured separate Django settings for:
+
+* Development
+* Testing
+* Production
+
+Implemented environment-based configuration for:
+
+* Secret key
+* PostgreSQL database
+* Redis
+* JWT
+* Email
+* Static and media storage
+
+Used `.env` variables to avoid hard-coding sensitive configuration values.
+
+---
+
+## Task 2 — Production Django Settings
+
+Configured production settings with:
+
+* `DEBUG = False`
+* Environment-based `ALLOWED_HOSTS`
+* Environment-based CORS configuration
+* Environment-based CSRF trusted origins
+* Secure session cookies
+* Secure CSRF cookies
+* HTTPS redirection
+* HSTS security headers
+* `X-Content-Type-Options`
+* `X-Frame-Options`
+
+Verified the production configuration using:
+
+```bash
+python manage.py check
+```
+
+Result:
+
+```text
+System check identified no issues
+```
+
+---
+
+## Task 3 — Gunicorn
+
+Configured Gunicorn as the production WSGI application server.
+
+Implemented the request flow:
+
+```text
+Client
+   ↓
+Gunicorn
+   ↓
+Django
+```
+
+Verified Gunicorn inside the Docker container.
+
+Gunicorn version:
+
+```text
+26.2.0
+```
+
+Verified successful startup:
+
+```text
+Listening at: http://0.0.0.0:8000
+Booting worker
+```
+
+---
+
+## Task 4 — Nginx
+
+Configured Nginx as a reverse proxy in front of Gunicorn.
 
 Implemented:
 
-- Python base image
-- Working directory
-- Dependency installation
-- Application code copying
-- Environment configuration
-- Gunicorn startup command
+* Reverse proxy
+* Request forwarding
+* Client IP forwarding
+* Host forwarding
+* Basic security headers
 
-Successfully built the Django Docker image.
+Request flow:
 
----
-
-## Task 3 – Create `.dockerignore`
-
-Created a `.dockerignore` file to exclude unnecessary and sensitive files from the Docker build.
-
-Excluded:
-
-- `__pycache__`
-- `.env`
-- `.git`
-- `venv`
-- `*.pyc`
-- `logs`
-
----
-
-## Task 4 – Docker Compose
-
-Created `docker-compose.yml` to run the complete backend environment.
-
-Configured the following services:
-
-- Django / Web
-- PostgreSQL
-- Redis
-- Celery
-- Nginx
-
-Configured service networking and dependencies.
-
----
-
-## Task 5 – PostgreSQL
-
-Containerized PostgreSQL and configured:
-
-- Database
-- User
-- Password
-- Database connection
-- Persistent Docker volume
-- PostgreSQL health check
-
-Verified database connectivity and data persistence.
-
----
-
-## Task 6 – Redis
-
-Configured Redis as a Docker service.
-
-Connected:
-
-- Django → Redis
-- Celery → Redis
-
-Verified Redis connectivity and configured Redis for caching and background task processing.
-
----
-
-## Task 7 – Complete Application
-
-Started and validated the complete Docker environment.
-
-Verified:
-
-- Django
-- PostgreSQL
-- Redis
-- Celery
-- Nginx
-- API communication
-
-Tested the application through the Nginx endpoint.
-
----
-
-## Task 8 – Documentation & Git
-
-Created Docker setup documentation covering:
-
-- Installation
-- Environment variables
-- Build
-- Start
-- Stop
-- Logs
-- Troubleshooting
-
-Committed the Docker-related files to Git.
+```text
+Client
+   ↓
+Nginx :80
+   ↓
+Gunicorn :8000
+   ↓
+Django
 ```
 
+Verified the Nginx configuration using:
+
+```bash
+docker compose exec nginx nginx -t
+```
+
+---
+
+## Task 5 — Static & Media Files
+
+Configured Django static and media files using:
+
+```python
+STATIC_URL = "/static/"
+STATIC_ROOT = BASE_DIR / "staticfiles"
+
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"
+```
+
+Configured Nginx to serve static and media files.
+
+Executed:
+
+```bash
+docker compose exec web python manage.py collectstatic --noinput
+```
+
+Successfully collected:
+
+```text
+192 static files
+```
+
+Verified Nginx static file configuration and accessibility.
+
+---
+
+## Task 6 — PostgreSQL Production Migration
+
+Configured PostgreSQL as the production-style database.
+
+Performed:
+
+* Migration status verification
+* Migration checks
+* Database migrations
+* PostgreSQL connectivity verification
+* Database schema verification
+
+Used:
+
+```bash
+docker compose exec web python manage.py showmigrations
+```
+
+```bash
+docker compose exec web python manage.py makemigrations --check
+```
+
+```bash
+docker compose exec web python manage.py migrate
+```
+
+Verified Django connectivity with the PostgreSQL container.
+
+---
+
+## Task 7 — PostgreSQL Backup & Restore
+
+Implemented PostgreSQL backup and restore procedures.
+
+Created a database backup using:
+
+```bash
+docker compose exec -T postgres pg_dump -U postgres -d djangodb > backup.sql
+```
+
+Verified the generated backup file.
+
+Tested database restoration using:
+
+```bash
+Get-Content backup.sql | docker compose exec -T postgres psql -U postgres -d djangodb
+```
+
+Verified database integrity after restoration.
+
+Added the backup file to `.gitignore` to prevent database data from being committed to Git.
+
+---
+
+## Task 8 — Production Troubleshooting
+
+Performed controlled troubleshooting of production configuration issues.
+
+Tested:
+
+* Incorrect PostgreSQL credentials
+* Incorrect Redis URL
+* Incorrect `ALLOWED_HOSTS`
+* Incorrect Nginx upstream configuration
+
+Analyzed Docker service logs to identify configuration and connectivity errors.
+
+Restored the correct configurations and verified the services successfully.
+
+Checked services using:
+
+```bash
+docker compose ps
+```
+
+Reviewed logs using:
+
+```bash
+docker compose logs web
+docker compose logs nginx
+docker compose logs postgres
+docker compose logs redis
+```
+
+---
+
+## Final Production Architecture
+
+```text
+                Client / Postman
+                       │
+                       ▼
+                ┌─────────────┐
+                │    Nginx    │
+                │    :80      │
+                └──────┬──────┘
+                       │
+                       ▼
+                ┌─────────────┐
+                │  Gunicorn   │
+                │    :8000    │
+                └──────┬──────┘
+                       │
+                       ▼
+                ┌─────────────┐
+                │   Django    │
+                └──────┬──────┘
+                       │
+             ┌─────────┴─────────┐
+             ▼                   ▼
+      ┌─────────────┐     ┌─────────────┐
+      │ PostgreSQL  │     │    Redis    │
+      └─────────────┘     └─────────────┘
+```
+
+## Overall Status
+
+| Task                                | Status      |
+| ----------------------------------- | ----------- |
+| Task 1 — Environment Configuration  | ✅ Completed |
+| Task 2 — Production Django Settings | ✅ Completed |
+| Task 3 — Gunicorn                   | ✅ Completed |
+| Task 4 — Nginx                      | ✅ Completed |
+| Task 5 — Static & Media             | ✅ Completed |
+| Task 6 — PostgreSQL Migration       | ✅ Completed |
+| Task 7 — Backup & Restore           | ✅ Completed |
+| Task 8 — Production Troubleshooting | ✅ Completed |
 
 
+---
 
+# Part 1 — CI/CD Pipeline (sep 17 2026)
 
+## Objective
+
+Implement an automated CI/CD pipeline that validates the Django backend, builds a production Docker image, publishes it to GitHub Container Registry, deploys the application, and provides a rollback mechanism.
+
+---
+
+## Task 1 — Understand CI/CD
+
+### CI — Continuous Integration
+
+Continuous Integration automatically validates code whenever changes are pushed to the repository.
+
+The CI process includes:
+
+```text
+Developer
+    ↓
+Git Push
+    ↓
+GitHub Actions
+    ↓
+Install Dependencies
+    ↓
+Django Check
+    ↓
+Database Migrations
+    ↓
+Automated Tests
+    ↓
+Lint
+````
+
+### CD — Continuous Deployment
+
+Continuous Deployment takes the validated Docker image and deploys it.
+
+```text
+CI Success
+    ↓
+Build Docker Image
+    ↓
+Push Image to GHCR
+    ↓
+Deployment
+    ↓
+Health Check
+    ↓
+Application Running
+```
+
+---
+
+## Task 2 — Create CI Pipeline
+
+A GitHub Actions workflow was created to automate the CI process.
+
+The pipeline performs:
+
+* Checkout source code
+* Setup Python
+* Install dependencies
+* Run Django system checks
+* Run database migrations
+* Run automated tests
+* Run lint validation
+* Build Docker image
+* Login to GitHub Container Registry
+* Push Docker image to GHCR
+
+### CI Workflow
+
+```text
+Git Push
+   ↓
+GitHub Actions
+   ↓
+Install Dependencies
+   ↓
+Django Check
+   ↓
+Migrations
+   ↓
+Tests
+   ↓
+Lint
+   ↓
+Docker Build
+   ↓
+GHCR Push
+```
+
+---
+
+## Task 3 — CI Secrets
+
+GitHub Actions repository secrets were configured for sensitive configuration.
+
+Configured secrets include:
+
+```text
+SECRET_KEY
+DB_NAME
+DB_USER
+DB_PASSWORD
+REDIS_URL
+ALLOWED_HOSTS
+```
+
+Sensitive values are not stored directly in the source code.
+
+The `.env` file is excluded from Git tracking.
+
+---
+
+## Task 4 — Automated Testing
+
+Automated Django tests are executed as part of the CI pipeline.
+
+The pipeline runs:
+
+```bash
+python manage.py test
+```
+
+Database services required for testing are provided through GitHub Actions service containers.
+
+The CI pipeline verifies that the application tests pass before proceeding to Docker image creation.
+
+---
+
+## Task 5 — Build Production Docker Image
+
+A production Docker image was created using the project Dockerfile.
+
+The image uses:
+
+```text
+Python 3.12
+Django
+Gunicorn
+```
+
+The application is started using:
+
+```bash
+gunicorn config.wsgi:application --bind 0.0.0.0:8000
+```
+
+Docker provides a consistent runtime environment for the application.
+
+---
+
+## Task 6 — Push Image to GitHub Container Registry
+
+After the Docker image is successfully built, it is pushed to GitHub Container Registry.
+
+Image format:
+
+```text
+ghcr.io/<repository-owner>/django-backend:<tag>
+```
+
+Two useful tags are maintained:
+
+```text
+latest
+<commit-sha>
+```
+
+The commit SHA tag allows a specific application version to be identified.
+
+---
+
+## Task 7 — Deployment Workflow
+
+A separate GitHub Actions deployment workflow was created.
+
+The deployment process:
+
+```text
+CI Success
+    ↓
+Login to GHCR
+    ↓
+Pull Docker Image
+    ↓
+Start PostgreSQL
+    ↓
+Start Redis
+    ↓
+Start Django/Gunicorn
+    ↓
+Health Check
+    ↓
+Deployment Successful
+```
+
+The deployment workflow verifies the application using:
+
+```text
+/api/health/
+```
+
+---
+
+## Task 8 — Rollback
+
+A manual rollback workflow was created using Docker image tags based on Git commit SHA.
+
+Rollback process:
+
+```text
+Deployment Problem
+       ↓
+Identify Previous Successful Commit
+       ↓
+Select Previous Image SHA
+       ↓
+Pull Previous Docker Image
+       ↓
+Verify Image
+       ↓
+Rollback Version
+```
+
+This allows a previously verified Docker image to be selected without depending only on the `latest` tag.
+
+---
+
+# Part 2 — Deployment & Production Readiness (sep 18 2026)
+
+## Objective
+
+Prepare, deploy, verify, monitor, troubleshoot, and demonstrate the Django backend in a production-style environment.
+
+---
+
+# Task 1 — Deployment Checklist
+
+A deployment checklist was created covering:
+
+* Environment
+* Database
+* Redis
+* Django
+* Gunicorn
+* Celery
+* Nginx
+* Static files
+* Media
+* Environment variables
+* Migrations
+* Security
+* Logging
+* Monitoring
+* Backup
+* Rollback
+
+The checklist is maintained in:
+
+```text
+DEPLOYMENT_CHECKLIST.md
+```
+
+---
+
+# Task 2 — Deploy Backend
+
+The Django backend is containerized using Docker.
+
+The deployment architecture is:
+
+```text
+Git Push
+    ↓
+GitHub Actions
+    ↓
+CI Validation
+    ↓
+Docker Image
+    ↓
+GitHub Container Registry
+    ↓
+Deployment Workflow
+    ↓
+PostgreSQL + Redis
+    ↓
+Django + Gunicorn
+    ↓
+Health Check
+```
+
+The deployment workflow pulls the Docker image from GHCR and starts the required application services.
+
+---
+
+# Task 3 — Configure Database
+
+PostgreSQL is used as the production database.
+
+Architecture:
+
+```text
+Django
+   ↓
+Django ORM
+   ↓
+PostgreSQL
+```
+
+Database configuration is provided through environment variables.
+
+Database migrations are executed using:
+
+```bash
+python manage.py migrate
+```
+
+Migration status can be checked using:
+
+```bash
+python manage.py showmigrations
+```
+
+PostgreSQL availability can be verified using:
+
+```bash
+pg_isready
+```
+
+A PostgreSQL backup is created using:
+
+```bash
+pg_dump
+```
+
+---
+
+# Task 4 — Configure Redis & Celery
+
+Redis is used for caching and as the Celery message broker.
+
+Architecture:
+
+```text
+Django
+   ↓
+Redis
+
+Celery Worker
+   ↓
+Redis
+   ↓
+Celery Tasks
+   ↓
+Database
+```
+
+Redis connectivity can be tested using:
+
+```bash
+redis-cli ping
+```
+
+Expected response:
+
+```text
+PONG
+```
+
+Celery worker status can be inspected using:
+
+```bash
+celery -A config inspect ping
+```
+
+Celery logs can be checked using:
+
+```bash
+docker compose logs celery
+```
+
+Background tasks are executed asynchronously by Celery workers.
+
+---
+
+# Task 5 — Configure Nginx / HTTPS
+
+Nginx is configured as a reverse proxy.
+
+Architecture:
+
+```text
+Client
+   ↓
+Nginx
+   ↓
+Gunicorn
+   ↓
+Django
+```
+
+Nginx configuration can be tested using:
+
+```bash
+nginx -t
+```
+
+API requests can be tested through Nginx using Postman or another HTTP client.
+
+Example:
+
+```text
+GET /api/health/
+```
+
+HTTPS requires a production domain and SSL/TLS certificate. HTTPS should be verified after the organization's production domain and certificate configuration are available.
+
+---
+
+# Task 6 — Production Health Checks
+
+The application provides health-check functionality.
+
+Main health endpoint:
+
+```text
+/api/health/
+```
+
+Additional health endpoints to verify:
+
+```text
+/api/health/database/
+/api/health/redis/
+```
+
+Health checks are used to verify:
+
+```text
+Django
+PostgreSQL
+Redis
+```
+
+Health responses should not expose:
+
+* Passwords
+* Secret keys
+* Database credentials
+* Redis credentials
+* Other sensitive configuration
+
+---
+
+# Task 7 — Monitoring & Logs
+
+The following services are monitored through their logs:
+
+```text
+Django
+Gunicorn
+Nginx
+Celery
+PostgreSQL
+Redis
+```
+
+Useful Docker commands:
+
+### Application logs
+
+```bash
+docker compose logs web --tail=100
+```
+
+### Nginx logs
+
+```bash
+docker compose logs nginx --tail=100
+```
+
+### Celery logs
+
+```bash
+docker compose logs celery --tail=100
+```
+
+### PostgreSQL logs
+
+```bash
+docker compose logs postgres --tail=100
+```
+
+### Redis logs
+
+```bash
+docker compose logs redis --tail=100
+```
+
+### Container status
+
+```bash
+docker compose ps
+```
+
+A troubleshooting guide was created:
+
+```text
+TROUBLESHOOTING_GUIDE.md
+```
+
+Troubleshooting follows:
+
+```text
+Problem
+   ↓
+Identify Service
+   ↓
+Check Logs
+   ↓
+Identify Root Cause
+   ↓
+Apply Solution
+   ↓
+Verify Service
+```
+
+---
+
+# Task 8 — Final Production Assessment
+
+The final assessment demonstrates the trainee's understanding of the complete deployment architecture.
+
+The trainee should be able to:
+
+1. Explain the deployment architecture.
+2. Explain Docker containers.
+3. Explain PostgreSQL.
+4. Explain Redis.
+5. Explain Celery.
+6. Explain Nginx.
+7. Explain Gunicorn.
+8. Explain environment variables.
+9. Run database migrations.
+10. Verify health APIs.
+11. Test authentication.
+12. Test a business API.
+13. Execute a Celery task.
+14. Check application logs.
+15. Identify a simulated failure.
+16. Troubleshoot the failure.
+17. Explain the backup strategy.
+18. Explain the rollback strategy.
+19. Explain the CI/CD workflow.
+20. Explain how a new backend version reaches production.
+
+---
+
+# Production Architecture
+
+The complete architecture is:
+
+```text
+                    Developer
+                       │
+                       ▼
+                    Git Push
+                       │
+                       ▼
+                GitHub Repository
+                       │
+                       ▼
+                GitHub Actions CI
+                       │
+             ┌─────────┴─────────┐
+             ▼                   ▼
+          Testing              Lint
+             │                   │
+             └─────────┬─────────┘
+                       ▼
+                 Docker Build
+                       │
+                       ▼
+                     GHCR
+                       │
+                       ▼
+              Deployment Workflow
+                       │
+          ┌────────────┼────────────┐
+          ▼            ▼            ▼
+     PostgreSQL      Redis        Django
+                                  │
+                                  ▼
+                               Gunicorn
+                                  │
+                                  ▼
+                                Nginx
+                                  │
+                                  ▼
+                               Client
+
+                    Redis
+                      │
+                      ▼
+                    Celery
+                      │
+                      ▼
+              Background Tasks
+```
+
+---
 
