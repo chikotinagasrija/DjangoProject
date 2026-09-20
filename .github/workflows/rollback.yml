@@ -1,0 +1,39 @@
+name: Rollback Django Application
+
+on:
+  workflow_dispatch:
+    inputs:
+      image_tag:
+        description: "Previous Docker image tag (commit SHA)"
+        required: true
+        type: string
+
+jobs:
+  rollback:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: read
+
+    steps:
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Pull previous Docker image
+        run: |
+          docker pull ghcr.io/${{ github.repository_owner }}/django-backend:${{ inputs.image_tag }}
+
+      - name: Verify rollback image
+        run: |
+          docker image inspect \
+            ghcr.io/${{ github.repository_owner }}/django-backend:${{ inputs.image_tag }}
+
+      - name: Rollback successful
+        run: |
+          echo "Rollback image verified successfully."
+          echo "Image tag: ${{ inputs.image_tag }}"
