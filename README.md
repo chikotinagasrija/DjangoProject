@@ -3708,3 +3708,220 @@ The complete architecture is:
 
 ---
 
+
+
+# 21-Sep-2026 — Monday
+
+## Jira Story: Mobile Application Requirement Analysis & API Design
+
+### Task 1 — Read the Business Requirement
+
+**What the task required:**
+
+* Analyze the mobile application requirement.
+* Identify users, roles, modules, business rules, APIs, and database entities.
+
+**What I did:**
+
+* Analyzed the given mobile application requirement.
+* Identified the main users as Customer, Service Provider, and Admin.
+* Identified the required backend modules and booking flow.
+
+### Task 2 — Identify User Roles
+
+**What the task required:**
+
+* Define Admin, Customer, and Service Provider roles.
+* Identify their permissions and responsibilities.
+
+**What I did:**
+
+* Defined the responsibilities of each role.
+* Identified what each role can view, create, update, and manage.
+
+### Task 3 — Identify Modules
+
+**What the task required:**
+
+* Identify the major backend modules.
+
+**What I did:**
+
+* Identified modules including:
+
+  * Authentication
+  * User Profile
+  * Service Provider
+  * Services
+  * Search
+  * Booking
+  * Payment
+  * Notifications
+  * Chat
+  * Admin
+
+### Task 4 — Design Database
+
+**What the task required:**
+
+* Design the database structure and ER relationships.
+
+**What I did:**
+
+* Identified the main entities such as User, Profile, Service, Provider, Booking, and Payment.
+* Defined the relationships between users, providers, services, bookings, and payments.
+
+### Task 5 — Design API Endpoints
+
+**What the task required:**
+
+* Prepare API documentation before development.
+
+**What I did:**
+
+* Defined API endpoints for authentication, services, bookings, payments, and notifications.
+* Organized the APIs using `/api/v1/` versioning.
+
+### Task 6 — Define API Request & Response
+
+**What the task required:**
+
+* Document request, response, authentication, status codes, validation, and errors.
+
+**What I did:**
+
+* Defined the expected request and response structure.
+* Identified authentication requirements, validation rules, HTTP status codes, and possible API errors.
+
+### Task 7 — Define Business Rules
+
+**What the task required:**
+
+* Document at least 15 business rules.
+
+**What I did:**
+
+* Defined rules related to customer bookings, provider availability, cancellation, completion, authentication, and payments.
+
+### Task 8 — Technical Design Review
+
+**What the task required:**
+
+* Create `PROJECT_TECHNICAL_DESIGN.md`.
+
+**What I did:**
+
+* Created the technical design document covering:
+
+  * Architecture
+  * Modules
+  * Database
+  * APIs
+  * Roles
+  * Business rules
+  * Security
+  * External integrations
+
+
+---
+
+# 22-Sep-2026 — Tuesday
+
+## Jira Story: Service Listing, Search & Booking APIs
+
+### Task 1 — Create Service Models
+
+**What the task required:**
+
+* Create Service, Category, Provider, and ProviderProfile models.
+
+**What I did:**
+
+* Reviewed the existing backend models and mapped the required concepts to the existing ride-booking structure.
+* Used `VehicleType` for the service/category concept and `DriverProfile` for the provider concept.
+* Avoided creating duplicate models where equivalent functionality already existed.
+
+### Task 2 — Service CRUD APIs
+
+**What the task required:**
+
+* Implement create, list, retrieve, update, and delete APIs for services.
+
+**What I did:**
+
+* Reviewed and used the existing service/provider-related CRUD functionality.
+* Verified authentication and permission handling for the APIs.
+
+### Task 3 — Service Search
+
+**What the task required:**
+
+* Search services by name, category, provider, location, and price.
+
+**What I did:**
+
+* Reviewed the existing search and filtering implementation.
+* Used the existing ride/provider/service-type structure to support service discovery.
+
+### Task 4 — Filtering
+
+**What the task required:**
+
+* Filter by minimum price, maximum price, category, provider, and status.
+
+**What I did:**
+
+* Verified the existing advanced filtering implementation.
+* Existing filtering supports multiple parameters such as date, status, driver, and fare range.
+
+### Task 5 — Pagination & Sorting
+
+**What the task required:**
+
+* Implement page number, page size, price sorting, newest, and oldest sorting.
+
+**What I did:**
+
+* Reviewed the existing pagination and ordering functionality.
+* Existing APIs support page size and ordering, including fare and creation date.
+
+### Task 6 — Booking Model
+
+**What the task required:**
+
+* Create a Booking model containing customer, provider, service, date/time, amount, status, and timestamps.
+
+**What I did:**
+
+* Used the existing `Ride` model as the booking entity.
+* Added **`scheduled_at`** to support booking date/time.
+* Existing Ride model already contains customer, provider, service type, fare, status, and timestamps.
+
+### Task 7 — Booking API
+
+**What the task required:**
+
+* Implement booking create, list, detail, and cancel APIs.
+
+**What I did:**
+
+* Reviewed and used the existing Ride APIs for booking functionality.
+* Existing APIs support ride creation, details, acceptance, status updates, and cancellation.
+
+### Task 8 — Booking Validation
+
+**What the task required:**
+
+* Validate service existence, provider status, authentication, requested time, provider availability, and cancellation rules.
+
+**What I did:**
+
+* Added validation to ensure `scheduled_at` is in the future.
+* Added provider scheduled-booking conflict validation in `ride_service.py`.
+* Existing validation already checks active drivers and active rides.
+* Existing cancellation logic prevents invalid cancellation of completed/cancelled rides.
+* Maintained existing ride status transition rules.
+
+
+
+
