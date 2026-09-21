@@ -155,6 +155,10 @@ class Ride(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    scheduled_at = models.DateTimeField(
+    null=True,
+    blank=True
+)
 
     class Meta:
         indexes = [
@@ -163,6 +167,7 @@ class Ride(models.Model):
             models.Index(fields=['status']),
             models.Index(fields=['created_at']),
             models.Index(fields=['ride_type']),
+            models.Index(fields=['scheduled_at']),
         ]
 
     def __str__(self):

@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from django.utils import timezone
 from .models import DriverProfile
 from .models import Vehicle, VehicleType
 from .models import Ride, RideStatus
@@ -82,8 +83,10 @@ class RideSerializer(serializers.ModelSerializer):
             "drop_location",
             "fare",
             "ride_type",
+            "scheduled_at",
             "status",
             "created_at",
+            "updated_at",
         ]
 
         read_only_fields = [
@@ -94,6 +97,8 @@ class RideSerializer(serializers.ModelSerializer):
             "fare",
             "status",
             "created_at",
+            "updated_at",
+            "scheduled_at",
         ]        
     def validate_pickup_location(self, value):
         value = value.strip()
@@ -116,6 +121,12 @@ class RideSerializer(serializers.ModelSerializer):
         return value
 
     def validate(self, data):
+        scheduled_at = data.get("scheduled_at")
+
+        if scheduled_at and scheduled_at <= timezone.now():
+          raise serializers.ValidationError(
+             "Scheduled ride time must be in the future."
+    )
         pickup = data.get("pickup_location")
         drop = data.get("drop_location")
 

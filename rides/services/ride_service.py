@@ -63,6 +63,22 @@ def accept_ride(ride, driver):
         raise ValueError(
             "Driver already has an active ride."
         )
+    if ride.scheduled_at:
+      conflict = Ride.objects.filter(
+        driver=driver,
+        scheduled_at=ride.scheduled_at,
+        status__in=[
+            RideStatus.REQUESTED,
+            RideStatus.ACCEPTED,
+            RideStatus.DRIVER_ARRIVING,
+            RideStatus.STARTED,
+        ],
+    ).exclude(id=ride.id).exists()
+
+    if conflict:
+        raise ValueError(
+            "Driver already has a booking at this time."
+        )
 
     ride.driver = driver
     ride.status = RideStatus.ACCEPTED
