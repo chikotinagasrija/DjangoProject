@@ -3,11 +3,13 @@ from django.db import transaction
 from rides.models import (
     Ride,
     RideStatus,
+    BookingStatus,
     ALLOWED_RIDE_TRANSITIONS,
 )
 from rides.services.websocket_service import broadcast_ride_status
 
 from common.tasks import (
+    ride_notification,
     driver_assignment_notification,
     ride_completion_notification,
 )
@@ -35,8 +37,16 @@ def update_ride_status(ride, new_status):
         ride.id,
         new_status
     )
+    if new_status == RideStatus.STARTED:
+      send_booking_notification(
+        ride,
+        "Provider Started Service",
+        "Your provider has started the service.",
+        "PROVIDER_STARTED",
+    )
 
     return ride
+
 
 
 @transaction.atomic
@@ -129,6 +139,12 @@ def cancel_ride(ride):
         ride.id,
         RideStatus.CANCELLED
     )
+    send_booking_notification(
+      ride,
+      "Booking Cancelled",
+      "Your booking has been cancelled.",
+      "BOOKING_CANCELLED",
+)
 
     return ride
 
@@ -216,3 +232,53 @@ def get_ride_history(user, query_params):
     
 
     return rides
+def update_booking_status(ride, new_status):
+    current_status = ride.booking_status
+
+    allowed_statuses = ALLOWED_BOOKING_TRANSITIONS.get(
+        current_status,
+        set(),
+    )
+
+    if new_status not in allowed_statuses:
+        raise ValueError(
+            f"Invalid booking status transition: "
+            f"{current_status} → {new_status}"
+        )
+
+    ride.booking_status = new_status
+    ride.save(update_fields=["booking_status", "updated_at"])
+
+    return ride
+def send_booking_notification(
+    ride,
+    title,
+    message,
+    event_type,
+):
+    transaction.on_commit(
+        lambda: ride_notification.delay(
+            ride.user.id,
+            title,
+            message,
+            f"{ride.id}:{event_type}",
+        )
+    )
+
+ALLOWED_BOOKING_TRANSITIONS = {
+    BookingStatus.PENDING: {
+        BookingStatus.CONFIRMED,
+        BookingStatus.CANCELLED,
+        BookingStatus.PAYMENT_FAILED,
+    },
+    BookingStatus.CONFIRMED: {
+        BookingStatus.IN_PROGRESS,
+        BookingStatus.CANCELLED,
+    },
+    BookingStatus.IN_PROGRESS: {
+        BookingStatus.COMPLETED,
+    },
+    BookingStatus.COMPLETED: set(),
+    BookingStatus.CANCELLED: set(),
+    BookingStatus.PAYMENT_FAILED: set(),
+}

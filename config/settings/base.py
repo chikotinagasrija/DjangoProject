@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "rides",
     "rest_framework",
     "channels",
+    "payments",
 ]
 
 

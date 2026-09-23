@@ -96,6 +96,13 @@ class Vehicle(models.Model):
 
     def __str__(self):
         return self.vehicle_number
+class BookingStatus(models.TextChoices):
+    PENDING = "PENDING", "Pending"
+    CONFIRMED = "CONFIRMED", "Confirmed"
+    IN_PROGRESS = "IN_PROGRESS", "In Progress"
+    COMPLETED = "COMPLETED", "Completed"
+    CANCELLED = "CANCELLED", "Cancelled"
+    PAYMENT_FAILED = "PAYMENT_FAILED", "Payment Failed"
     
 class RideStatus(models.TextChoices):
     REQUESTED = 'REQUESTED', 'Requested'
@@ -113,6 +120,12 @@ class Ride(models.Model):
         on_delete=models.CASCADE,
         related_name='rides'
     )
+    booking_status = models.CharField(
+    max_length=20,
+    choices=BookingStatus.choices,
+    default=BookingStatus.PENDING,
+    db_index=True,
+)
 
     driver = models.ForeignKey(
         DriverProfile,

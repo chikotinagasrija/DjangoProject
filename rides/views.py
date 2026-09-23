@@ -12,6 +12,8 @@ from django.db.models import Count,Sum,Avg,Min,Max,Q,F
 from django.utils import timezone
 from django.db import connection, reset_queries
 from django.core.cache import cache
+from django.db import transaction
+from common.tasks import ride_notification
 from rides.services.nearby_driver_service import find_nearby_drivers
 from rides.services.driver_service import update_driver_location
 from rides.services.ride_service import save_ride_fare
@@ -934,16 +936,28 @@ class RideListCreateAPIView(generics.ListCreateAPIView):
     throttle_classes = [RideCreationThrottle]
 
     def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
+      serializer = self.get_serializer(data=request.data)
+      serializer.is_valid(raise_exception=True)
 
-        serializer.save(user=request.user)
+      serializer.save(user=request.user)
+ 
+      ride = serializer.instance
 
-        return success_response(
-            "Ride created successfully",
-            serializer.data,
-            status.HTTP_201_CREATED
+      transaction.on_commit(
+        lambda: ride_notification.delay(
+            ride.user.id,
+            "Booking Created",
+            "Your booking has been created successfully.",
+            f"{ride.id}:BOOKING_CREATED",
         )
+    )
+
+      return success_response(
+        "Ride created successfully",
+        serializer.data,
+        status.HTTP_201_CREATED
+    )
+
 
 class LargeDatasetPerformanceAPIView(APIView):
     permission_classes = [IsAuthenticated]

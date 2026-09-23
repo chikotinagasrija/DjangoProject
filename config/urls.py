@@ -60,6 +60,10 @@ urlpatterns = [
         ),
         name='schema-redoc'
     ),
+    path(
+    "api/v1/payments/",
+    include("payments.urls"),
+),
 ]
 
 if settings.DEBUG:
