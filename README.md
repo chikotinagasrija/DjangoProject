@@ -3923,5 +3923,325 @@ The complete architecture is:
 * Maintained existing ride status transition rules.
 
 
+# Payment, Booking & Real-Time Status — (sep 23 2026)
 
+## Overview
+
+Implemented and tested the payment, booking state management, notification, and real-time status flow for the Django ride-booking backend.
+
+### Complete Flow
+
+```text
+Booking
+   ↓
+Payment
+   ↓
+Confirmation
+   ↓
+Notification
+   ↓
+Real-Time Status
+   ↓
+Completion
+```
+
+---
+
+## Task 1 — Create Payment Model 
+
+### Objective
+
+Create a `Payment` model to store payment-related information.
+
+### Fields
+
+* Booking
+* Amount
+* Transaction ID
+* Payment Status
+* Payment Method
+* Created At
+
+### Payment Statuses
+
+```text
+PENDING
+SUCCESS
+FAILED
+REFUNDED
+```
+
+### Implementation
+
+The payment model maintains the relationship between a booking and its payment transaction while tracking the payment status throughout its lifecycle.
+
+**Status:** ✅ Completed
+
+---
+
+## Task 2 — Payment Initiation API
+
+### API
+
+```http
+POST /api/v1/payments/initiate/
+```
+
+### Validations
+
+The API validates:
+
+* Booking exists.
+* Booking belongs to the authenticated user.
+* Payment amount is correct.
+* Booking is payable.
+
+### Flow
+
+```text
+Customer
+   ↓
+Payment Initiation API
+   ↓
+Validate Booking
+   ↓
+Validate Amount
+   ↓
+Check Payable Status
+   ↓
+Create Payment
+```
+
+**Status:** ✅ Completed
+
+---
+
+## Task 3 — Mock Payment Gateway
+
+### Objective
+
+Simulate the payment gateway without using a real payment provider.
+
+### Payment Flow
+
+```text
+Payment Initiated
+       ↓
+Payment Processing
+       ↓
+   ┌───────┐
+   ↓       ↓
+SUCCESS   FAILED
+```
+
+No sensitive card information is stored in the application.
+
+**Status:** ✅ Completed
+
+---
+
+## Task 4 — Payment Confirmation
+
+### API
+
+```http
+POST /api/v1/payments/webhook/
+```
+
+### Objective
+
+Receive and process the payment confirmation event.
+
+Before updating the booking, the payment event is validated.
+
+### Flow
+
+```text
+Payment Gateway
+       ↓
+Webhook
+       ↓
+Validate Payment Event
+       ↓
+Update Payment
+       ↓
+Update Booking Status
+```
+
+A successful payment results in the booking moving to the appropriate confirmed state.
+
+**Status:** ✅ Completed
+
+---
+
+## Task 5 — Booking State Machine
+
+### Booking Lifecycle
+
+```text
+PENDING
+   ↓
+CONFIRMED
+   ↓
+IN_PROGRESS
+   ↓
+COMPLETED
+```
+
+### Alternative States
+
+```text
+PENDING → CANCELLED
+
+PENDING → PAYMENT_FAILED
+```
+
+Invalid state transitions are prevented by the booking state-transition rules.
+
+### Example
+
+```text
+PENDING → CONFIRMED        ✅
+CONFIRMED → IN_PROGRESS    ✅
+IN_PROGRESS → COMPLETED    ✅
+
+COMPLETED → PENDING        ❌
+CANCELLED → CONFIRMED      ❌
+```
+
+**Status:** ✅ Completed
+
+---
+
+## Task 6 — Notification System
+
+### Objective
+
+Generate notifications for important booking and payment events.
+
+### Notification Events
+
+1. Booking Created
+2. Payment Successful
+3. Booking Confirmed
+4. Provider Started Service
+5. Booking Completed
+6. Booking Cancelled
+
+### Background Processing
+
+Celery is used to process notifications asynchronously.
+
+```text
+Booking/Ride Event
+       ↓
+Django
+       ↓
+Celery Task
+       ↓
+Notification Processing
+       ↓
+Customer Notification
+```
+
+The project uses the existing notification/Celery infrastructure for ride events. 
+
+**Status:** ✅ Completed
+
+---
+
+## Task 7 — Real-Time Status
+
+### Objective
+
+Provide real-time booking/ride status updates to the customer using WebSockets.
+
+### Architecture
+
+```text
+Customer
+   ↑
+WebSocket
+   ↑
+Django
+   ↑
+Provider
+```
+
+### Flow
+
+```text
+Provider updates status
+        ↓
+Django updates booking/ride
+        ↓
+WebSocket broadcast
+        ↓
+Customer receives update
+```
+
+The existing WebSocket implementation includes ride status broadcasting and WebSocket authentication. 
+
+### Example
+
+```text
+Provider
+   ↓
+STARTED
+   ↓
+Django
+   ↓
+WebSocket
+   ↓
+Customer receives
+"Provider Started Service"
+```
+
+**Status:** ✅ Completed and tested
+
+---
+
+# Task 8 — End-to-End Testing
+
+### Objective
+
+Test the complete application flow from booking creation through completion.
+
+### Test Flow
+
+```text
+Booking
+   ↓
+Payment
+   ↓
+Confirmation
+   ↓
+Notification
+   ↓
+Real-Time Status
+   ↓
+Completion
+```
+
+### Testing Checklist
+
+| Test                     | Expected Result                      |
+| ------------------------ | ------------------------------------ |
+| Create Booking           | ✅ Booking created                    |
+| Initiate Payment         | ✅ Payment initiated                  |
+| Process Payment          | ✅ SUCCESS/FAILED                     |
+| Payment Confirmation     | ✅ Payment confirmed                  |
+| Booking Confirmation     | ✅ Booking becomes CONFIRMED          |
+| Notification             | ✅ Notification generated             |
+| WebSocket Status         | ✅ Customer receives real-time update |
+| Provider Starts Service  | ✅ Status becomes IN_PROGRESS/STARTED |
+| Booking Completion       | ✅ Booking becomes COMPLETED          |
+| Completion Notification  | ✅ Notification generated             |
+| Invalid State Transition | ✅ Rejected                           |
+
+Testing was performed using the existing API/Postman, Celery notification processing, and WebSocket flow.
+
+**Status:** ✅ Completed
+
+---
 
