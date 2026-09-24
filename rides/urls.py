@@ -32,8 +32,11 @@ from .views import (
     AdvancedQuerySetAPIView,
     RideHistoryAPIView,
     VehicleTypeListAPIView,
-
+    ProviderServiceAPIView,
+    ServiceImageAPIView,
+    ServiceImageDeleteAPIView,
 )
+
 
 urlpatterns = [
     path(
@@ -167,6 +170,21 @@ urlpatterns = [
     VehicleTypeListAPIView.as_view(),
     name="vehicle-types"
 ),
+    path(
+        "services/",
+        ProviderServiceAPIView.as_view(),
+        name="provider-services"
+    ),
+    path(
+        "services/<uuid:service_id>/images/",
+        ServiceImageAPIView.as_view(),
+        name="service-images"
+    ),
+    path(
+        "services/<uuid:service_id>/images/<uuid:image_id>/",
+        ServiceImageDeleteAPIView.as_view(),
+        name="delete-service-image"
+    ),
 
     
     path("<uuid:pk>/", RideDetailAPIView.as_view(), name="ride-detail"),

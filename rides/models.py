@@ -206,5 +206,50 @@ ALLOWED_RIDE_TRANSITIONS = {
     ],
     RideStatus.COMPLETED: [],
     RideStatus.CANCELLED: [],
-}    
+}   
+
+class Service(models.Model):
+    id = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False
+    )
+
+    provider = models.ForeignKey(
+        DriverProfile,
+        on_delete=models.CASCADE,
+        related_name="services"
+    )
+
+    name = models.CharField(max_length=100)
+    description = models.TextField(blank=True)
+    price = models.DecimalField(
+        max_digits=10,
+        decimal_places=2
+    )
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.name
+
+
+class ServiceImage(models.Model):
+    id = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False
+    )
+
+    service = models.ForeignKey(
+        Service,
+        on_delete=models.CASCADE,
+        related_name="images"
+    )
+
+    image = models.ImageField(
+        upload_to="service_images/"
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True) 
     

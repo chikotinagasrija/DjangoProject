@@ -4,6 +4,8 @@ from .models import DriverProfile
 from .models import Vehicle, VehicleType
 from .models import Ride, RideStatus
 from .models import DriverLocation
+from .models import Service, ServiceImage
+
 
 
 class DriverProfileSerializer(serializers.ModelSerializer):
@@ -185,3 +187,47 @@ class DriverLocationSerializer(serializers.ModelSerializer):
                 "Longitude must be between -180 and 180."
             )
         return value
+
+
+
+
+class ServiceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Service
+        fields = [
+            "id", "provider", "name",
+            "description", "price",
+            "is_active", "created_at"
+        ]
+        read_only_fields = [
+            "id", "provider", "created_at"
+        ]
+
+    def validate_price(self, value):
+        if value <= 0:
+            raise serializers.ValidationError(
+                "Price must be greater than zero."
+            )
+        return value
+
+
+class ServiceImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ServiceImage
+        fields = ["id", "service", "image", "created_at"]
+        read_only_fields = ["id", "service", "created_at"]
+
+    def validate_image(self, image):
+        allowed_types = ["image/jpeg", "image/png", "image/webp"]
+
+        if image.content_type not in allowed_types:
+            raise serializers.ValidationError(
+                "Only JPEG, PNG and WebP images are allowed."
+            )
+
+        if image.size > 5 * 1024 * 1024:
+            raise serializers.ValidationError(
+                "Image size must not exceed 5 MB."
+            )
+
+        return image

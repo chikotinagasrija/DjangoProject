@@ -23,6 +23,9 @@ from rides.utils.helpers import success_response, error_response
 from rides.utils.throttles import RideCreationThrottle
 from .services.websocket_service import broadcast_driver_location
 from rest_framework.pagination import PageNumberPagination
+from .models import Service, ServiceImage
+from .serializers import ServiceSerializer, ServiceImageSerializer
+from rest_framework.parsers import MultiPartParser, FormParser
 import time
 import math
 
@@ -1225,3 +1228,74 @@ class VehicleTypeListAPIView(APIView):
             },
             status=status.HTTP_201_CREATED
         )
+
+
+
+class ProviderServiceAPIView(generics.ListCreateAPIView):
+    serializer_class = ServiceSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return Service.objects.filter(
+            provider__user=self.request.user
+        )
+
+    def perform_create(self, serializer):
+        provider = get_object_or_404(
+            DriverProfile,
+            user=self.request.user,
+            is_active=True
+        )
+        serializer.save(provider=provider)
+
+
+class ServiceImageAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+    parser_classes = [MultiPartParser, FormParser]
+
+    def get_service(self, request, service_id):
+        return get_object_or_404(
+            Service,
+            id=service_id,
+            provider__user=request.user
+        )
+
+    def get(self, request, service_id):
+        service = self.get_service(request, service_id)
+        serializer = ServiceImageSerializer(
+            service.images.all(),
+            many=True,
+            context={"request": request}
+        )
+        return Response(serializer.data)
+
+    def post(self, request, service_id):
+        service = self.get_service(request, service_id)
+
+        serializer = ServiceImageSerializer(
+            data=request.data
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save(service=service)
+
+        return Response(
+            serializer.data,
+            status=status.HTTP_201_CREATED
+        )
+
+
+class ServiceImageDeleteAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request, service_id, image_id):
+        image = get_object_or_404(
+            ServiceImage,
+            id=image_id,
+            service_id=service_id,
+            service__provider__user=request.user
+        )
+
+        image.image.delete(save=False)
+        image.delete()
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
