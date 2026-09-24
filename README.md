@@ -4245,3 +4245,538 @@ Testing was performed using the existing API/Postman, Celery notification proces
 
 ---
 
+# 24-Sep-2026 — Thursday
+
+## Jira Story: Mobile Integration, File Uploads & Complete API Testing
+
+### Objective
+
+Make the backend ready for actual consumption by a mobile application.
+
+---
+
+## Task 1 — Understand Mobile API Consumption
+
+### Objective
+
+Understand how a Flutter or React Native mobile application communicates with the Django backend.
+
+### Mobile Communication Flow
+
+```text
+Mobile Application
+       ↓
+     HTTPS
+       ↓
+   REST API
+       ↓
+      JWT
+       ↓
+    Django
+````
+
+### Key Points
+
+* Mobile applications communicate with the backend through REST APIs.
+* HTTPS is used for secure communication.
+* JWT is used for authentication.
+* Django/DRF processes API requests and returns responses to the mobile application.
+
+### Status
+
+Completed / Studied
+
+---
+
+## Task 2 — API Authentication Flow
+
+### Objective
+
+Test the complete authentication flow used by a mobile application.
+
+### Authentication Flow
+
+```text
+Register
+   ↓
+Login
+   ↓
+Access Token
+   ↓
+API Request
+   ↓
+401 Unauthorized
+   ↓
+Refresh Token
+   ↓
+New Access Token
+   ↓
+Retry API Request
+```
+
+### Testing Areas
+
+* User registration
+* User login
+* Access token generation
+* Accessing protected APIs
+* Handling expired/invalid access tokens
+* Receiving `401 Unauthorized`
+* Refreshing the access token
+* Using the new access token for API requests
+
+### Status
+
+Completed / Tested
+
+---
+
+## Task 3 — Profile Image Upload
+
+### API
+
+```http
+POST /api/v1/profile/image/
+```
+
+### Objective
+
+Allow users to upload a profile image through the mobile application.
+
+### Validation
+
+The upload API should validate:
+
+* File type
+* File size
+* Filename
+* Missing file
+* Invalid file
+
+### Expected Behavior
+
+Valid image:
+
+```text
+Mobile
+  ↓
+Profile Image API
+  ↓
+Validation
+  ↓
+Save Image
+  ↓
+Success Response
+```
+
+Invalid image:
+
+```text
+Mobile
+  ↓
+Profile Image API
+  ↓
+Validation
+  ↓
+Error Response
+```
+
+### Status
+
+Completed / Tested
+
+---
+
+## Task 4 — Service Image Upload
+
+### Objective
+
+Allow providers to upload and manage images associated with their services.
+
+### APIs
+
+#### Upload Service Image
+
+```http
+POST /api/v1/services/{id}/images/
+```
+
+#### Get Service Images
+
+```http
+GET /api/v1/services/{id}/images/
+```
+
+#### Delete Service Image
+
+```http
+DELETE /api/v1/services/{id}/images/{image_id}/
+```
+
+### Service Image Flow
+
+```text
+Provider
+   ↓
+Create/Select Service
+   ↓
+Upload Image
+   ↓
+Service Image API
+   ↓
+Validate
+   ↓
+Store Image
+```
+
+### Status
+
+Completed / Tested
+
+---
+
+## Task 5 — API Error Standards
+
+### Objective
+
+Ensure APIs return predictable and consistent error responses.
+
+### Standard Error Response
+
+```json
+{
+    "success": false,
+    "message": "Provider is not available",
+    "error_code": "PROVIDER_UNAVAILABLE",
+    "data": null
+}
+```
+
+### Error Response Components
+
+| Field        | Purpose                                     |
+| ------------ | ------------------------------------------- |
+| `success`    | Indicates whether the request succeeded     |
+| `message`    | Human-readable error message                |
+| `error_code` | Identifies the type of error                |
+| `data`       | Contains additional response data or `null` |
+
+### Status
+
+Completed / Reviewed
+
+---
+
+## Task 6 — Mobile-Friendly API Responses
+
+### Objective
+
+Review API response payloads and make them suitable for mobile application consumption.
+
+### Review Areas
+
+* Remove unnecessary fields
+* Use consistent field names
+* Use consistent HTTP status codes
+* Maintain consistent pagination
+* Provide predictable error responses
+
+### Expected Result
+
+```text
+Mobile Application
+       ↓
+Predictable API Response
+       ↓
+Easy JSON Parsing
+       ↓
+Reliable Mobile UI Handling
+```
+
+### Status
+
+Completed / Reviewed
+
+---
+
+## Task 7 — Complete Postman Collection
+
+### Objective
+
+Create and organize Postman collections for complete API testing.
+
+### Collections
+
+```text
+Authentication
+Profile
+Services
+Search
+Booking
+Payment
+Notifications
+```
+
+### Environment Variables
+
+```text
+BASE_URL
+ACCESS_TOKEN
+REFRESH_TOKEN
+```
+
+### Benefits
+
+* Easier API testing
+* Reusable authentication tokens
+* Consistent environment configuration
+* Easier end-to-end testing
+* Better API documentation
+
+## Task 8 — Automated Integration Testing
+
+### Objective
+
+Run complete backend workflows and identify and fix failures.
+
+
+# 25-Sep-2026 — Friday
+
+# Jira Story: Final Real-World Mobile Backend Project & Technical Assessment
+
+## Objective
+
+Build and demonstrate a complete mobile backend workflow independently.
+
+This is the final project assessment for the training phase.
+
+---
+
+# Task 1 — Receive Final Requirement
+
+## Requirement
+
+A customer should be able to:
+
+```text
+Register
+   ↓
+Search Services
+   ↓
+Select Provider
+   ↓
+Book Service
+   ↓
+Complete Mock Payment
+   ↓
+Receive Notifications
+   ↓
+Track Booking Status in Real Time
+   ↓
+View Booking History
+```
+
+The provider should be able to:
+
+* Manage services
+* Receive bookings
+* Update booking status
+
+The admin should be able to:
+
+* Monitor the entire system
+
+---
+
+# Task 2 — Design Before Coding
+
+Before implementation, create the following designs:
+
+```text
+ER Diagram
+API Specification
+Role / Permission Matrix
+Booking State Diagram
+System Architecture
+```
+
+### Design Requirement
+
+No coding should start until the required design is completed.
+
+---
+
+# Task 3 — Implement Customer Flow
+
+The complete customer workflow:
+
+```text
+Register
+   ↓
+Login
+   ↓
+Profile
+   ↓
+Search Services
+   ↓
+View Service
+   ↓
+Create Booking
+   ↓
+Payment
+   ↓
+Confirmation
+   ↓
+Notification
+   ↓
+Real-Time Status
+   ↓
+Completion
+   ↓
+Booking History
+```
+
+### Expected Result
+
+The customer should be able to complete the complete booking lifecycle through the backend APIs.
+
+---
+
+# Task 4 — Implement Provider Flow
+
+The provider workflow:
+
+```text
+Login
+   ↓
+Create Service
+   ↓
+Upload Image
+   ↓
+Receive Booking
+   ↓
+Accept Booking
+   ↓
+Start Service
+   ↓
+Complete Service
+```
+
+### Provider Capabilities
+
+* Login
+* Create services
+* Upload service images
+* Receive bookings
+* Accept bookings
+* Start services
+* Complete services
+
+---
+
+# Task 5 — Implement Admin Flow
+
+The admin should be able to monitor:
+
+```text
+Users
+Providers
+Services
+Bookings
+Payments
+Notifications
+```
+
+### Security
+
+Apply appropriate role-based permissions to ensure that only authorized users can access administrative functionality.
+
+---
+
+# Task 6 — Security Verification
+
+Verify that unauthorized access is rejected.
+
+### Test Cases
+
+```text
+Customer → Provider API ✗
+
+Provider → Admin API ✗
+
+User A → User B Booking ✗
+
+Unauthenticated → Protected API ✗
+```
+
+### Security Verification
+
+Test:
+
+* Authentication
+* Authorization
+* Role-based access
+* Object ownership
+* Protected endpoints
+* Unauthorized requests
+
+### Expected Result
+
+Unauthorized requests should be rejected by the backend.
+
+---
+
+# Task 7 — Performance Verification
+
+Review and verify:
+
+* Database queries
+* Pagination
+* Search performance
+* Cache usage
+* API response time
+
+### Optimization Requirement
+
+Identify at least one slow API, optimize it, and document the improvement.
+
+### Performance Flow
+
+```text
+Identify Slow API
+       ↓
+Measure Performance
+       ↓
+Analyze Database Queries
+       ↓
+Optimize
+       ↓
+Measure Again
+       ↓
+Document Improvement
+```
+
+---
+
+# Task 8 — Final Presentation
+
+## System Architecture
+
+```text
+                Mobile App
+                    ↓
+                REST API
+                    ↓
+          Django REST Framework
+                    ↓
+              Service Layer
+                    ↓
+                PostgreSQL
+
+       WebSocket → Real-Time Updates
+
+       Celery → Background Tasks
+
+       Redis → Cache / Queue
+```
+
